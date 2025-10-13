@@ -12,7 +12,7 @@
 *Consist of:*
 - At least **2 micro-services** communicating through **Apache Kafka**
 - Using **WebSockets** for live updates
-- Frontend build with **Vue3**
+- Frontend built with **Vue3**
 
 ### Tech Stack
 
@@ -79,11 +79,10 @@ gantt
         Impl. Game logic                    :b2, 2025-10-20, 5d
 
     section Kafka
-        Kafka integration with MS-Lobby     :b3, 2025-10-21, 3d
-        Kafka integration with MS-Game      :b4, 2025-10-21, 3d
+        Kafka integration in micro-services     :b3, 2025-10-21, 3d
 
     section CI/CD
-        Continuous Deploy & Manual Testing  :b5, 2025-10-20, 5d
+        Continuous Deploy & Manual Testing  :b4, 2025-10-20, 5d
 
 ```
 ```mermaid
