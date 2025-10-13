@@ -50,21 +50,70 @@ gantt
     tickInterval 1day
 
     section Planning
-        Make a plan                       :a0, 2025-10-13, 1d
+        Make a plan                         :a0, 2025-10-13, 1d
     section Setup
-        Repo              :a1, 2025-10-13, 2d
-        Frontend Scaffold                :a2, 2025-10-14, 1d
-        WebSocket try out+impl.           :a3, 2025-10-14, 1d
-        Connect FE + BE                   :a4, 2025-10-14, 1d
+        Repo                                :a1, 2025-10-13, 2d
+        Frontend Scaffold                   :a2, 2025-10-14, 1d
+        WebSocket try out+impl.             :a3, 2025-10-14, 1d
+        Connect FE + BE                     :a4, 2025-10-14, 1d
         
         section Lobby Service
-            
-            Init Lobby-Service           :a5, 2025-10-14, 2d
-    Create/Join Logic     :a6, 2025-10-15, 2d
+        Init Lobby-Service                  :a5, 2025-10-14, 2d
+        Create/Join Logic                   :a6, 2025-10-15, 2d
 
     section CI/CD
         Platform Investigation             :a7, 2025-10-14, 2d
         Initial CI/CD Pipeline Setup       :a8, 2025-10-15, 1d
         Cloud Platform Setup               :a8, 2025-10-16, 2d
-        Deploy   :milestone, 2025-10-17, 0d
+        Deploy                             :milestone, 2025-10-17, 0d
+```
+```mermaid
+gantt
+    title Week 2 – Core features
+    dateFormat  YYYY-MM-DD
+    axisFormat  %d %b
+    tickInterval 1day
+
+    section Services
+        Init Game-Service                   :b1, 2025-10-20, 1d
+        Impl. Game logic                    :b2, 2025-10-20, 5d
+
+    section Kafka
+        Kafka integration with MS-Lobby     :b3, 2025-10-21, 3d
+        Kafka integration with MS-Game      :b4, 2025-10-21, 3d
+
+    section CI/CD
+        Continuous Deploy & Manual Testing  :b5, 2025-10-20, 5d
+
+```
+```mermaid
+gantt
+    title Week 3 – Expand and improve
+    dateFormat  YYYY-MM-DD
+    axisFormat  %d %b
+    tickInterval 1day
+
+    section Game Logic
+        Expand Core Logic                           :c1, 2025-10-27, 3d
+
+    section Frontend
+        Polish Styling                              :c3, 2025-10-29, 3d
+
+    section CI/CD
+        Continuous Deploy & Manual Testing          :c5, 2025-10-27, 5d
+```
+
+```mermaid
+gantt
+    title Week 4 – Final Touches & Presentation Prep
+    dateFormat  YYYY-MM-DD
+    axisFormat  %d %b
+    tickInterval 1day
+        
+    section CI/CD
+        Final Deployment                            :d3, 2025-11-03, 1d
+
+    section Presentation
+        Reflection, Documentation and Presentation  :d2, 2025-11-03, 2d
+        Final Presentation                          :milestone, 2025-11-05, 0d
 ```
