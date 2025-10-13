@@ -10,7 +10,7 @@
  - **Deployed** early and continuously
 
 *Consist of:*
-- At least **2 micro-services** communicating through **Apache Kafka**
+- At least **2 microservices** communicating through **Apache Kafka**
 - Using **WebSockets** for live updates
 - Frontend built with **Vue3**
 
@@ -18,7 +18,7 @@
 
 - **Backend:** Java, Spring Boot
 - **Frontend:** Vue3
-- **Database:** PostgreSQL
+- **Database:** PostgresSQL
 - **Messaging:** Kafka
 - **Live Communication:** WebSockets
 - **Infra:** Docker
