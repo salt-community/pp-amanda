@@ -97,6 +97,9 @@ gantt
 
     section Frontend
         Polish Styling                              :c3, 2025-10-29, 3d
+        
+    section Testing
+        Impl. tests                              :c3, 2025-10-28, 3d
 
     section CI/CD
         Continuous Deploy & Manual Testing          :c5, 2025-10-27, 5d
