@@ -3,3 +3,4 @@
 .env
 frontend/.env
 lobby/.env
+/dox.md

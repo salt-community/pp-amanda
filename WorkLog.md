@@ -21,12 +21,17 @@
 - Docker-compose.yml in root
 
 #### _sandbox
-- Trying out using WebSockets
+- Trying out WebSockets
 
-#### AWS
-- Getting started with AWS see [documentation](https://github.com/salt-community/pp-amanda/blob/main/AWSDocumentation.md)
+#### AWS/Deploying
+- Got started with AWS see [documentation](https://github.com/salt-community/pp-amanda/blob/main/AWSDocumentation.md)
 
 ### Wednesday 16 October
+
+- Deployed the app
+- Documentation (Deployment flow and Work Log)
+- Getting started with Lobby service and connection with Frontend
+
 ### Thursday 17 October
 ### Friday 18 October
 
