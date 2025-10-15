@@ -4,3 +4,4 @@ server:
 logging:
   level:
     root: WARN
+    se.salt.lobby: INFO
