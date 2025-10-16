@@ -18,7 +18,7 @@
     </p>
 
     <p v-if="mutation.error">
-      {{ mutation.error.message }}
+      {{ mutation.error }}
     </p>
   </div>
 </template>
