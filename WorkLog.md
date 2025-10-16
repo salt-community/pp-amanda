@@ -31,8 +31,14 @@
 - Deployed the app
 - Documentation (Deployment flow and Work Log)
 - Getting started with Lobby service and connection with Frontend
+- Adding SLF4J logging
 
 ### Thursday 17 October
+
+- Continuing with connection
+- Refresh Vue3 knowledge
+- Impl. TanStack Query/Vue
+
 ### Friday 18 October
 
 ## Week 2 – Core Development
