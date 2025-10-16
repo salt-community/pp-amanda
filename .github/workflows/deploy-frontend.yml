@@ -32,10 +32,12 @@ jobs:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY_FRONTEND }}
           IMAGE_TAG: ${{ github.sha }}
+          FRONTEND_ENV_VARS: ${{ secrets.FRONTEND_ENV_VARS }}
         run: |
           cd frontend
+          echo "$FRONTEND_ENV_VARS" >> .env.production
           npm ci
-          npm run build
+          npm run build --mode production
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
