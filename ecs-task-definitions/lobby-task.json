@@ -8,7 +8,7 @@
   "containerDefinitions": [
     {
       "name": "lobby",
-      "image": "326803123265.dkr.ecr.eu-north-1.amazonaws.com/lobby:latest",
+      "image": "326803123265.dkr.ecr.eu-north-1.amazonaws.com/lobby:PLACEHOLDER",
       "essential": true,
       "portMappings": [
         {

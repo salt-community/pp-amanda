@@ -8,7 +8,7 @@
   "containerDefinitions": [
     {
       "name": "frontend",
-      "image": "326803123265.dkr.ecr.eu-north-1.amazonaws.com/frontend:latest",
+      "image": "326803123265.dkr.ecr.eu-north-1.amazonaws.com/frontend:PLACEHOLDER",
       "essential": true,
       "portMappings": [
         {
