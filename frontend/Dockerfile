@@ -2,8 +2,12 @@
 FROM node:20 AS build
 WORKDIR /app
 COPY package*.json ./
-RUN npm install
+RUN npm ci
 COPY . .
+ARG VITE_LOBBY_URL
+ENV VITE_LOBBY_URL=$VITE_LOBBY_URL
+# For logging which URL it picks
+RUN echo "Building frontend with VITE_LOBBY_URL=$VITE_LOBBY_URL"
 RUN npm run build
 
 # Run
