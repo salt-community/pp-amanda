@@ -14,8 +14,7 @@ WORKDIR /app
 
 COPY --from=build /app/target/*.jar app.jar
 
-# Tillåt profil och port att sättas via miljövariabler
-ENV SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE:-prod}
+ENV SPRING_PROFILES_ACTIVE=prod
 ENV SERVER_PORT=8080
 
 EXPOSE ${SERVER_PORT}
