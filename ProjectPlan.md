@@ -54,17 +54,18 @@ gantt
     section Setup
         Repo                                :a1, 2025-10-13, 2d
         Frontend Scaffold                   :a2, 2025-10-14, 1d
-        WebSocket try out+impl.             :a3, 2025-10-14, 1d
-        Connect FE + BE                     :a4, 2025-10-14, 1d
+        WebSocket try out                   :a3, 2025-10-14, 1d
+        Connect FE + BE                     :a4, 2025-10-15, 1d
         
         section Lobby Service
         Init Lobby-Service                  :a5, 2025-10-14, 2d
+        Frontend structure+components       :a5, 2025-10-15, 2d
         Create/Join Logic                   :a6, 2025-10-15, 2d
 
     section CI/CD
-        Platform Investigation             :a7, 2025-10-14, 2d
-        Initial CI/CD Pipeline Setup       :a8, 2025-10-15, 1d
-        Cloud Platform Setup               :a8, 2025-10-16, 2d
+        Platform Investigation             :a7, 2025-10-14, 1d
+        GH Actions Workflow                :a8, 2025-10-16, 1d
+        AWS Setup/Config - work in progress:a8, 2025-10-14, 4d
         Deploy                             :milestone, 2025-10-17, 0d
 ```
 ```mermaid
