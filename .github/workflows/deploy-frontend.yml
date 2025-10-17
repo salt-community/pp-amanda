@@ -33,10 +33,10 @@ jobs:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY_FRONTEND }}
           IMAGE_TAG: ${{ github.sha }}
-          FRONTEND_ENV_VARS: ${{ secrets.FRONTEND_ENV_VARS }}
+          VITE_LOBBY_URL: ${{ secrets.VITE_LOBBY_URL }}
         run: |
           cd frontend
-          echo "$FRONTEND_ENV_VARS" >> .env.production
+          echo "VITE_LOBBY_URL=$VITE_LOBBY_URL" >> .env.production
           npm ci
           npm run build
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
