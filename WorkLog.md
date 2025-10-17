@@ -38,8 +38,13 @@
 - Continuing with connection
 - Refresh Vue3 knowledge
 - Impl. TanStack Query/Vue
+- Setting up Github Action workflows and ECS task definitions
+- Impl. HealthController for AWS 
 
 ### Friday 18 October
+
+- Continue to get Lobby-service to work as expected in AWS ECS
+- Work-progress meeting with PGP group
 
 ## Week 2 – Core Development
 ### Monday 20 October
