@@ -1,7 +1,7 @@
 <template>
-  <RoomCreator />
+  <SessionCreator />
 </template>
 
 <script setup>
-import RoomCreator from "../components/RoomCreator.vue";
+import SessionCreator from "../components/SessionCreator.vue";
 </script>

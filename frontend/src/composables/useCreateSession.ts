@@ -3,7 +3,7 @@ import { createRoom } from "../api/lobbyApi";
 
 export function useCreateRoom() {
   return useMutation({
-    mutationFn: (roomName: string) => createRoom(roomName),
+    mutationFn: (sessionName: string) => createRoom(sessionName),
     onSuccess: (data) => {
       data;
     },

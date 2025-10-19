@@ -1,20 +1,20 @@
 <template>
   <div>
-    <h1>Create a Room</h1>
+    <h1>Start Gaming Session 🚀</h1>
 
     <form @submit.prevent="handleSubmit">
-      <input v-model="roomName" type="text" placeholder="Room name" />
+      <input v-model="roomName" type="text" placeholder="Enter Session Name" />
       <button
         type="submit"
         :disabled="mutation.isPending.value"
         class="bg-blue-600 text-white py-2 px-4 rounded mt-3"
       >
-        {{ mutation.isPending.value ? "Creating..." : "Create Room" }}
+        {{ mutation.isPending.value ? "Starting..." : "Create Session" }}
       </button>
     </form>
 
     <p v-if="mutation.isSuccess && mutation.data">
-      RoomID: {{ mutation.data }}
+      SessionID: {{ mutation.data }}
     </p>
 
     <p v-if="mutation.error">
@@ -25,7 +25,7 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { useCreateRoom } from "../composables/useCreateRoom";
+import { useCreateRoom } from "../composables/useCreateSession";
 
 const roomName = ref("");
 const mutation = useCreateRoom();
