@@ -6,6 +6,6 @@ public record Session(
     String id,
     String name,
     Instant createdAt,
-    Long expiresAt
+    Long expiredAt
 ) {
 }
