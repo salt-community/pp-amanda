@@ -8,10 +8,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import se.salt.lobby.domain.Room;
-import se.salt.lobby.domain.service.RoomService;
-import se.salt.lobby.http.dto.RoomIdResponse;
-import se.salt.lobby.http.dto.RoomRequest;
+import se.salt.lobby.domain.Session;
+import se.salt.lobby.domain.service.SessionService;
+import se.salt.lobby.http.dto.SessionRequest;
+import se.salt.lobby.http.dto.SessionResponse;
 
 @Slf4j
 @RestController
@@ -19,23 +19,23 @@ import se.salt.lobby.http.dto.RoomRequest;
 @AllArgsConstructor
 public class LobbyController {
 
-    private final RoomService roomService;
+    private final SessionService sessionService;
 
     @PostMapping(value = "/create")
-    public ResponseEntity<RoomIdResponse> createRoom(
-        @RequestBody RoomRequest roomName
+    public ResponseEntity<SessionResponse> createRoom(
+        @RequestBody SessionRequest req
     ) {
-        log.info("Received request to create room: {}", roomName.roomName());
-        Room room = roomService.createRoom(roomName);
-        log.debug("Created room object: {}", room);
-        RoomIdResponse response = new RoomIdResponse(room.getId());
+        log.info("Received request to create session: {}", req.sessionName());
+        Session session = sessionService.createSession(req);
+        log.debug("Created session object: {}", session);
+        SessionResponse response = new SessionResponse(session.id());
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
 // TODO
-    // Get Room
-    // View all available rooms ? or only access through roomId?
-    // Join Room
+    // Get Session
+    // View all available rooms ? or only access through sessionId?
+    // Join Session
 
 
 }
