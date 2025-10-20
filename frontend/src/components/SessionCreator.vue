@@ -25,10 +25,10 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { useCreateRoom } from "../composables/useCreateSession";
+import { useCreateSession } from "../composables/useCreateSession";
 
 const roomName = ref("");
-const mutation = useCreateRoom();
+const mutation = useCreateSession();
 
 function handleSubmit() {
   if (!roomName.value.trim()) return;
