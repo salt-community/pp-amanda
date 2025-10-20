@@ -1,10 +1,15 @@
 package se.salt.lobby.config;
 
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
+
+import java.net.URI;
+import java.util.Optional;
 
 /**
  * Configuration class for setting up a DynamoDB client.
@@ -24,11 +29,21 @@ import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 @Configuration
 public class DynamoDbConfig {
 
+    @Value("${aws.region}")
+    private String awsRegion;
+
+    @Value("${aws.dynamodb.endpoint:}") // optional property
+    private Optional<String> endpoint;
+
     @Bean
     public DynamoDbClient dynamoDbClient() {
-        return DynamoDbClient.builder()
-            .region(Region.of(System.getenv("AWS_REGION")))
-            .credentialsProvider(DefaultCredentialsProvider.create())
-            .build();
+        var builder = DynamoDbClient.builder()
+            .region(Region.of(awsRegion))
+            .credentialsProvider(DefaultCredentialsProvider.create());
+
+        endpoint.filter(e -> !e.isBlank())
+            .ifPresent(e -> builder.endpointOverride(URI.create(e)));
+
+        return builder.build();
     }
 }

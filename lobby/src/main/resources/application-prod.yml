@@ -2,3 +2,8 @@ logging:
   level:
     root: WARN
     se.salt.lobby: INFO
+
+aws:
+  region: eu-north-1
+  dynamodb:
+    endpoint: ""
