@@ -76,8 +76,13 @@ gantt
     tickInterval 1day
 
     section Services
-        Init Game-Service                   :b1, 2025-10-20, 1d
+        Init Game-Service                   :b1, 2025-10-23, 1d
+        Extend Lobbyservice                 :b1, 2025-10-20, 1d
+        Extend Frontend                     :b1, 2025-10-20, 5d
         Impl. Game logic                    :b2, 2025-10-20, 5d
+    
+    section Services
+        Impl. DynamoDB via AWS              :b1, 2025-10-20, 1d
 
     section Kafka
         Kafka integration in micro-services     :b3, 2025-10-21, 3d
