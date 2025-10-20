@@ -38,10 +38,10 @@
               {{ mutation.isPending.value ? "Starting..." : "Join Session" }}
             </button>
 
-            <p v-if="mutation.isSuccess && mutation.data">
+            <p v-if="mutation.isSuccess.value && mutation.data.value">
               Successfully Joined! <br />
               <RouterLink :to="`/game/${sessionId}`"
-                >Take Me To Game</RouterLink
+                >GO TO GAME SESSION</RouterLink
               >
             </p>
 
