@@ -5,7 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import se.salt.lobby.domain.Session;
 import se.salt.lobby.domain.SessionRepository;
+import se.salt.lobby.http.dto.JoinSessionRequest;
 import se.salt.lobby.http.dto.SessionRequest;
+import se.salt.lobby.http.exception.NotFoundException;
 
 import java.time.Instant;
 import java.util.Random;
@@ -34,6 +36,16 @@ public class SessionService {
         repo.save(newSession);
 
         return newSession;
+    }
+
+    public Session joinSession(JoinSessionRequest sessionId) {
+        return repo
+            .findById(sessionId.sessionId())
+            .orElseThrow(() ->
+                new NotFoundException(
+                    "Session with ID: %s not found".formatted(sessionId)
+                )
+            );
     }
 
     private String generateRandomId() {

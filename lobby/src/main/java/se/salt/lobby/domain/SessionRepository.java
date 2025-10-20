@@ -7,7 +7,9 @@ import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 import software.amazon.awssdk.services.dynamodb.model.GetItemRequest;
 import software.amazon.awssdk.services.dynamodb.model.PutItemRequest;
 
+import java.time.Instant;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Repository class for managing Session data in DynamoDB.
@@ -42,21 +44,22 @@ public class SessionRepository {
         dynamoDb.putItem(request);
     }
 
-    public Session findById(String id) {
+    public Optional<Session> findById(String id) {
         GetItemRequest request = GetItemRequest.builder()
             .tableName(TABLE_NAME)
             .key(Map.of("id", AttributeValue.fromS(id)))
             .build();
 
         Map<String, AttributeValue> item = dynamoDb.getItem(request).item();
-        if (item == null || item.isEmpty()) return null;
+        if (item == null || item.isEmpty()) return Optional.empty();
 
-        return new Session(
+        Session session = new Session(
             item.get("id").s(),
             item.get("name").s(),
-            java.time.Instant.parse(item.get("createdAt").s()),
+            Instant.parse(item.get("createdAt").s()),
             Long.parseLong(item.get("expiredAt").n())
         );
+        return Optional.of(session);
     }
 }
 
