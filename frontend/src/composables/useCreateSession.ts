@@ -1,9 +1,9 @@
 import { useMutation } from "@tanstack/vue-query";
-import { createRoom } from "../api/lobbyApi";
+import { createSession } from "../api/lobbyApi";
 
 export function useCreateSession() {
   return useMutation({
-    mutationFn: (sessionName: string) => createRoom(sessionName),
+    mutationFn: (sessionName: string) => createSession(sessionName),
     onSuccess: (data) => {
       data;
     },
