@@ -1,46 +1,60 @@
 <template>
   <div>
-    <button
-      type="button"
-      @click="openPopup"
-      class="bg-blue-600 text-white py-2 px-4 rounded mt-3"
-    >
-      <h1>{{ "JOIN VIA INVITATION CODE 🔗" }}</h1>
+    <button type="button" @click="openPopup">
+      <h1>JOIN VIA INVITATION CODE 🔗</h1>
     </button>
 
     <Teleport to="body">
-      <div v-if="showPopup">
-        <div>
+      <div
+        v-if="showPopup"
+        style="
+          position: fixed;
+          inset: 0;
+          background: rgba(0, 0, 0, 0.5);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 9999;
+        "
+        @click.self="closePopup"
+      >
+        <div
+          style="
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            min-width: 300px;
+          "
+        >
           <h2>JOIN VIA INVITATION CODE 🔗</h2>
+
           <form @submit.prevent="handleSubmit">
             <input
               v-model="sessionId"
               type="text"
               placeholder="Enter Invitation Code"
             />
-            <button
-              type="submit"
-              class="bg-blue-600 text-white py-2 px-4 rounded mt-3"
-            >
+            <button type="submit">
               {{ mutation.isPending.value ? "Starting..." : "Join Session" }}
             </button>
+
             <p v-if="mutation.isSuccess && mutation.data">
-              Successfully Join
-              <RouterLink class="router-link" :to="`/game/${sessionId}`"
-                >Take Me To Game Session</RouterLink
+              Successfully Joined! <br />
+              <RouterLink :to="`/game/${sessionId}`"
+                >Take Me To Game</RouterLink
               >
             </p>
 
             <p v-if="mutation.error">
               {{ mutation.error }}
             </p>
+
             <button
               type="button"
               @click="closePopup"
               :disabled="mutation.isPending.value"
-              class="bg-blue-600 text-white py-2 px-4 rounded mt-3"
             >
-              {{ mutation.isPending.value ? "Starting..." : "Create Session" }}
+              Close
             </button>
           </form>
         </div>
@@ -50,17 +64,17 @@
 </template>
 
 <script setup lang="ts">
-import { ref, Teleport } from "vue";
+import { ref } from "vue";
 import { useJoinSession } from "../composables/useJoinSession";
 import { RouterLink } from "vue-router";
 
 const sessionId = ref("");
 const mutation = useJoinSession();
 const showPopup = ref(false);
+
 const openPopup = () => {
   showPopup.value = true;
 };
-
 const closePopup = () => {
   showPopup.value = false;
 };
