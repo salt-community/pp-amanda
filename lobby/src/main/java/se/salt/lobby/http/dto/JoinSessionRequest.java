@@ -8,3 +8,5 @@ public record JoinSessionRequest(
     @NotNull @Min(4) @Max(4) String sessionId
 ) {
 }
+
+// TODO validation add some kind of regEx?
