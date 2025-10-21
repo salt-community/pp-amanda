@@ -36,7 +36,7 @@
 ### Thursday 17 October
 
 - Continuing with connection
-- Refresh Vue3 knowledge
+- Refresh Vue3 knowledge and create first component + call to backend
 - Impl. TanStack Query/Vue
 - Setting up Github Action workflows and ECS task definitions
 - Impl. HealthController for AWS 
@@ -48,7 +48,17 @@
 
 ## Week 2 – Core Development
 ### Monday 20 October
+
+- Implementing DynamoDB and tried it out locally
+- Extending Lobby Controller with join endpoint
+- Adding exception handling
+- Expanding frontend with pop-ups and redirect both for create and join components
+- Releasing new deployed version where a table ``Sessions`` are saved in a DynamoDB
+
 ### Tuesday 21 October
+
+- Tasks outside this project.
+
 ### Wednesday 22 October
 ### Thursday 23 October
 ### Friday 24 October
