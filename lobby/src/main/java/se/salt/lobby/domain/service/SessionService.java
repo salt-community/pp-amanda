@@ -19,6 +19,8 @@ public class SessionService {
 
     private final SessionRepository repo;
 
+    private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
     public Session createSession(SessionRequest req) {
         String id = generateRandomId();
         log.info("Creating new session '{}' with ID: {}", req.sessionName(), id);
@@ -49,13 +51,12 @@ public class SessionService {
     }
 
     private String generateRandomId() {
-        String characters = "0123456789";
         StringBuilder id = new StringBuilder();
         Random random = new Random();
 
         for (int i = 0; i < 4; i++) {
-            int index = random.nextInt(characters.length());
-            id.append(characters.charAt(index));
+            int index = random.nextInt(CHARACTERS.length());
+            id.append(CHARACTERS.charAt(index));
         }
 
         return id.toString();
