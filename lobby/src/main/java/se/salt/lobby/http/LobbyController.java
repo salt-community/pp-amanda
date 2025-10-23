@@ -14,31 +14,39 @@ import se.salt.lobby.http.dto.SessionResponse;
 
 @Slf4j
 @RestController
-@RequestMapping(value = "/lobby")
+@RequestMapping("/lobby")
 @AllArgsConstructor
 public class LobbyController {
 
     private final SessionService sessionService;
 
-    @PostMapping(value = "/create")
+    @PostMapping("/create")
     public ResponseEntity<SessionResponse> createSession(
-        @RequestBody SessionRequest req
+        @Valid @RequestBody SessionRequest req
     ) {
         log.info("Received request to create session: {}", req.sessionName());
         Session session = sessionService.createSession(req);
         log.debug("Created session object: {}", session);
-        SessionResponse response = SessionResponse.fromSession(session);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        return ResponseEntity
+            .status(HttpStatus.CREATED)
+            .body(SessionResponse.fromSession(session));
     }
 
-    @GetMapping(value = "/join/{sessionId}")
+    @PostMapping("/join")
     public ResponseEntity<SessionResponse> joinSession(
-        @PathVariable @Valid JoinSessionRequest sessionId
+        @Valid @RequestBody JoinSessionRequest request
     ) {
-        log.info("Received request to join session with ID: {}", sessionId);
-        Session session = sessionService.joinSession(sessionId);
-        SessionResponse response = SessionResponse.fromSession(session);
-        return ResponseEntity.ok(response);
+        log.info("Received request to join session with ID: {}", request.sessionId());
+        Session session = sessionService.joinSession(request);
+        return ResponseEntity.ok(SessionResponse.fromSession(session));
     }
 
+    @GetMapping("/sessions/{sessionId}")
+    public ResponseEntity<SessionResponse> getSession(
+        @PathVariable String sessionId
+    ) {
+        log.info("Received request to get session with ID: {}", sessionId);
+        Session session = sessionService.findById(sessionId);
+        return ResponseEntity.ok(SessionResponse.fromSession(session));
+    }
 }

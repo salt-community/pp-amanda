@@ -41,13 +41,16 @@ public class SessionService {
     }
 
     public Session joinSession(JoinSessionRequest sessionId) {
-        return repo
-            .findById(sessionId.sessionId())
+        return repo.findById(sessionId.sessionId())
             .orElseThrow(() ->
-                new NotFoundException(
-                    "Session with ID: %s not found".formatted(sessionId)
-                )
+                new NotFoundException("Session with ID: %s not found".formatted(sessionId.sessionId()))
             );
+    }
+
+    public Session findById(String sessionId) {
+        return repo.findById(sessionId)
+            .orElseThrow(() ->
+                new NotFoundException("Session with ID: %s not found".formatted(sessionId)));
     }
 
     private String generateRandomId() {
