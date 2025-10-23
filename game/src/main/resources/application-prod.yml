@@ -1,0 +1,9 @@
+logging:
+  level:
+    root: WARN
+    se.salt.game: INFO
+
+aws:
+  region: eu-north-1
+  dynamodb:
+    endpoint: ""

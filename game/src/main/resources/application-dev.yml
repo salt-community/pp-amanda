@@ -1,0 +1,9 @@
+logging:
+  level:
+    root: INFO
+    se.salt.game: DEBUG
+
+aws:
+  region: eu-north-1
+  dynamodb:
+    endpoint: http://localhost:8000
