@@ -12,8 +12,6 @@ public record SessionRequest(
         regexp = "^[A-Za-z0-9_-]+$",
         message = "Session name may only contain letters, numbers, underscores, or hyphens"
     )
-    String sessionName,
-    String hostName
-
+    String sessionName
 ) {
 }
