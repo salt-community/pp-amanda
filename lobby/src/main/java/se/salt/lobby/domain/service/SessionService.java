@@ -27,15 +27,15 @@ public class SessionService {
         long timeToLive = 1800L;
         long expiresAt = createdAt.plusSeconds(timeToLive).getEpochSecond();
 
-        Session newSession = new Session(
+        Session createdSession = new Session(
             id,
             req.sessionName(),
             createdAt,
             expiresAt);
 
-        repo.save(newSession);
+        repo.save(createdSession);
 
-        return newSession;
+        return createdSession;
     }
 
     public Session joinSession(JoinSessionRequest sessionId) {

@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import se.salt.lobby.domain.Session;
 import se.salt.lobby.domain.service.SessionService;
 import se.salt.lobby.http.dto.JoinSessionRequest;
-import se.salt.lobby.http.dto.SessionIdResponse;
 import se.salt.lobby.http.dto.SessionRequest;
 import se.salt.lobby.http.dto.SessionResponse;
 
@@ -22,13 +21,13 @@ public class LobbyController {
     private final SessionService sessionService;
 
     @PostMapping(value = "/create")
-    public ResponseEntity<SessionIdResponse> createSession(
+    public ResponseEntity<SessionResponse> createSession(
         @RequestBody SessionRequest req
     ) {
         log.info("Received request to create session: {}", req.sessionName());
         Session session = sessionService.createSession(req);
         log.debug("Created session object: {}", session);
-        SessionIdResponse response = new SessionIdResponse(session.id());
+        SessionResponse response = SessionResponse.fromSession(session);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
