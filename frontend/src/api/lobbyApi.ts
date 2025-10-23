@@ -11,20 +11,39 @@ export async function createSession(
   });
 
   if (!response.ok) {
-    throw new Error("Failed to create room");
+    throw new Error("Failed to create session");
   }
-  const data = await response.json();
-  return data.sessionId;
+
+  return await response.json();
 }
 
 export async function joinSession(sessionId: string): Promise<SessionResponse> {
-  const response = await fetch(`${LOBBY_URL}/join/${sessionId}`, {
-    method: "GET",
+  const response = await fetch(`${LOBBY_URL}/join`, {
+    method: "POST",
     headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ sessionId }),
   });
 
   if (!response.ok) {
-    throw new Error("Failed to create room");
+    if (response.status === 404) {
+      throw new Error("Session not found");
+    }
+    throw new Error("Failed to join session");
+  }
+
+  return await response.json();
+}
+
+export async function getSession(sessionId: string): Promise<SessionResponse> {
+  const response = await fetch(`${LOBBY_URL}/sessions/${sessionId}`, {
+    method: "GET",
+  });
+
+  if (!response.ok) {
+    if (response.status === 404) {
+      throw new Error("Session not found");
+    }
+    throw new Error("Failed to fetch session");
   }
 
   return await response.json();
