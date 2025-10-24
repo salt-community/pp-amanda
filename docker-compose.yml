@@ -8,6 +8,15 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE:-dev}
 
+  game:
+    build: ./game
+    container_name: game
+    image: game
+    ports:
+      - "${GAME_PORT:-8081}:8081"
+    environment:
+      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE:-dev}
+
   frontend:
     build: ./frontend
     container_name: frontend

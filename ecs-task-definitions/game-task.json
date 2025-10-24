@@ -1,0 +1,40 @@
+{
+  "family": "game-task",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "512",
+  "memory": "1024",
+  "executionRoleArn": "arn:aws:iam::326803123265:role/ecsTaskExecutionRole",
+  "taskRoleArn": "arn:aws:iam::326803123265:role/gameTaskRole",
+  "containerDefinitions": [
+    {
+      "name": "game",
+      "image": "326803123265.dkr.ecr.eu-north-1.amazonaws.com/game:PLACEHOLDER",
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 8081,
+          "protocol": "tcp"
+        }
+      ],
+      "environment": [
+        {
+          "name": "AWS_REGION",
+          "value": "eu-north-1"
+        },
+        {
+          "name": "SPRING_PROFILES_ACTIVE",
+          "value": "prod"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/game-task",
+          "awslogs-region": "eu-north-1",
+          "awslogs-stream-prefix": "ecs"
+        }
+      }
+    }
+  ]
+}
