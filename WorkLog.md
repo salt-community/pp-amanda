@@ -60,8 +60,18 @@
 - Tasks outside this project.
 
 ### Wednesday 22 October
+
+- Tasks outside this project.
+
 ### Thursday 23 October
+
+- Writing unit tests and some updates in Lobby-service
+- Initialize Game-service with all necessary config
+- Try out lobby + game service locally with postman+dynamoDB
+
 ### Friday 24 October
+
+- Setup for AWS and with goal to deploy Game-Service
 
 ## Week 3 – Feature Expansion & Testing
 ### Monday 27 October
