@@ -23,6 +23,7 @@ public class GameController {
         @RequestBody GameRequest req
     ) {
         Game game = gameService.initializeGame(sessionId, req.gameType());
+        log.info("Received request to initialize: {}  type of game in Session with ID: {}", req.gameType(), sessionId);
         GameResponse response = GameResponse.fromGame(game);
         return ResponseEntity.ok(response);
     }
