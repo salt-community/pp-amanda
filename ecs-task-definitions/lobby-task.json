@@ -5,6 +5,7 @@
   "cpu": "512",
   "memory": "1024",
   "executionRoleArn": "arn:aws:iam::326803123265:role/ecsTaskExecutionRole",
+  "taskRoleArn": "arn:aws:iam::326803123265:role/LobbyTaskRole",
   "containerDefinitions": [
     {
       "name": "lobby",
