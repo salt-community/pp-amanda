@@ -34,10 +34,12 @@ jobs:
           ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY_FRONTEND }}
           IMAGE_TAG: ${{ github.sha }}
           VITE_LOBBY_URL: ${{ secrets.VITE_LOBBY_URL }}
+          VITE_GAME_URL: ${{ secrets.VITE_GAME_URL }}
         run: |
           cd frontend
           docker build \
             --build-arg VITE_LOBBY_URL=$VITE_LOBBY_URL \
+            --build-arg VITE_GAME_URL=$VITE_GAME_URL \
             -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
