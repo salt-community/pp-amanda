@@ -31,5 +31,10 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# MISC
 /.env
 /src/main/java/se/salt/lobby/_sandbox/
+/docker-compose.yml
+/init-aws.sh
+/.localstack/
