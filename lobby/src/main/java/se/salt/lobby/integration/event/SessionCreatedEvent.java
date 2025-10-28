@@ -6,7 +6,7 @@ import lombok.Builder;
 public record SessionCreatedEvent(
     String eventType,
     String sessionId,
-    String timeStamp
+    String timestamp
 ) {
 
 }
