@@ -8,6 +8,7 @@ import se.salt.lobby.domain.SessionRepository;
 import se.salt.lobby.http.dto.JoinSessionRequest;
 import se.salt.lobby.http.dto.SessionRequest;
 import se.salt.lobby.http.exception.NotFoundException;
+import se.salt.lobby.integration.SqsPublisher;
 
 import java.time.Instant;
 import java.util.Random;
@@ -18,6 +19,8 @@ import java.util.Random;
 public class SessionService {
 
     private final SessionRepository repo;
+
+    private final SqsPublisher sqsPublisher;
 
     private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
@@ -36,6 +39,8 @@ public class SessionService {
             expiresAt);
 
         repo.save(createdSession);
+
+        sqsPublisher.publishSessionCreatedEvent(createdSession.id());
 
         return createdSession;
     }
