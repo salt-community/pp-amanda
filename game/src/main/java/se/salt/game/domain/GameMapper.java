@@ -6,6 +6,7 @@ import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 
 import java.time.Instant;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class GameMapper {
@@ -31,7 +32,7 @@ public class GameMapper {
     }
 
     public static Game fromItem(Map<String, AttributeValue> item) {
-        Map<String, Double> players = item.containsKey("players")
+        Map<String, Double> players = item.containsKey("players") && item.get("players").m() != null
             ? item.get("players").m().entrySet().stream()
             .collect(Collectors.toMap(
                 Map.Entry::getKey,
@@ -39,14 +40,35 @@ public class GameMapper {
             ))
             : Map.of();
 
+        Type type = Optional.ofNullable(item.get("type"))
+            .map(AttributeValue::s)
+            .map(Type::valueOf)
+            .orElse(Type.NA);
+
+        Instant startTime = Optional.ofNullable(item.get("startTime"))
+            .map(AttributeValue::s)
+            .map(Instant::parse)
+            .orElse(null);
+
+        Instant joinDeadLine = Optional.ofNullable(item.get("joinDeadLine"))
+            .map(AttributeValue::s)
+            .map(Instant::parse)
+            .orElse(null);
+
+        Instant endTime = Optional.ofNullable(item.get("endTime"))
+            .map(AttributeValue::s)
+            .map(Instant::parse)
+            .orElse(null);
+
         return new Game(
             item.get("id").s(),
             item.get("sessionId").s(),
-            Type.valueOf(item.get("type").s()),
-            Instant.parse(item.get("startTime").s()),
-            Instant.parse(item.get("joinDeadLine").s()),
-            Instant.parse(item.get("endTime").s()),
+            type,
+            startTime,
+            joinDeadLine,
+            endTime,
             players
         );
     }
+
 }

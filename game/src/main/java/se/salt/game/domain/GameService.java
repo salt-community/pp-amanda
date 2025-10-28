@@ -9,7 +9,6 @@ import se.salt.game.http.exception.NotFoundException;
 
 import java.time.Instant;
 import java.util.HashMap;
-import java.util.UUID;
 
 @Slf4j
 @Service
@@ -19,14 +18,13 @@ public class GameService {
     private final GameRepository repo;
 
     public Game initializeGame(String sessionId, Type type) {
-        String gameId = UUID.randomUUID().toString();
-
+        Game gameInSession = getGame(sessionId);
         Instant startTime = Instant.now();
         Instant joinDeadLine = startTime.plusSeconds(90);
         Instant endTime = startTime.plusSeconds(1600);
 
-        Game createdGame = new Game(
-            gameId,
+        Game updatedGame = new Game(
+            gameInSession.id(),
             sessionId,
             type,
             startTime,
@@ -35,13 +33,17 @@ public class GameService {
             new HashMap<>()
         );
 
-        repo.save(createdGame);
+        repo.updateGameDetails(updatedGame);
 
-        return createdGame;
+        return updatedGame;
 
     }
 
     public Game gameStatus(String sessionId) {
+        return getGame(sessionId);
+    }
+
+    private Game getGame(String sessionId) {
         return repo.findBySessionId(sessionId)
             .orElseThrow(() ->
                 new NotFoundException("Session with ID: %s not found".formatted(sessionId)));

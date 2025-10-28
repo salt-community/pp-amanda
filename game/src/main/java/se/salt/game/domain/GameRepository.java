@@ -8,6 +8,7 @@ import software.amazon.awssdk.services.dynamodb.model.*;
 
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Repository
 @RequiredArgsConstructor
@@ -24,6 +25,37 @@ public class GameRepository {
             .build();
         dynamoDb.putItem(request);
     }
+
+    public void updateGameDetails(Game game) {
+        UpdateItemRequest updateRequest = UpdateItemRequest.builder()
+            .tableName(TABLE_NAME)
+            .key(Map.of("id", AttributeValue.fromS(game.id())))
+            .updateExpression("SET #type = :t, #startTime = :s, #joinDeadLine = :j, #endTime = :e, #players = :p")
+            .expressionAttributeNames(Map.of(
+                "#type", "type",
+                "#startTime", "startTime",
+                "#joinDeadLine", "joinDeadLine",
+                "#endTime", "endTime",
+                "#players", "players"
+            ))
+            .expressionAttributeValues(Map.of(
+                ":t", AttributeValue.fromS(game.type().toString()),
+                ":s", AttributeValue.fromS(game.startTime().toString()),
+                ":j", AttributeValue.fromS(game.joinDeadLine().toString()),
+                ":e", AttributeValue.fromS(game.endTime().toString()),
+                ":p", AttributeValue.fromM(
+                    game.players().entrySet().stream()
+                        .collect(Collectors.toMap(
+                            Map.Entry::getKey,
+                            e -> AttributeValue.fromN(e.getValue().toString())
+                        ))
+                )
+            ))
+            .build();
+
+        dynamoDb.updateItem(updateRequest);
+    }
+
 
     public Optional<Game> findById(String id) {
         GetItemRequest request = GetItemRequest.builder()
