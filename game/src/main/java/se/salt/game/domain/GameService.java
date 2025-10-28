@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import se.salt.game.domain.model.Game;
 import se.salt.game.domain.model.Type;
+import se.salt.game.http.exception.NotFoundException;
 
 import java.time.Instant;
 import java.util.HashMap;
@@ -38,5 +39,11 @@ public class GameService {
 
         return createdGame;
 
+    }
+
+    public Game gameStatus(String sessionId) {
+        return repo.findBySessionId(sessionId)
+            .orElseThrow(() ->
+                new NotFoundException("Session with ID: %s not found".formatted(sessionId)));
     }
 }

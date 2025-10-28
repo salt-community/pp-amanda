@@ -27,4 +27,14 @@ public class GameController {
         GameResponse response = GameResponse.fromGame(game);
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/status/{sessionId}")
+    public ResponseEntity<GameResponse> initializeGameStatus(
+        @PathVariable String sessionId
+    ) {
+        log.info("Check status of initialization of game type for sessionId: {}", sessionId);
+        Game game = gameService.gameStatus(sessionId);
+        GameResponse response = GameResponse.fromGame(game);
+        return ResponseEntity.ok(response);
+    }
 }
