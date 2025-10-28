@@ -1,4 +1,4 @@
-# --- Build stage ---
+# Build
 FROM node:20 AS build
 WORKDIR /app
 
@@ -17,18 +17,16 @@ ARG VITE_GAME_URL
 ENV VITE_LOBBY_URL=$VITE_LOBBY_URL
 ENV VITE_GAME_URL=$VITE_GAME_URL
 
-# Log what was picked up (optional but handy)
+# Logging
 RUN echo "🏗️ Building frontend with:"
 RUN echo " - VITE_LOBBY_URL=$VITE_LOBBY_URL"
 RUN echo " - VITE_GAME_URL=$VITE_GAME_URL"
 
-# Build app
 RUN npm run build
 
-# --- Run stage ---
+# Run
 FROM nginx:alpine
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=build /app/dist /usr/share/nginx/html
 EXPOSE 80
-
 CMD ["nginx", "-g", "daemon off;"]
