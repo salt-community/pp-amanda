@@ -1,9 +1,5 @@
 export interface SessionResponse {
   sessionId: string;
-}
-
-export interface SessionResponse {
-  sessionId: string;
   sessionName: string;
   createdAt: number;
 }

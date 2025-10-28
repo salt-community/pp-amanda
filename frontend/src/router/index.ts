@@ -8,6 +8,7 @@ const router = createRouter({
     { path: "/", redirect: "/lobby" },
     { path: "/lobby", component: LobbyView },
     { path: "/game", component: GameView },
+    { path: "/game/:sessionId", component: GameView },
   ],
 });
 
