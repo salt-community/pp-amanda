@@ -48,6 +48,8 @@ jobs:
           task-definition: ecs-task-definitions/lobby-task.json
           container-name: lobby
           image: ${{ steps.build-and-push.outputs.image }}
+          environment-variables: |
+            SQS_QUEUE_URL=${{ secrets.SQS_QUEUE_URL }}
 
       - name: Deploy to ECS
         uses: aws-actions/amazon-ecs-deploy-task-definition@v2
