@@ -75,8 +75,24 @@
 
 ## Week 3 – Feature Expansion & Testing
 ### Monday 27 October
+
+- Implemented DynamoDB
+- Config (cors, AWS-settings etc.) to be able to -->
+- Deployed working version of Game-service in AWS 
+
 ### Tuesday 28 October
+
+- Working with flow for initiate Game in FE/Vue3
+- Implemented SQS + Lambda resulting in re-doing/thinking how Game service will work.
+Lambda now consumes and initiates the Game item
+- Config to try everything out locally as well as in the cloud
+
 ### Wednesday 29 October
+
+- Adjust game domain logic after implementing Lambda
+- Working on expanding Game-controller for join-flow (before actual game)
+- Align FE to be at the same point as BE to slice the work + context focus
+
 ### Thursday 30 October
 ### Friday 31 October
 
