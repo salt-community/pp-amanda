@@ -8,6 +8,7 @@ import se.salt.game.domain.GameService;
 import se.salt.game.domain.model.Game;
 import se.salt.game.http.dto.GameRequest;
 import se.salt.game.http.dto.GameResponse;
+import se.salt.game.http.dto.JoinRequest;
 
 @Slf4j
 @RestController
@@ -37,4 +38,15 @@ public class GameController {
         GameResponse response = GameResponse.fromGame(game);
         return ResponseEntity.ok(response);
     }
+
+    @PostMapping("/{sessionId}/join")
+    public ResponseEntity<GameResponse> joinGame(
+        @PathVariable String sessionId,
+        @RequestBody JoinRequest req
+    ) {
+        Game updated = gameService.addPlayer(sessionId, req.name());
+        log.info("In session: {} player: {} joined", sessionId, req.name());
+        return ResponseEntity.ok(GameResponse.fromGame(updated));
+    }
+
 }
