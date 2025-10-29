@@ -1,8 +1,8 @@
 import { useMutation } from "@tanstack/vue-query";
-import { initializeGame } from "../api/gameApi";
+import { selectType } from "../api/gameApi";
 import type { GameType } from "../types/game";
 
-export function useInitializeGame() {
+export function useSelectGameType() {
   return useMutation({
     mutationFn: ({
       sessionId,
@@ -10,7 +10,7 @@ export function useInitializeGame() {
     }: {
       sessionId: string;
       gameType: GameType;
-    }) => initializeGame(sessionId, gameType),
+    }) => selectType(sessionId, gameType),
     onSuccess: (data) => {
       data;
     },

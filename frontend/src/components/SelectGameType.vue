@@ -33,14 +33,14 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { useInitializeGame } from "../composables/useInitializeGame";
+import { useSelectGameType } from "../composables/useSelectGameType";
 import type { GameType } from "../types/game";
 
 const props = defineProps<{ sessionId: string }>();
 const emit = defineEmits<{ (e: "initialized", gameType: GameType): void }>();
 
 const selectedType = ref<GameType | "">("");
-const mutation = useInitializeGame();
+const mutation = useSelectGameType();
 const availableGameTypes: GameType[] = ["REACTION"];
 
 function handleSubmit() {

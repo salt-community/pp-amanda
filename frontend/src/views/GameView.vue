@@ -23,10 +23,7 @@
             min-width: 300px;
           "
         >
-          <InitializeGame
-            :session-id="sessionId"
-            @initialized="handleInitialized"
-          />
+          <SelectGameType :session-id="sessionId" @initialized="handleSelect" />
         </div>
       </div>
     </Teleport>
@@ -35,7 +32,7 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import InitializeGame from "../components/InitializeGame.vue";
+import SelectGameType from "../components/SelectGameType.vue";
 import GameBoard from "../components/GameBoard.vue";
 import type { GameType } from "../types/game";
 import { useRoute } from "vue-router";
@@ -44,7 +41,7 @@ const route = useRoute();
 const sessionId = route.params.sessionId as string;
 const gameType = ref<GameType | null>(null);
 
-function handleInitialized(type: GameType) {
+function handleSelect(type: GameType) {
   gameType.value = type;
 }
 </script>
