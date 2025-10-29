@@ -5,10 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import se.salt.game.domain.model.Game;
 import se.salt.game.domain.model.Type;
+import se.salt.game.http.exception.DeadlinePassedException;
 import se.salt.game.http.exception.NotFoundException;
 
 import java.time.Instant;
 import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -42,6 +44,23 @@ public class GameService {
 
     public Game gameStatus(String sessionId) {
         return getGame(sessionId);
+    }
+
+    public Game addPlayer(String sessionId, String name) {
+        Game game = getGame(sessionId);
+
+        if (Instant.now().isAfter(game.joinDeadline())) {
+            throw new DeadlinePassedException(sessionId);
+        }
+
+        Map<String, Double> updatedPlayers = new HashMap<>(game.players());
+        updatedPlayers.putIfAbsent(name, 0.0);
+
+        Game updated = game.toBuilder().players(updatedPlayers).build();
+        repo.addPlayer(updated.id(), name);
+
+        log.info("Player '{}' joined game for session {}", name, sessionId);
+        return updated;
     }
 
     private Game getGame(String sessionId) {
