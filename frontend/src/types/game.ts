@@ -5,5 +5,10 @@ export interface GameRequest {
 }
 
 export interface GameResponse {
+  gameId: string;
   sessionId: string;
+  type: GameType;
+  startTime: string | null;
+  joinTimeLimit: string | null;
+  endTime: string | null;
 }
