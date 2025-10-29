@@ -7,7 +7,5 @@ aws:
   region: eu-north-1
   dynamodb:
     endpoint: ""
-    ##replace with correct endpoint + ID + queue when once in prod/deployed
   sqs:
-    endpoint: https://sqs.eu-north-1.amazonaws.com
-    queue-url: https://sqs.eu-north-1.amazonaws.com/123456789012/session-created-queue
+    queue-url: ${SQS_QUEUE_URL:https://sqs.eu-north-1.amazonaws.com/326803123265/session-created-queue}
