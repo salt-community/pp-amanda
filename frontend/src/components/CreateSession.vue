@@ -43,7 +43,7 @@
             <p v-if="mutation.isSuccess.value && mutation.data.value">
               INVITATION CODE {{ mutation.data.value.sessionId }}
 
-              <RouterLink :to="`/game/${mutation.data.value.sessionId}`"
+              <RouterLink :to="`/join/${mutation.data.value.sessionId}`"
                 >GO TO GAME SESSION</RouterLink
               >
             </p>

@@ -40,7 +40,7 @@
 
             <p v-if="mutation.isSuccess.value && mutation.data.value">
               Successfully Joined! <br />
-              <RouterLink :to="`/game/${sessionId}`"
+              <RouterLink :to="`/join/${sessionId}`"
                 >GO TO GAME SESSION</RouterLink
               >
             </p>
