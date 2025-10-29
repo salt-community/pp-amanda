@@ -57,7 +57,7 @@ import { useRoute, useRouter } from "vue-router";
 import { useGameStatus } from "../composables/useGameStatus.ts";
 import SelectGameType from "../components/SelectGameType.vue";
 import PlayerNameForm from "../components/PlayerNameForm.vue";
-import type { GameType } from "../types/game";
+import type { GameResponse, GameType } from "../types/game";
 
 const route = useRoute();
 const router = useRouter();
@@ -88,7 +88,8 @@ function handleSelect(type: GameType) {
   stopPolling();
 }
 
-function handleJoined(name: string) {
-  console.log(`Player ${name} joined`);
+function handleJoined(gameResponse: GameResponse) {
+  const { gameId } = gameResponse;
+  router.push(`/game/${gameId}`);
 }
 </script>

@@ -14,7 +14,8 @@
         class="bg-blue-500 text-white px-4 py-2 rounded"
         :disabled="isPending || joinClosed"
       >
-        Join
+        <span v-if="isPending">Joining...</span>
+        <span v-else>Join</span>
       </button>
     </form>
 
@@ -23,13 +24,15 @@
 </template>
 
 <script setup lang="ts">
-import { useJoinStatus } from "../composables/useJoinStatus";
 import { ref } from "vue";
+import { useJoinStatus } from "../composables/useJoinStatus";
 import { usePlayerJoin } from "../composables/usePlayerJoin";
+import type { GameResponse } from "../types/game";
 
 const props = defineProps<{ sessionId: string }>();
+
 const emit = defineEmits<{
-  (e: "joined", name: string): void;
+  (e: "joined", gameResponse: GameResponse): void;
 }>();
 
 const playerName = ref("");
@@ -38,7 +41,12 @@ const { joinClosed } = useJoinStatus(props.sessionId);
 
 async function submitName() {
   if (!playerName.value || joinClosed.value) return;
-  await join(playerName.value);
-  emit("joined", playerName.value);
+
+  try {
+    const response = await join(playerName.value);
+    emit("joined", response);
+  } catch (error) {
+    console.error("Failed to join game:", error);
+  }
 }
 </script>
