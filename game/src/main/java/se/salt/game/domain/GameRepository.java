@@ -14,52 +14,58 @@ import java.util.Optional;
 public class GameRepository {
 
     private static final String TABLE_NAME = "Games";
-
     private final DynamoDbClient dynamoDb;
-
-    public void save(Game game) {
-        PutItemRequest request = PutItemRequest.builder()
-            .tableName(TABLE_NAME)
-            .item(GameMapper.toItem(game))
-            .build();
-        dynamoDb.putItem(request);
-    }
 
     public void updateGameDetails(Game game) {
         Map<String, AttributeValue> item = GameMapper.toItem(game);
-
         Map<String, AttributeValue> key = Map.of("id", item.get("id"));
-
-        // Bygg dynamiskt update-expression utifrån fält i item (utom id)
-        String updateExpression = "SET #type = :t, #startTime = :s, #joinDeadline = :j, #endTime = :e, #players = :p";
-
-        Map<String, String> names = Map.of(
-            "#type", "type",
-            "#startTime", "startTime",
-            "#joinDeadline", "joinDeadline",
-            "#endTime", "endTime",
-            "#players", "players"
-        );
-
-        Map<String, AttributeValue> values = Map.of(
-            ":t", item.get("type"),
-            ":s", item.get("startTime"),
-            ":j", item.get("joinDeadline"),
-            ":e", item.get("endTime"),
-            ":p", item.get("players")
-        );
 
         UpdateItemRequest updateRequest = UpdateItemRequest.builder()
             .tableName(TABLE_NAME)
             .key(key)
-            .updateExpression(updateExpression)
-            .expressionAttributeNames(names)
-            .expressionAttributeValues(values)
+            .updateExpression("SET #type = :t, #startTime = :s, #joinDeadline = :j, #endTime = :e, #players = :p")
+            .expressionAttributeNames(Map.of(
+                "#type", "type",
+                "#startTime", "startTime",
+                "#joinDeadline", "joinDeadline",
+                "#endTime", "endTime",
+                "#players", "players"
+            ))
+            .expressionAttributeValues(Map.of(
+                ":t", item.get("type"),
+                ":s", item.get("startTime"),
+                ":j", item.get("joinDeadline"),
+                ":e", item.get("endTime"),
+                ":p", item.get("players")
+            ))
             .build();
 
         dynamoDb.updateItem(updateRequest);
     }
 
+    public void addPlayer(String gameId, String playerName) {
+        UpdateItemRequest updateRequest = UpdateItemRequest.builder()
+            .tableName(TABLE_NAME)
+            .key(Map.of("id", AttributeValue.fromS(gameId)))
+            .updateExpression("SET #players.#playerName = :initial")
+            .expressionAttributeNames(GameMapper.playerAttributeNames(playerName))
+            .expressionAttributeValues(Map.of(":initial", AttributeValue.fromN("0")))
+            .build();
+
+        dynamoDb.updateItem(updateRequest);
+    }
+
+    public void updateResponseTime(String gameId, String playerName, double responseTime) {
+        UpdateItemRequest updateRequest = UpdateItemRequest.builder()
+            .tableName(TABLE_NAME)
+            .key(Map.of("id", AttributeValue.fromS(gameId)))
+            .updateExpression("SET #players.#playerName = :time")
+            .expressionAttributeNames(GameMapper.playerAttributeNames(playerName))
+            .expressionAttributeValues(Map.of(":time", AttributeValue.fromN(Double.toString(responseTime))))
+            .build();
+
+        dynamoDb.updateItem(updateRequest);
+    }
 
     public Optional<Game> findById(String id) {
         GetItemRequest request = GetItemRequest.builder()
@@ -69,7 +75,6 @@ public class GameRepository {
 
         Map<String, AttributeValue> item = dynamoDb.getItem(request).item();
         if (item == null || item.isEmpty()) return Optional.empty();
-
         return Optional.of(GameMapper.fromItem(item));
     }
 
@@ -82,10 +87,8 @@ public class GameRepository {
             .build();
 
         QueryResponse response = dynamoDb.query(query);
-
         if (response.count() == 0) return Optional.empty();
 
-        Map<String, AttributeValue> item = response.items().get(0);
-        return Optional.of(GameMapper.fromItem(item));
+        return Optional.of(GameMapper.fromItem(response.items().get(0)));
     }
 }

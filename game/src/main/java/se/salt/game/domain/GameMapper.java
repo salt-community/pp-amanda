@@ -71,4 +71,18 @@ public class GameMapper {
         );
     }
 
+    public static AttributeValue doubleToAttribute(double value) {
+        return AttributeValue.fromN(Double.toString(value));
+    }
+
+    public static AttributeValue stringToAttribute(String value) {
+        return AttributeValue.fromS(value);
+    }
+
+    public static Map<String, String> playerAttributeNames(String playerName) {
+        return Map.of(
+            "#players", "players",
+            "#playerName", playerName
+        );
+    }
 }
