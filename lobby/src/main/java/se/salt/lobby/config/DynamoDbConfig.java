@@ -32,7 +32,7 @@ public class DynamoDbConfig {
     @Value("${aws.region}")
     private String awsRegion;
 
-    @Value("${aws.dynamodb.endpoint:}") // optional property
+    @Value("${aws.dynamodb.endpoint:}")
     private Optional<String> endpoint;
 
     @Bean
