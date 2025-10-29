@@ -8,7 +8,6 @@ import software.amazon.awssdk.services.dynamodb.model.*;
 
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Repository
 @RequiredArgsConstructor
@@ -27,30 +26,35 @@ public class GameRepository {
     }
 
     public void updateGameDetails(Game game) {
+        Map<String, AttributeValue> item = GameMapper.toItem(game);
+
+        Map<String, AttributeValue> key = Map.of("id", item.get("id"));
+
+        // Bygg dynamiskt update-expression utifrån fält i item (utom id)
+        String updateExpression = "SET #type = :t, #startTime = :s, #joinDeadline = :j, #endTime = :e, #players = :p";
+
+        Map<String, String> names = Map.of(
+            "#type", "type",
+            "#startTime", "startTime",
+            "#joinDeadline", "joinDeadline",
+            "#endTime", "endTime",
+            "#players", "players"
+        );
+
+        Map<String, AttributeValue> values = Map.of(
+            ":t", item.get("type"),
+            ":s", item.get("startTime"),
+            ":j", item.get("joinDeadline"),
+            ":e", item.get("endTime"),
+            ":p", item.get("players")
+        );
+
         UpdateItemRequest updateRequest = UpdateItemRequest.builder()
             .tableName(TABLE_NAME)
-            .key(Map.of("id", AttributeValue.fromS(game.id())))
-            .updateExpression("SET #type = :t, #startTime = :s, #joinDeadLine = :j, #endTime = :e, #players = :p")
-            .expressionAttributeNames(Map.of(
-                "#type", "type",
-                "#startTime", "startTime",
-                "#joinDeadLine", "joinDeadLine",
-                "#endTime", "endTime",
-                "#players", "players"
-            ))
-            .expressionAttributeValues(Map.of(
-                ":t", AttributeValue.fromS(game.type().toString()),
-                ":s", AttributeValue.fromS(game.startTime().toString()),
-                ":j", AttributeValue.fromS(game.joinDeadLine().toString()),
-                ":e", AttributeValue.fromS(game.endTime().toString()),
-                ":p", AttributeValue.fromM(
-                    game.players().entrySet().stream()
-                        .collect(Collectors.toMap(
-                            Map.Entry::getKey,
-                            e -> AttributeValue.fromN(e.getValue().toString())
-                        ))
-                )
-            ))
+            .key(key)
+            .updateExpression(updateExpression)
+            .expressionAttributeNames(names)
+            .expressionAttributeValues(values)
             .build();
 
         dynamoDb.updateItem(updateRequest);

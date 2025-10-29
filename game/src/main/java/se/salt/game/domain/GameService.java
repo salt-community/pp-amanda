@@ -17,25 +17,26 @@ public class GameService {
 
     private final GameRepository repo;
 
-    public Game initializeGame(String sessionId, Type type) {
-        Game gameInSession = getGame(sessionId);
-        Instant startTime = Instant.now();
-        Instant joinDeadLine = startTime.plusSeconds(90);
-        Instant endTime = startTime.plusSeconds(1600);
+    public Game setGameTypeInSession(String sessionId, Type type) {
+        Game existing = getGame(sessionId);
 
-        Game updatedGame = new Game(
-            gameInSession.id(),
-            sessionId,
-            type,
-            startTime,
-            joinDeadLine,
-            endTime,
-            new HashMap<>()
-        );
+        Instant now = Instant.now();
+        Instant joinDeadline = now.plusSeconds(90);
+        Instant endTime = now.plusSeconds(1600);
 
-        repo.updateGameDetails(updatedGame);
+        Game updated = existing.toBuilder()
+            .type(type)
+            .startTime(now)
+            .joinDeadline(joinDeadline)
+            .endTime(endTime)
+            .players(existing.players() != null ? existing.players() : new HashMap<>())
+            .build();
 
-        return updatedGame;
+        repo.updateGameDetails(updated);
+        log.info("Game in session {} updated: type={}, joinDeadline={}, endTime={}",
+            sessionId, type, joinDeadline, endTime);
+
+        return updated;
 
     }
 

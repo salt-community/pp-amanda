@@ -17,14 +17,14 @@ public class GameController {
 
     private final GameService gameService;
 
-    @PostMapping("/{sessionId}/initialize")
-    public ResponseEntity<GameResponse> initializeGame(
+    @PutMapping("/{sessionId}/type")
+    public ResponseEntity<GameResponse> setGameType(
         @PathVariable String sessionId,
         @RequestBody GameRequest req
     ) {
-        Game game = gameService.initializeGame(sessionId, req.gameType());
-        log.info("Received request to initialize: {}  type of game in Session with ID: {}", req.gameType(), sessionId);
-        GameResponse response = GameResponse.fromGame(game);
+        Game updatedGame = gameService.setGameTypeInSession(sessionId, req.gameType());
+        log.info("Received request to update to this: {}  type of Game in Session with ID: {}", req.gameType(), sessionId);
+        GameResponse response = GameResponse.fromGame(updatedGame);
         return ResponseEntity.ok(response);
     }
 
