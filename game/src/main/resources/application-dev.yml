@@ -6,4 +6,4 @@ logging:
 aws:
   region: eu-north-1
   dynamodb:
-    endpoint: http://localhost:8000
+    endpoint: http://localhost:4566
