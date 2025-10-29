@@ -1,9 +1,9 @@
 <template>
-  <SessionCreator />
+  <CreateSession />
   <JoinSession />
 </template>
 
 <script setup>
 import JoinSession from "../components/JoinSession.vue";
-import SessionCreator from "../components/SessionCreator.vue";
+import CreateSession from "../components/CreateSession.vue";
 </script>
