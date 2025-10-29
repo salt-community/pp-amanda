@@ -10,6 +10,8 @@ import se.salt.game.http.dto.GameRequest;
 import se.salt.game.http.dto.GameResponse;
 import se.salt.game.http.dto.JoinRequest;
 
+import java.util.Map;
+
 @Slf4j
 @RestController
 @RequestMapping("/game")
@@ -17,6 +19,13 @@ import se.salt.game.http.dto.JoinRequest;
 public class GameController {
 
     private final GameService gameService;
+
+    @PostMapping("/init")
+    public ResponseEntity<Void> initGame(@RequestBody Map<String, String> req) {
+        String sessionId = req.get("sessionId");
+        gameService.initGame(sessionId);
+        return ResponseEntity.ok().build();
+    }
 
     @PutMapping("/{sessionId}/type")
     public ResponseEntity<GameResponse> setGameType(

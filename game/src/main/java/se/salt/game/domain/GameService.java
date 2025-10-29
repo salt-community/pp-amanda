@@ -11,6 +11,7 @@ import se.salt.game.http.exception.NotFoundException;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -67,5 +68,11 @@ public class GameService {
         return repo.findBySessionId(sessionId)
             .orElseThrow(() ->
                 new NotFoundException("Session with ID: %s not found".formatted(sessionId)));
+    }
+
+    public void initGame(String sessionId) {
+        String gameId = UUID.randomUUID().toString();
+        repo.saveFromLambda(gameId, sessionId);
+        log.info("Initialized new game for session {} with gameId: {}", sessionId, gameId);
     }
 }

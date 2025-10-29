@@ -91,4 +91,23 @@ public class GameRepository {
 
         return Optional.of(GameMapper.fromItem(response.items().get(0)));
     }
+
+    public void saveFromLambda(String gameId, String sessionId) {
+        Game game = new Game(
+            gameId,
+            sessionId,
+            null,
+            null,
+            null,
+            null,
+            Map.of()
+        );
+
+        dynamoDb.putItem(PutItemRequest.builder()
+            .tableName(TABLE_NAME)
+            .item(GameMapper.toItem(game))
+            .conditionExpression("attribute_not_exists(gameId)")
+            .build());
+    }
+
 }
