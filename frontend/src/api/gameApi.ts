@@ -24,3 +24,13 @@ export async function gameStatus(sessionId: string) {
   if (!res.ok) throw new Error("Failed to fetch game status");
   return await res.json();
 }
+
+export async function joinGame(sessionId: string, playerName: string) {
+  const res = await fetch(`${GAME_URL}/${sessionId}/join`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ playerName }),
+  });
+  if (!res.ok) throw new Error("Failed to join game");
+  return await res.json();
+}
