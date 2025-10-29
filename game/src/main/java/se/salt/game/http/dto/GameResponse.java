@@ -20,7 +20,7 @@ public record GameResponse(
             game.sessionId(),
             game.type(),
             game.startTime(),
-            game.joinDeadLine(),
+            game.joinDeadline(),
             game.endTime());
     }
 }
