@@ -1,7 +1,5 @@
 <template>
   <div>
-    <GameBoard v-if="gameType" :game-type="gameType" />
-
     <Teleport to="body">
       <div
         v-if="!gameType"
@@ -26,35 +24,71 @@
           <SelectGameType :session-id="sessionId" @initialized="handleSelect" />
         </div>
       </div>
+      <div
+        v-else
+        style="
+          position: fixed;
+          inset: 0;
+          background: rgba(0, 0, 0, 0.5);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 9999;
+        "
+      >
+        <div
+          style="
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            min-width: 300px;
+          "
+        >
+          <PlayerNameForm :session-id="sessionId" @joined="handleJoined" />
+        </div>
+      </div>
     </Teleport>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, watchEffect } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { useGameStatus } from "../composables/useGameStatus.ts";
 import SelectGameType from "../components/SelectGameType.vue";
-import GameBoard from "../components/GameBoard.vue";
-import type { GameType } from "../types/game.ts";
+import PlayerNameForm from "../components/PlayerNameForm.vue";
+import type { GameType } from "../types/game";
 
 const route = useRoute();
+const router = useRouter();
 const sessionId = route.params.sessionId as string;
 
 const { data, stopPolling } = useGameStatus(sessionId);
 
 const localType = ref<GameType | null>(null);
-
 const gameType = computed<GameType | null>(
   () => localType.value ?? data.value?.gameType ?? null
 );
 
+const joinClosed = computed(() => {
+  if (!data.value?.joinDeadline) return false;
+  const deadline = new Date(data.value.joinDeadline).getTime();
+  return Date.now() > deadline;
+});
+
 watchEffect(() => {
-  if (data.value?.gameType) stopPolling();
+  if (joinClosed.value && data.value?.gameId) {
+    stopPolling();
+    router.push(`/game/${data.value.gameId}`);
+  }
 });
 
 function handleSelect(type: GameType) {
   localType.value = type;
   stopPolling();
+}
+
+function handleJoined(name: string) {
+  console.log(`Player ${name} joined`);
 }
 </script>
