@@ -29,7 +29,7 @@ public class GameController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/status/{sessionId}")
+    @GetMapping("/{sessionId}/status")
     public ResponseEntity<GameResponse> initializeGameStatus(
         @PathVariable String sessionId
     ) {
@@ -44,8 +44,8 @@ public class GameController {
         @PathVariable String sessionId,
         @RequestBody JoinRequest req
     ) {
-        Game updated = gameService.addPlayer(sessionId, req.name());
-        log.info("In session: {} player: {} joined", sessionId, req.name());
+        Game updated = gameService.addPlayer(sessionId, req.playerName());
+        log.info("In session: {} player: {} joined", sessionId, req.playerName());
         return ResponseEntity.ok(GameResponse.fromGame(updated));
     }
 
