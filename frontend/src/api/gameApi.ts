@@ -18,3 +18,9 @@ export async function selectType(
 
   return await response.json();
 }
+
+export async function gameStatus(sessionId: string) {
+  const res = await fetch(`${GAME_URL}/${sessionId}/status`);
+  if (!res.ok) throw new Error("Failed to fetch game status");
+  return await res.json();
+}

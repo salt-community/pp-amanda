@@ -31,17 +31,30 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, computed, watchEffect } from "vue";
+import { useRoute } from "vue-router";
+import { useGameStatus } from "../composables/useGameStatus.ts";
 import SelectGameType from "../components/SelectGameType.vue";
 import GameBoard from "../components/GameBoard.vue";
 import type { GameType } from "../types/game";
-import { useRoute } from "vue-router";
 
 const route = useRoute();
 const sessionId = route.params.sessionId as string;
-const gameType = ref<GameType | null>(null);
+
+const { data, stopPolling } = useGameStatus(sessionId);
+
+const localType = ref<GameType | null>(null);
+
+const gameType = computed<GameType | null>(
+  () => localType.value ?? data.value?.gameType ?? null
+);
+
+watchEffect(() => {
+  if (data.value?.gameType) stopPolling();
+});
 
 function handleSelect(type: GameType) {
-  gameType.value = type;
+  localType.value = type;
+  stopPolling();
 }
 </script>
