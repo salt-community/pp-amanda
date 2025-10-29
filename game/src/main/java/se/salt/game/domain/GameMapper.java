@@ -21,7 +21,7 @@ public class GameMapper {
             ));
 
         return Map.of(
-            "id", AttributeValue.fromS(game.id()),
+            "gameId", AttributeValue.fromS(game.gameId()),
             "sessionId", AttributeValue.fromS(game.sessionId()),
             "type", AttributeValue.fromS(game.type().toString()),
             "startTime", AttributeValue.fromS(game.startTime().toString()),
@@ -61,7 +61,7 @@ public class GameMapper {
             .orElse(null);
 
         return new Game(
-            item.get("id").s(),
+            item.get("gameId").s(),
             item.get("sessionId").s(),
             type,
             startTime,

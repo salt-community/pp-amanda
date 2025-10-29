@@ -6,7 +6,7 @@ import se.salt.game.domain.model.Type;
 import java.time.Instant;
 
 public record GameResponse(
-    String id,
+    String gameId,
     String sessionId,
     Type type,
     Instant startTime,
@@ -16,7 +16,7 @@ public record GameResponse(
 
     public static GameResponse fromGame(Game game) {
         return new GameResponse(
-            game.id(),
+            game.gameId(),
             game.sessionId(),
             game.type(),
             game.startTime(),

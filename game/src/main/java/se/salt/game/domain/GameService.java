@@ -57,7 +57,7 @@ public class GameService {
         updatedPlayers.putIfAbsent(name, 0.0);
 
         Game updated = game.toBuilder().players(updatedPlayers).build();
-        repo.addPlayer(updated.id(), name);
+        repo.addPlayer(updated.gameId(), name);
 
         log.info("Player '{}' joined game for session {}", name, sessionId);
         return updated;

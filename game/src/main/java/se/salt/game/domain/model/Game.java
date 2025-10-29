@@ -7,7 +7,7 @@ import java.util.Map;
 
 @Builder(toBuilder = true)
 public record Game(
-    String id,
+    String gameId,
     String sessionId,
     Type type,
     Instant startTime,
