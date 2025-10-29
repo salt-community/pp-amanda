@@ -25,7 +25,7 @@ public class GameMapper {
             "sessionId", AttributeValue.fromS(game.sessionId()),
             "type", AttributeValue.fromS(game.type().toString()),
             "startTime", AttributeValue.fromS(game.startTime().toString()),
-            "joinDeadLine", AttributeValue.fromS(game.joinDeadLine().toString()),
+            "joinDeadline", AttributeValue.fromS(game.joinDeadline().toString()),
             "endTime", AttributeValue.fromS(game.endTime().toString()),
             "players", AttributeValue.fromM(playerMap)
         );
@@ -50,7 +50,7 @@ public class GameMapper {
             .map(Instant::parse)
             .orElse(null);
 
-        Instant joinDeadLine = Optional.ofNullable(item.get("joinDeadLine"))
+        Instant joinDeadLine = Optional.ofNullable(item.get("joinDeadline"))
             .map(AttributeValue::s)
             .map(Instant::parse)
             .orElse(null);
