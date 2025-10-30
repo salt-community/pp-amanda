@@ -1,14 +1,15 @@
 package se.salt.game.domain;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import se.salt.game.domain.model.Game;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.*;
 
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
+@Slf4j
 @Repository
 @RequiredArgsConstructor
 public class GameRepository {
@@ -18,26 +19,52 @@ public class GameRepository {
 
     public void updateGameDetails(Game game) {
         Map<String, AttributeValue> item = GameMapper.toItem(game);
-        Map<String, AttributeValue> key = Map.of("gameId", item.get("gameId"));
+
+        AttributeValue gameIdAttr = item.get("gameId");
+        if (gameIdAttr == null) {
+            throw new IllegalArgumentException("Cannot update game without gameId — received: " + game);
+        }
+
+        Map<String, AttributeValue> key = Map.of("gameId", gameIdAttr);
+
+        Map<String, AttributeValue> values = new HashMap<>();
+        Map<String, String> names = new HashMap<>();
+        List<String> setParts = new ArrayList<>();
+
+        if (item.get("type") != null) {
+            names.put("#type", "type");
+            values.put(":t", item.get("type"));
+            setParts.add("#type = :t");
+        }
+        if (item.get("startTime") != null) {
+            names.put("#startTime", "startTime");
+            values.put(":s", item.get("startTime"));
+            setParts.add("#startTime = :s");
+        }
+        if (item.get("joinDeadline") != null) {
+            names.put("#joinDeadline", "joinDeadline");
+            values.put(":j", item.get("joinDeadline"));
+            setParts.add("#joinDeadline = :j");
+        }
+        if (item.get("endTime") != null) {
+            names.put("#endTime", "endTime");
+            values.put(":e", item.get("endTime"));
+            setParts.add("#endTime = :e");
+        }
+        if (item.get("players") != null) {
+            names.put("#players", "players");
+            values.put(":p", item.get("players"));
+            setParts.add("#players = :p");
+        }
+
+        String updateExpression = "SET " + String.join(", ", setParts);
 
         UpdateItemRequest updateRequest = UpdateItemRequest.builder()
             .tableName(TABLE_NAME)
             .key(key)
-            .updateExpression("SET #type = :t, #startTime = :s, #joinDeadline = :j, #endTime = :e, #players = :p")
-            .expressionAttributeNames(Map.of(
-                "#type", "type",
-                "#startTime", "startTime",
-                "#joinDeadline", "joinDeadline",
-                "#endTime", "endTime",
-                "#players", "players"
-            ))
-            .expressionAttributeValues(Map.of(
-                ":t", item.get("type"),
-                ":s", item.get("startTime"),
-                ":j", item.get("joinDeadline"),
-                ":e", item.get("endTime"),
-                ":p", item.get("players")
-            ))
+            .updateExpression(updateExpression)
+            .expressionAttributeNames(names)
+            .expressionAttributeValues(values)
             .build();
 
         dynamoDb.updateItem(updateRequest);
