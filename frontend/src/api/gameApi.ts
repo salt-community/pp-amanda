@@ -6,7 +6,7 @@ export async function selectType(
   sessionId: string,
   gameType: GameType
 ): Promise<GameResponse> {
-  const response = await fetch(`${GAME_URL}/${sessionId}/initialize`, {
+  const response = await fetch(`${GAME_URL}/${sessionId}/type`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ gameType } as GameRequest),
