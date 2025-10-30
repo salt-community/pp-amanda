@@ -18,7 +18,7 @@ public class GameRepository {
 
     public void updateGameDetails(Game game) {
         Map<String, AttributeValue> item = GameMapper.toItem(game);
-        Map<String, AttributeValue> key = Map.of("id", item.get("id"));
+        Map<String, AttributeValue> key = Map.of("gameId", item.get("gameId"));
 
         UpdateItemRequest updateRequest = UpdateItemRequest.builder()
             .tableName(TABLE_NAME)
@@ -46,7 +46,7 @@ public class GameRepository {
     public void addPlayer(String gameId, String playerName) {
         UpdateItemRequest updateRequest = UpdateItemRequest.builder()
             .tableName(TABLE_NAME)
-            .key(Map.of("id", AttributeValue.fromS(gameId)))
+            .key(Map.of("gameId", AttributeValue.fromS(gameId)))
             .updateExpression("SET #players.#playerName = :initial")
             .expressionAttributeNames(GameMapper.playerAttributeNames(playerName))
             .expressionAttributeValues(Map.of(":initial", AttributeValue.fromN("0")))
@@ -58,7 +58,7 @@ public class GameRepository {
     public void updateResponseTime(String gameId, String playerName, double responseTime) {
         UpdateItemRequest updateRequest = UpdateItemRequest.builder()
             .tableName(TABLE_NAME)
-            .key(Map.of("id", AttributeValue.fromS(gameId)))
+            .key(Map.of("gameId", AttributeValue.fromS(gameId)))
             .updateExpression("SET #players.#playerName = :time")
             .expressionAttributeNames(GameMapper.playerAttributeNames(playerName))
             .expressionAttributeValues(Map.of(":time", AttributeValue.fromN(Double.toString(responseTime))))
@@ -67,10 +67,10 @@ public class GameRepository {
         dynamoDb.updateItem(updateRequest);
     }
 
-    public Optional<Game> findById(String id) {
+    public Optional<Game> findByGameId(String gameId) {
         GetItemRequest request = GetItemRequest.builder()
             .tableName(TABLE_NAME)
-            .key(Map.of("id", AttributeValue.fromS(id)))
+            .key(Map.of("gameId", AttributeValue.fromS(gameId)))
             .build();
 
         Map<String, AttributeValue> item = dynamoDb.getItem(request).item();
@@ -93,21 +93,19 @@ public class GameRepository {
     }
 
     public void saveFromLambda(String gameId, String sessionId) {
-        Game game = new Game(
-            gameId,
-            sessionId,
-            null,
-            null,
-            null,
-            null,
-            Map.of()
+        Map<String, AttributeValue> item = Map.of(
+            "gameId", AttributeValue.fromS(gameId),
+            "sessionId", AttributeValue.fromS(sessionId)
         );
 
-        dynamoDb.putItem(PutItemRequest.builder()
+        PutItemRequest request = PutItemRequest.builder()
             .tableName(TABLE_NAME)
-            .item(GameMapper.toItem(game))
+            .item(item)
             .conditionExpression("attribute_not_exists(gameId)")
-            .build());
+            .build();
+
+        dynamoDb.putItem(request);
     }
+
 
 }
