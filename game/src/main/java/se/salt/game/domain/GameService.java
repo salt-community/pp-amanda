@@ -21,7 +21,7 @@ public class GameService {
     private final GameRepository repo;
 
     public Game setGameTypeInSession(String sessionId, Type type) {
-        Game existing = getGame(sessionId);
+        Game existing = getGameBySessionId(sessionId);
 
         Instant now = Instant.now();
         Instant joinDeadline = now.plusSeconds(90);
@@ -40,15 +40,14 @@ public class GameService {
             sessionId, type, joinDeadline, endTime);
 
         return updated;
-
     }
 
     public Game gameStatus(String sessionId) {
-        return getGame(sessionId);
+        return getGameBySessionId(sessionId);
     }
 
     public Game addPlayer(String sessionId, String name) {
-        Game game = getGame(sessionId);
+        Game game = getGameBySessionId(sessionId);
 
         if (Instant.now().isAfter(game.joinDeadline())) {
             throw new DeadlinePassedException(sessionId);
@@ -64,10 +63,16 @@ public class GameService {
         return updated;
     }
 
-    private Game getGame(String sessionId) {
+    private Game getGameBySessionId(String sessionId) {
         return repo.findBySessionId(sessionId)
             .orElseThrow(() ->
                 new NotFoundException("Session with ID: %s not found".formatted(sessionId)));
+    }
+
+    private Game getGameByGameId(String gameId) {
+        return repo.findByGameId(gameId)
+            .orElseThrow(() ->
+                new NotFoundException("Game with ID: %s not found".formatted(gameId)));
     }
 
     public void initGame(String sessionId) {
