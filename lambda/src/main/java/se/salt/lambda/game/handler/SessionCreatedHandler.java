@@ -10,6 +10,8 @@ import se.salt.lambda.game.repository.GameRepository;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 
+import java.net.URI;
+
 @Slf4j
 public class SessionCreatedHandler implements RequestHandler<SQSEvent, Void> {
 
@@ -18,6 +20,7 @@ public class SessionCreatedHandler implements RequestHandler<SQSEvent, Void> {
 
     public SessionCreatedHandler() {
         DynamoDbClient dynamoDb = DynamoDbClient.builder()
+            .endpointOverride(URI.create("http://host.docker.internal:4566"))
             .region(Region.EU_NORTH_1)
             .build();
         this.repository = new GameRepository(dynamoDb);
