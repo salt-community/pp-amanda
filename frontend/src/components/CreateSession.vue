@@ -1,6 +1,11 @@
 <template>
   <div>
-    <button type="button" @click="openPopup">
+    <!-- Main trigger button -->
+    <button
+      type="button"
+      @click="openPopup"
+      class="bg-blue-600 text-white py-3 px-6 rounded-lg text-lg"
+    >
       <h1>START GAMING SESSION 🚀</h1>
     </button>
 
@@ -21,44 +26,63 @@
         <div
           style="
             background: white;
-            padding: 20px;
-            border-radius: 8px;
-            min-width: 300px;
+            padding: 32px;
+            border-radius: 12px;
+            min-width: 320px;
+            text-align: center;
           "
         >
-          <h2>START GAMING SESSION 🚀</h2>
-          <form @submit.prevent="handleSubmit">
-            <input
-              v-model="roomName"
-              type="text"
-              placeholder="Enter Session Name"
-            />
-            <button
-              type="submit"
-              :disabled="mutation.isPending.value"
-              class="bg-blue-600 text-white py-2 px-4 rounded mt-3"
+          <h2 class="text-xl font-bold mb-4">Generate Game Code</h2>
+
+          <!-- Generate button -->
+          <button
+            v-if="!mutation.isSuccess.value"
+            type="button"
+            @click="handleGenerate"
+            :disabled="mutation.isPending.value"
+            class="bg-green-600 text-white py-2 px-4 rounded mb-3"
+          >
+            {{ mutation.isPending.value ? "Generating..." : "Generate Code" }}
+          </button>
+
+          <!-- Display generated code -->
+          <div v-if="mutation.isSuccess.value && mutation.data.value">
+            <p class="text-gray-700 mb-2">Your Session Code:</p>
+            <div
+              class="text-3xl font-bold bg-gray-100 py-3 px-6 rounded-lg mb-3 select-all"
+              style="letter-spacing: 2px"
             >
-              {{ mutation.isPending.value ? "Starting..." : "Create Session" }}
-            </button>
-            <p v-if="mutation.isSuccess.value && mutation.data.value">
-              INVITATION CODE {{ mutation.data.value.sessionId }}
+              {{ mutation.data.value.sessionId }}
+            </div>
 
-              <RouterLink :to="`/join/${mutation.data.value.sessionId}`"
-                >GO TO GAME SESSION</RouterLink
-              >
-            </p>
-
-            <p v-if="mutation.error">
-              {{ mutation.error }}
-            </p>
             <button
               type="button"
-              @click="closePopup"
-              :disabled="mutation.isPending.value"
+              @click="copyCode"
+              class="bg-gray-800 text-white py-2 px-4 rounded mb-3"
             >
-              Close
+              {{ copied ? "Copied!" : "Copy Code" }}
             </button>
-          </form>
+
+            <RouterLink
+              :to="`/join/${mutation.data.value.sessionId}`"
+              class="block text-blue-600 underline mt-2"
+            >
+              Go to Game Session
+            </RouterLink>
+          </div>
+
+          <!-- Error -->
+          <p v-if="mutation.error" class="text-red-600 mt-2">
+            {{ mutation.error }}
+          </p>
+
+          <button
+            type="button"
+            @click="closePopup"
+            class="mt-4 text-gray-500 underline"
+          >
+            Close
+          </button>
         </div>
       </div>
     </Teleport>
@@ -69,20 +93,21 @@
 import { ref } from "vue";
 import { useCreateSession } from "../composables/useCreateSession";
 
-const roomName = ref("");
 const mutation = useCreateSession();
 const showPopup = ref(false);
+const copied = ref(false);
 
-const openPopup = () => {
-  showPopup.value = true;
-};
-const closePopup = () => {
-  showPopup.value = false;
-};
+const openPopup = () => (showPopup.value = true);
+const closePopup = () => (showPopup.value = false);
 
-function handleSubmit() {
-  if (!roomName.value.trim()) return;
-  mutation.mutate(roomName.value);
-  roomName.value = "";
+function handleGenerate() {
+  mutation.mutate();
+}
+
+function copyCode() {
+  if (!mutation.data.value?.sessionId) return;
+  navigator.clipboard.writeText(mutation.data.value.sessionId);
+  copied.value = true;
+  setTimeout(() => (copied.value = false), 2000);
 }
 </script>
