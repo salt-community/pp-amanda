@@ -3,7 +3,7 @@ import { createSession } from "../api/lobbyApi";
 
 export function useCreateSession() {
   return useMutation({
-    mutationFn: (sessionName: string) => createSession(sessionName),
+    mutationFn: () => createSession(),
     onSuccess: (data) => {
       data;
     },
