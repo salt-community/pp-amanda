@@ -2,3 +2,4 @@
 target
 /localstack.sh
 /event.json
+/response.json
