@@ -94,6 +94,10 @@ Lambda now consumes and initiates the Game item
 - Align FE to be at the same point as BE to slice the work + context focus
 
 ### Thursday 30 October
+
+- Struggling and de-bugging my SQS + Lambda - Now working ✅
+- Resulting in both updates in code and in AWS Console
+
 ### Friday 31 October
 
 ## Week 4 – Final Touches & Presentation
