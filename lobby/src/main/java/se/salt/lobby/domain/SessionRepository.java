@@ -35,8 +35,7 @@ public class SessionRepository {
         PutItemRequest request = PutItemRequest.builder()
             .tableName(TABLE_NAME)
             .item(Map.of(
-                "id", AttributeValue.fromS(session.id()),
-                "name", AttributeValue.fromS(session.name()),
+                "sessionId", AttributeValue.fromS(session.sessionId()),
                 "createdAt", AttributeValue.fromS(session.createdAt().toString()),
                 "expiredAt", AttributeValue.fromN(String.valueOf(session.expiredAt()))
             ))
@@ -47,15 +46,14 @@ public class SessionRepository {
     public Optional<Session> findById(String id) {
         GetItemRequest request = GetItemRequest.builder()
             .tableName(TABLE_NAME)
-            .key(Map.of("id", AttributeValue.fromS(id)))
+            .key(Map.of("sessionId", AttributeValue.fromS(id)))
             .build();
 
         Map<String, AttributeValue> item = dynamoDb.getItem(request).item();
         if (item == null || item.isEmpty()) return Optional.empty();
 
         Session session = new Session(
-            item.get("id").s(),
-            item.get("name").s(),
+            item.get("sessionId").s(),
             Instant.parse(item.get("createdAt").s()),
             Long.parseLong(item.get("expiredAt").n())
         );

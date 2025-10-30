@@ -3,8 +3,7 @@ package se.salt.lobby.domain;
 import java.time.Instant;
 
 public record Session(
-    String id,
-    String name,
+    String sessionId,
     Instant createdAt,
     Long expiredAt
 ) {

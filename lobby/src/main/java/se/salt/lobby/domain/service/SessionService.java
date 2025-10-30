@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import se.salt.lobby.domain.Session;
 import se.salt.lobby.domain.SessionRepository;
 import se.salt.lobby.http.dto.JoinSessionRequest;
-import se.salt.lobby.http.dto.SessionRequest;
 import se.salt.lobby.http.exception.NotFoundException;
 import se.salt.lobby.integration.SqsPublisher;
 
@@ -24,9 +23,9 @@ public class SessionService {
 
     private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
-    public Session createSession(SessionRequest req) {
+    public Session generateSession() {
         String id = generateRandomId();
-        log.info("Creating new session '{}' with ID: {}", req.sessionName(), id);
+        log.info("Creating new session with ID: {}", id);
 
         Instant createdAt = Instant.now();
         long timeToLive = 1800L;
@@ -34,13 +33,12 @@ public class SessionService {
 
         Session createdSession = new Session(
             id,
-            req.sessionName(),
             createdAt,
             expiresAt);
 
         repo.save(createdSession);
 
-        sqsPublisher.publishSessionCreatedEvent(createdSession.id());
+        sqsPublisher.publishSessionCreatedEvent(createdSession.sessionId());
 
         return createdSession;
     }

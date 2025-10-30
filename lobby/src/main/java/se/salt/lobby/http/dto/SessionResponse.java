@@ -6,15 +6,13 @@ import java.time.Instant;
 
 public record SessionResponse(
     String sessionId,
-    String sessionName,
     Instant createdAt,
     long expiredAt
 ) {
 
     public static SessionResponse fromSession(Session session) {
         return new SessionResponse(
-            session.id(),
-            session.name(),
+            session.sessionId(),
             session.createdAt(),
             session.expiredAt()
         );
