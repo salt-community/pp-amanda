@@ -13,7 +13,7 @@
     <packaging>jar</packaging>
 
     <properties>
-        <java.version>21</java.version>
+        <java.version>17</java.version>
         <aws.sdk.version>2.25.59</aws.sdk.version>
         <lambda.events.version>3.11.3</lambda.events.version>
         <lambda.core.version>1.2.3</lambda.core.version>
@@ -60,7 +60,7 @@
 
     <build>
         <plugins>
-            <!-- Compile using Java 21 -->
+            <!-- Compile using Java 17 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
