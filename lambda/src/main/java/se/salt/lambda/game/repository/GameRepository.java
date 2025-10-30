@@ -18,11 +18,11 @@ public class GameRepository {
     }
 
     public void saveGameWithSessionId(String sessionId) {
-        String id = UUID.randomUUID().toString();
+        String gameId = UUID.randomUUID().toString();
         PutItemRequest request = PutItemRequest.builder()
             .tableName(TABLE_NAME)
             .item(Map.of(
-                "id", AttributeValue.fromS(id),
+                "gameId", AttributeValue.fromS(gameId),
                 "sessionId", AttributeValue.fromS(sessionId)
             ))
             .build();
