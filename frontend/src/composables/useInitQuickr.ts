@@ -1,16 +1,15 @@
 import { useMutation } from "@tanstack/vue-query";
-import { selectType } from "../api/gameApi";
-import type { GameType } from "../types/game";
+import { initQuickr } from "../api/gameApi";
 
-export function useSelectGameType() {
+export function useInitQuickr() {
   return useMutation({
     mutationFn: ({
       sessionId,
       gameType,
     }: {
       sessionId: string;
-      gameType: GameType;
-    }) => selectType(sessionId, gameType),
+      gameType: string;
+    }) => initQuickr(sessionId, gameType),
     onSuccess: (data) => {
       data;
     },

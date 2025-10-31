@@ -1,10 +1,9 @@
 import type { GameResponse, GameRequest } from "../types/game";
 import { GAME_URL } from "../config/api";
-import type { GameType } from "../types/game";
 
-export async function selectType(
+export async function initQuickr(
   sessionId: string,
-  gameType: GameType
+  gameType: string
 ): Promise<GameResponse> {
   const response = await fetch(`${GAME_URL}/${sessionId}/type`, {
     method: "PUT",

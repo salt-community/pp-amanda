@@ -20,12 +20,12 @@
 </template>
 
 <script setup lang="ts">
-import { useSelectGameType } from "../composables/useSelectGameType";
+import { useInitQuickr } from "../composables/useInitQuickr";
 
 const props = defineProps<{ sessionId: string }>();
 const emit = defineEmits<{ (e: "initialized", gameType: "REACTION"): void }>();
 
-const mutation = useSelectGameType();
+const mutation = useInitQuickr();
 
 function startGame() {
   mutation.mutate(
