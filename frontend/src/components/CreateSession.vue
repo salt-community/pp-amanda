@@ -1,12 +1,11 @@
 <template>
   <div>
-    <!-- Main trigger button -->
     <button
       type="button"
       @click="openPopup"
       class="bg-blue-600 text-white py-3 px-6 rounded-lg text-lg"
     >
-      <h1>START GAMING SESSION 🚀</h1>
+      <h1>START NEW GAMING SESSION 🚀</h1>
     </button>
 
     <Teleport to="body">
@@ -32,9 +31,8 @@
             text-align: center;
           "
         >
-          <h2 class="text-xl font-bold mb-4">Generate Game Code</h2>
+          <button type="button" @click="closePopup">❎</button>
 
-          <!-- Generate button -->
           <button
             v-if="!mutation.isSuccess.value"
             type="button"
@@ -42,15 +40,12 @@
             :disabled="mutation.isPending.value"
             class="bg-green-600 text-white py-2 px-4 rounded mb-3"
           >
-            {{ mutation.isPending.value ? "Generating..." : "Generate Code" }}
+            {{ mutation.isPending.value ? "Generating..." : "Get Code" }}
           </button>
 
-          <!-- Display generated code -->
           <div v-if="mutation.isSuccess.value && mutation.data.value">
-            <p class="text-gray-700 mb-2">Your Session Code:</p>
             <div
-              class="text-3xl font-bold bg-gray-100 py-3 px-6 rounded-lg mb-3 select-all"
-              style="letter-spacing: 2px"
+              class="text-6xl font-bold bg-gray-100 py-3 px-6 rounded-lg mb-3 select-all"
             >
               {{ mutation.data.value.sessionId }}
             </div>
@@ -71,18 +66,9 @@
             </RouterLink>
           </div>
 
-          <!-- Error -->
           <p v-if="mutation.error" class="text-red-600 mt-2">
             {{ mutation.error }}
           </p>
-
-          <button
-            type="button"
-            @click="closePopup"
-            class="mt-4 text-gray-500 underline"
-          >
-            Close
-          </button>
         </div>
       </div>
     </Teleport>

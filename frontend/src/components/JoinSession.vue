@@ -26,7 +26,7 @@
             min-width: 300px;
           "
         >
-          <h2>JOIN VIA INVITATION CODE 🔗</h2>
+          <h2>Enter Code 🔗</h2>
 
           <form @submit.prevent="handleSubmit">
             <input
