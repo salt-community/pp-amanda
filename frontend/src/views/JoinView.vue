@@ -57,7 +57,7 @@ import { useRoute, useRouter } from "vue-router";
 import { useGameStatus } from "../composables/useGameStatus.ts";
 import SelectGameType from "../components/SelectGameType.vue";
 import PlayerNameForm from "../components/PlayerNameForm.vue";
-import type { GameResponse, GameType } from "../types/game";
+import type { GameResponse } from "../types/game";
 
 const route = useRoute();
 const router = useRouter();
@@ -65,8 +65,8 @@ const sessionId = route.params.sessionId as string;
 
 const { data, stopPolling } = useGameStatus(sessionId);
 
-const localType = ref<GameType | null>(null);
-const gameType = computed<GameType | null>(
+const localType = ref<String | null>(null);
+const gameType = computed<String | null>(
   () => localType.value ?? data.value?.gameType ?? null
 );
 
@@ -83,7 +83,7 @@ watchEffect(() => {
   }
 });
 
-function handleSelect(type: GameType) {
+function handleSelect(type: String) {
   localType.value = type;
   stopPolling();
 }
