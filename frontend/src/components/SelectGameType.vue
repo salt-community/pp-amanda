@@ -1,54 +1,37 @@
 <template>
-  <form @submit.prevent="handleSubmit" class="flex flex-col gap-2">
-    <label for="gameType" class="text-sm">Select game type:</label>
-    <select
-      id="gameType"
-      v-model="selectedType"
-      class="border p-2 rounded text-sm"
-      required
-    >
-      <option disabled value="">games</option>
-      <option
-        v-for="option in availableGameTypes"
-        :key="option"
-        :value="option"
-      >
-        {{ option }}
-      </option>
-    </select>
+  <div class="flex flex-col gap-4 text-center">
+    <h2 class="text-lg font-semibold text-gray-800">QuickR ⚡️</h2>
+    <p class="text-sm text-gray-600 max-w-md mx-auto">
+      Who's the quickeZt - Let's find out 🚀
+    </p>
 
     <button
-      type="submit"
-      class="bg-blue-600 text-white py-1.5 px-3 rounded mt-2"
+      @click="startGame"
+      class="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition"
       :disabled="mutation.isPending.value"
     >
-      {{ mutation.isPending.value ? "Initializing..." : "Start Game" }}
+      {{ mutation.isPending.value ? "Starting..." : "LET'S PLAY" }}
     </button>
 
     <p v-if="mutation.error" class="text-red-500 text-xs mt-2">
       {{ mutation.error }}
     </p>
-  </form>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
 import { useSelectGameType } from "../composables/useSelectGameType";
-import type { GameType } from "../types/game";
 
 const props = defineProps<{ sessionId: string }>();
-const emit = defineEmits<{ (e: "initialized", gameType: GameType): void }>();
+const emit = defineEmits<{ (e: "initialized", gameType: "REACTION"): void }>();
 
-const selectedType = ref<GameType | "">("");
 const mutation = useSelectGameType();
-const availableGameTypes: GameType[] = ["REACTION"];
 
-function handleSubmit() {
-  if (!selectedType.value) return;
+function startGame() {
   mutation.mutate(
-    { sessionId: props.sessionId, gameType: selectedType.value },
+    { sessionId: props.sessionId, gameType: "REACTION" },
     {
-      onSuccess: () => emit("initialized", selectedType.value as GameType),
+      onSuccess: () => emit("initialized", "REACTION"),
     }
   );
 }

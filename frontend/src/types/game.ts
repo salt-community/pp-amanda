@@ -1,13 +1,11 @@
-export type GameType = "REACTION";
-
 export interface GameRequest {
-  gameType: GameType;
+  gameType: "REACTION";
 }
 
 export interface GameResponse {
   gameId: string;
   sessionId: string;
-  type: GameType;
+  type: "REACTION";
   startTime: string | null;
   joinTimeLimit: string | null;
   endTime: string | null;
