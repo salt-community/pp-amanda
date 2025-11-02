@@ -2,7 +2,7 @@ import type { SessionResponse } from "../types/session";
 import { LOBBY_URL } from "../config/api";
 
 export async function createSession(): Promise<SessionResponse> {
-  const response = await fetch(`${LOBBY_URL}/session`, {
+  const response = await fetch(`${LOBBY_URL}/lobby/session`, {
     method: "GET",
   });
 
@@ -14,7 +14,7 @@ export async function createSession(): Promise<SessionResponse> {
 }
 
 export async function joinSession(sessionId: string): Promise<SessionResponse> {
-  const response = await fetch(`${LOBBY_URL}/join`, {
+  const response = await fetch(`${LOBBY_URL}/lobby/join`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ sessionId }),
@@ -31,7 +31,7 @@ export async function joinSession(sessionId: string): Promise<SessionResponse> {
 }
 
 export async function getSession(sessionId: string): Promise<SessionResponse> {
-  const response = await fetch(`${LOBBY_URL}/sessions/${sessionId}`, {
+  const response = await fetch(`${LOBBY_URL}/lobby/sessions/${sessionId}`, {
     method: "GET",
   });
 

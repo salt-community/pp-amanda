@@ -5,7 +5,7 @@ export async function initQuickr(
   sessionId: string,
   gameType: string
 ): Promise<GameResponse> {
-  const response = await fetch(`${GAME_URL}/${sessionId}/type`, {
+  const response = await fetch(`${GAME_URL}/game/${sessionId}/type`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ gameType } as GameRequest),
@@ -19,13 +19,13 @@ export async function initQuickr(
 }
 
 export async function gameStatus(sessionId: string) {
-  const res = await fetch(`${GAME_URL}/${sessionId}/status`);
+  const res = await fetch(`${GAME_URL}/game/${sessionId}/status`);
   if (!res.ok) throw new Error("Failed to fetch game status");
   return await res.json();
 }
 
 export async function joinGame(sessionId: string, playerName: string) {
-  const res = await fetch(`${GAME_URL}/${sessionId}/join`, {
+  const res = await fetch(`${GAME_URL}/game/${sessionId}/join`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ playerName }),
