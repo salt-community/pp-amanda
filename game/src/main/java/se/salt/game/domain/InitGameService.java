@@ -65,12 +65,6 @@ public class InitGameService {
                 new NotFoundException("Session with ID: %s not found".formatted(sessionId)));
     }
 
-    private Game getGameByGameId(String gameId) {
-        return repo.findByGameId(gameId)
-            .orElseThrow(() ->
-                new NotFoundException("Game with ID: %s not found".formatted(gameId)));
-    }
-
     public void initGame(String sessionId) {
         String gameId = UUID.randomUUID().toString();
         repo.saveFromLambda(gameId, sessionId);
