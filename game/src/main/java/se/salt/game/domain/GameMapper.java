@@ -12,25 +12,56 @@ import java.util.stream.Collectors;
 
 public class GameMapper {
 
+    /**
+     * Converts a Game domain object to a DynamoDB item map.
+     * <p>
+     * Summary:
+     * Takes a Game object from your domain and converts it into a DynamoDB-compatible
+     * Map<String, AttributeValue> structure, ready to be stored in DynamoDB.
+     * <p>
+     * Logic:
+     * 1. Adds required fields (gameId, sessionId, type).
+     * 2. Adds optional timestamps (startTime, joinDeadline, endTime) if present.
+     * 3. Converts the players map (Map<String, Double>) into a DynamoDB map with numeric values.
+     * 4. Ensures an empty players map is stored if none exist.
+     * 5. Returns the fully constructed item map for PutItem or UpdateItem.
+     */
     public static Map<String, AttributeValue> toItem(Game game) {
         Map<String, AttributeValue> item = new HashMap<>();
+        
+        item.put("gameId", AttributeValue.fromS(game.gameId()));
+        item.put("sessionId", AttributeValue.fromS(game.sessionId()));
+        item.put("type", AttributeValue.fromS(game.type().name()));
 
-        if (game.gameId() != null) item.put("gameId", AttributeValue.fromS(game.gameId()));
-        if (game.sessionId() != null) item.put("sessionId", AttributeValue.fromS(game.sessionId()));
-        if (game.type() != null) item.put("type", AttributeValue.fromS(game.type().toString()));
-        if (game.startTime() != null) item.put("startTime", AttributeValue.fromS(game.startTime().toString()));
-        if (game.joinDeadline() != null) item.put("joinDeadline", AttributeValue.fromS(game.joinDeadline().toString()));
-        if (game.endTime() != null) item.put("endTime", AttributeValue.fromS(game.endTime().toString()));
+        if (game.startTime() != null) {
+            item.put("startTime", AttributeValue.fromS(game.startTime().toString()));
+        }
+        if (game.joinDeadline() != null) {
+            item.put("joinDeadline", AttributeValue.fromS(game.joinDeadline().toString()));
+        }
+        if (game.endTime() != null) {
+            item.put("endTime", AttributeValue.fromS(game.endTime().toString()));
+        }
+
+        // Players map (converted to DynamoDB Map<String, AttributeValue>)
         if (game.players() != null && !game.players().isEmpty()) {
-            Map<String, AttributeValue> playersMap = game.players().entrySet().stream()
-                .collect(Collectors.toMap(Map.Entry::getKey, e -> AttributeValue.fromN(e.getValue().toString())));
-            item.put("players", AttributeValue.fromM(playersMap));
+            item.put("players", AttributeValue.fromM(
+                game.players().entrySet().stream()
+                    .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        e -> AttributeValue.fromN(e.getValue().toString())
+                    ))
+            ));
+        } else {
+            item.put("players", AttributeValue.fromM(Map.of()));
         }
 
         return item;
     }
 
-
+    /**
+     * Converts a DynamoDB item map back into a Game domain object.
+     */
     public static Game fromItem(Map<String, AttributeValue> item) {
         Map<String, Double> players = item.containsKey("players") && item.get("players").m() != null
             ? item.get("players").m().entrySet().stream()
@@ -50,7 +81,7 @@ public class GameMapper {
             .map(Instant::parse)
             .orElse(null);
 
-        Instant joinDeadLine = Optional.ofNullable(item.get("joinDeadline"))
+        Instant joinDeadline = Optional.ofNullable(item.get("joinDeadline"))
             .map(AttributeValue::s)
             .map(Instant::parse)
             .orElse(null);
@@ -65,20 +96,15 @@ public class GameMapper {
             item.get("sessionId").s(),
             type,
             startTime,
-            joinDeadLine,
+            joinDeadline,
             endTime,
             players
         );
     }
 
-    public static AttributeValue doubleToAttribute(double value) {
-        return AttributeValue.fromN(Double.toString(value));
-    }
-
-    public static AttributeValue stringToAttribute(String value) {
-        return AttributeValue.fromS(value);
-    }
-
+    /**
+     * Utility for building nested player map update expressions.
+     */
     public static Map<String, String> playerAttributeNames(String playerName) {
         return Map.of(
             "#players", "players",
