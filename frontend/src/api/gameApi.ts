@@ -26,7 +26,7 @@ export async function gameStatus(sessionId: string) {
 
 export async function joinGame(sessionId: string, playerName: string) {
   const res = await fetch(`${GAME_URL}/game/${sessionId}/join`, {
-    method: "PUT",
+    method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ playerName }),
   });
