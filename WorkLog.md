@@ -101,8 +101,11 @@ Lambda now consumes and initiates the Game item
 ### Friday 31 October
 
 - Planning game-logic and with that some re-structuring in current game-service
-- Start initializing WebSockets with config.
 
 ## Week 4 – Final Touches & Presentation
 ### Monday 3 November
+
+- Cleaning up in Game-Service related to DynamoDB
+- Start impl. WebSockets and get a grasp of how it will integrate in FE+BE
+
 ### Tuesday 4 November (Presentation Day)
