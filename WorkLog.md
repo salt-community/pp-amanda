@@ -100,6 +100,9 @@ Lambda now consumes and initiates the Game item
 
 ### Friday 31 October
 
+- Planning game-logic and with that some re-structuring in current game-service
+- Start initializing WebSockets with config.
+
 ## Week 4 – Final Touches & Presentation
 ### Monday 3 November
 ### Tuesday 4 November (Presentation Day)
