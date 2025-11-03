@@ -10,13 +10,12 @@ import se.salt.game.http.exception.NotFoundException;
 
 import java.time.Instant;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 @Slf4j
 @Service
 @AllArgsConstructor
-public class GameService {
+public class InitGameService {
 
     private final GameRepository repo;
 
@@ -35,11 +34,11 @@ public class GameService {
             .players(existing.players() != null ? existing.players() : new HashMap<>())
             .build();
 
-        repo.updateGameDetails(updated);
+        Game saved = repo.updateGameDetails(updated);
         log.info("Game in session {} updated: type={}, joinDeadline={}, endTime={}",
             sessionId, type, joinDeadline, endTime);
 
-        return updated;
+        return saved;
     }
 
     public Game gameStatus(String sessionId) {
@@ -48,18 +47,15 @@ public class GameService {
 
     public Game addPlayer(String sessionId, String name) {
         Game game = getGameBySessionId(sessionId);
+        String gameId = game.gameId();
 
-        if (Instant.now().isAfter(game.joinDeadline())) {
+        Instant deadline = game.joinDeadline();
+        if (deadline != null && Instant.now().isAfter(deadline)) {
             throw new DeadlinePassedException(sessionId);
         }
 
-        Map<String, Double> updatedPlayers = new HashMap<>(game.players());
-        updatedPlayers.putIfAbsent(name, 0.0);
-
-        Game updated = game.toBuilder().players(updatedPlayers).build();
-        repo.addPlayer(updated.gameId(), name);
-
-        log.info("Player '{}' joined game for session {}", name, sessionId);
+        Game updated = repo.addPlayer(gameId, name);
+        log.info("Player '{}' joined game with ID: {}", name, gameId);
         return updated;
     }
 
