@@ -15,8 +15,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         registry.addEndpoint("/ws-game")
             .setAllowedOriginPatterns(
                 "http://localhost:5173",
-                "http://frontend-alb-1896419215.eu-north-1.elb.amazonaws.com")
-            .withSockJS();
+                "http://frontend-alb-1896419215.eu-north-1.elb.amazonaws.com");
+        //.withSockJS();
     }
 
     @Override
