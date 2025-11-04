@@ -33,3 +33,14 @@ export async function joinGame(sessionId: string, playerName: string) {
   if (!res.ok) throw new Error("Failed to join game");
   return await res.json();
 }
+
+export async function startGame(gameId: string) {
+  const response = await fetch(`${GAME_URL}/game/${gameId}/start`, {
+    method: "POST",
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to start game (status ${response.status})`);
+  }
+  return true;
+}

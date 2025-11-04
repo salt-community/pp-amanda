@@ -55,6 +55,7 @@
 import { ref, computed, watchEffect } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useGameStatus } from "../composables/useGameStatus.ts";
+import { useStartGame } from "../composables/useStartGame.ts";
 import SelectGameType from "../components/SelectGameType.vue";
 import PlayerNameForm from "../components/PlayerNameForm.vue";
 import type { GameResponse } from "../types/game";
@@ -70,12 +71,14 @@ const gameType = computed<String | null>(
   () => localType.value ?? data.value?.gameType ?? null
 );
 
+// time limitation for joining
 const joinClosed = computed(() => {
   if (!data.value?.joinDeadline) return false;
   const deadline = new Date(data.value.joinDeadline).getTime();
   return Date.now() > deadline;
 });
 
+// if someone else in this session set the gametype
 watchEffect(() => {
   if (joinClosed.value && data.value?.gameId) {
     stopPolling();
@@ -83,13 +86,18 @@ watchEffect(() => {
   }
 });
 
+//
 function handleSelect(type: String) {
   localType.value = type;
   stopPolling();
 }
+const { mutate: startGameMutation } = useStartGame();
 
 function handleJoined(gameResponse: GameResponse) {
   const { gameId } = gameResponse;
+
+  startGameMutation({ gameId });
+
   router.push(`/game/${gameId}`);
 }
 </script>
