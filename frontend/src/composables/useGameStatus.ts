@@ -13,9 +13,5 @@ export function useGameStatus(sessionId: string) {
     enabled,
   });
 
-  function stopPolling() {
-    enabled.value = false;
-  }
-
-  return { ...query, stopPolling };
+  return { ...query, stopPolling: () => (enabled.value = false) };
 }

@@ -2,7 +2,23 @@
   <div>
     <Teleport to="body">
       <div
-        v-if="!gameType"
+        v-if="isFetching"
+        style="
+          position: fixed;
+          inset: 0;
+          background: rgba(0, 0, 0, 0.5);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: white;
+          font-size: 1.2rem;
+          z-index: 10000;
+        "
+      >
+        Loading ...
+      </div>
+      <div
+        v-else-if="!gameType"
         style="
           position: fixed;
           inset: 0;
@@ -52,7 +68,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watchEffect } from "vue";
+import { ref, computed, watch, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useGameStatus } from "../composables/useGameStatus.ts";
 import { useStartGame } from "../composables/useStartGame.ts";
@@ -64,40 +80,45 @@ const route = useRoute();
 const router = useRouter();
 const sessionId = route.params.sessionId as string;
 
-const { data, stopPolling } = useGameStatus(sessionId);
+const { data, stopPolling, isFetching } = useGameStatus(sessionId);
 
-const localType = ref<String | null>(null);
-const gameType = computed<String | null>(
+const localType = ref<string | null>(null);
+const gameType = computed<string | null>(
   () => localType.value ?? data.value?.gameType ?? null
 );
 
-// time limitation for joining
 const joinClosed = computed(() => {
   if (!data.value?.joinDeadline) return false;
   const deadline = new Date(data.value.joinDeadline).getTime();
   return Date.now() > deadline;
 });
 
-// if someone else in this session set the gametype
-watchEffect(() => {
-  if (joinClosed.value && data.value?.gameId) {
-    stopPolling();
-    router.push(`/game/${data.value.gameId}`);
+onMounted(() => {
+  if (data.value?.gameType) {
+    localType.value = data.value.gameType;
   }
 });
 
-//
-function handleSelect(type: String) {
+watch(
+  () => joinClosed.value,
+  (closed) => {
+    if (closed && data.value?.gameId) {
+      stopPolling();
+      router.push(`/game/${data.value.gameId}`);
+    }
+  }
+);
+
+function handleSelect(type: string) {
   localType.value = type;
   stopPolling();
 }
+
 const { mutate: startGameMutation } = useStartGame();
 
 function handleJoined(gameResponse: GameResponse) {
   const { gameId } = gameResponse;
-
   startGameMutation({ gameId });
-
   router.push(`/game/${gameId}`);
 }
 </script>
