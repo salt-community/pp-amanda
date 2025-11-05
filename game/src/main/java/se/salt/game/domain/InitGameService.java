@@ -9,7 +9,6 @@ import se.salt.game.http.exception.DeadlinePassedException;
 import se.salt.game.http.exception.NotFoundException;
 
 import java.time.Instant;
-import java.util.HashMap;
 import java.util.UUID;
 
 @Slf4j
@@ -19,30 +18,28 @@ public class InitGameService {
 
     private final GameRepository repo;
 
-    public Game setGameTypeInSession(String sessionId, Type type) {
-        Game existing = getGameBySessionId(sessionId);
-
-        Instant now = Instant.now();
-        Instant joinDeadline = now.plusSeconds(90);
-        Instant endTime = now.plusSeconds(1600);
-
-        Game updated = existing.toBuilder()
-            .type(type)
-            .startTime(now)
-            .joinDeadline(joinDeadline)
-            .endTime(endTime)
-            .players(existing.players() != null ? existing.players() : new HashMap<>())
-            .build();
-
-        Game saved = repo.updateGameDetails(updated);
-        log.info("Game in session {} updated: type={}, joinDeadline={}, endTime={}",
-            sessionId, type, joinDeadline, endTime);
-
-        return saved;
-    }
-
     public Game gameStatus(String sessionId) {
         return getGameBySessionId(sessionId);
+    }
+
+    public void initGame(String sessionId) {
+        String gameId = UUID.randomUUID().toString();
+
+        Instant now = Instant.now();
+        Instant joinDeadline = now.plusSeconds(40);
+        long ttl = now.plusSeconds(3600).getEpochSecond();
+
+        Game game = Game.builder()
+            .gameId(gameId)
+            .sessionId(sessionId)
+            .type(Type.REACTION)
+            .joinDeadline(joinDeadline)
+            .ttl(ttl)
+            .build();
+
+        repo.saveFromLambda(game);
+        log.info("Initialized new game for session {} with gameId: {} (joinDeadline={}, ttl={})",
+            sessionId, gameId, joinDeadline, ttl);
     }
 
     public Game addPlayer(String sessionId, String name) {
@@ -65,9 +62,4 @@ public class InitGameService {
                 new NotFoundException("Session with ID: %s not found".formatted(sessionId)));
     }
 
-    public void initGame(String sessionId) {
-        String gameId = UUID.randomUUID().toString();
-        repo.saveFromLambda(gameId, sessionId);
-        log.info("Initialized new game for session {} with gameId: {}", sessionId, gameId);
-    }
 }
