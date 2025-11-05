@@ -8,9 +8,8 @@ import org.springframework.web.bind.annotation.*;
 import se.salt.game.domain.InitGameService;
 import se.salt.game.domain.model.Game;
 import se.salt.game.http.dto.GameResponse;
+import se.salt.game.http.dto.InitRequest;
 import se.salt.game.http.dto.JoinRequest;
-
-import java.util.Map;
 
 @Slf4j
 @RestController
@@ -21,8 +20,8 @@ public class SessionController {
     private final InitGameService service;
 
     @PostMapping("/init")
-    public ResponseEntity<Void> initGame(@RequestBody Map<String, String> req) {
-        String sessionId = req.get("sessionId");
+    public ResponseEntity<Void> initGame(@RequestBody InitRequest req) {
+        String sessionId = req.sessionId();
         log.info("SQS received sessionId: {} that triggered lambda to call this endpoint", sessionId);
         service.initGame(sessionId);
         return ResponseEntity.status(HttpStatus.CREATED).build();
