@@ -7,7 +7,6 @@ import se.salt.game.domain.model.Game;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.*;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -25,20 +24,29 @@ public class GameRepository {
      * Sets all default values it gets from service method.
      */
     public void saveNewGame(Game game) {
-        Map<String, AttributeValue> item = new HashMap<>();
-        item.put("gameId", AttributeValue.fromS(game.gameId()));
-        item.put("sessionId", AttributeValue.fromS(game.sessionId()));
-        item.put("type", AttributeValue.fromS(game.type().name()));
-        item.put("joinDeadline", AttributeValue.fromS(game.joinDeadline().toString()));
-        item.put("ttl", AttributeValue.fromN(game.ttl().toString()));
+        Map<String, AttributeValue> key = Map.of("gameId", AttributeValue.fromS(game.gameId()));
 
-        PutItemRequest request = PutItemRequest.builder()
+        Map<String, String> names = Map.of(
+            "#type", "type",
+            "#joinDeadline", "joinDeadline",
+            "#ttl", "ttl"
+        );
+
+        Map<String, AttributeValue> values = Map.of(
+            ":type", AttributeValue.fromS(game.type().name()),
+            ":joinDeadline", AttributeValue.fromS(game.joinDeadline().toString()),
+            ":ttl", AttributeValue.fromN(game.ttl().toString())
+        );
+
+        UpdateItemRequest update = UpdateItemRequest.builder()
             .tableName(TABLE_NAME)
-            .item(item)
-            .conditionExpression("attribute_not_exists(gameId)")
+            .key(key)
+            .updateExpression("SET #type = :type, #joinDeadline = :joinDeadline, #ttl = :ttl")
+            .expressionAttributeNames(names)
+            .expressionAttributeValues(values)
             .build();
 
-        dynamoDb.putItem(request);
+        dynamoDb.updateItem(update);
     }
 
     /**

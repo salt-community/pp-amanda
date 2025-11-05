@@ -2,6 +2,7 @@ package se.salt.game.http;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import se.salt.game.domain.InitGameService;
@@ -22,8 +23,9 @@ public class SessionController {
     @PostMapping("/init")
     public ResponseEntity<Void> initGame(@RequestBody Map<String, String> req) {
         String sessionId = req.get("sessionId");
+        log.info("SQS received sessionId: {} that triggered lambda to call this endpoint", sessionId);
         service.initGame(sessionId);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PostMapping("/{sessionId}/join")

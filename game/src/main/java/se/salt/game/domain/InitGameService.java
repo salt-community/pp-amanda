@@ -9,7 +9,6 @@ import se.salt.game.http.exception.DeadlinePassedException;
 import se.salt.game.http.exception.NotFoundException;
 
 import java.time.Instant;
-import java.util.UUID;
 
 @Slf4j
 @Service
@@ -19,23 +18,28 @@ public class InitGameService {
     private final GameRepository repo;
 
     public void initGame(String sessionId) {
-        String gameId = UUID.randomUUID().toString();
+        Game game = getGameBySessionId(sessionId);
+
+        if (game.joinDeadline() != null && game.ttl() != null) {
+            log.info("Game for session {} is already initialized", sessionId);
+            return;
+        }
 
         Instant now = Instant.now();
         Instant joinDeadline = now.plusSeconds(40);
         Long ttl = now.plusSeconds(3600).getEpochSecond();
 
-        Game game = Game.builder()
-            .gameId(gameId)
-            .sessionId(sessionId)
+        Game updated = game.toBuilder()
             .type(Type.REACTION)
             .joinDeadline(joinDeadline)
             .ttl(ttl)
             .build();
 
-        repo.saveNewGame(game);
-        log.info("Initialized new game for session {} with gameId: {} (joinDeadline={}, ttl={})",
-            sessionId, gameId, joinDeadline, ttl);
+        repo.saveNewGame(updated);
+
+        log.info("Initialized new game for session {} with gameId={} (joinDeadline={}, ttl={})",
+            sessionId, updated.gameId(), joinDeadline, ttl);
+
     }
 
     public Game addPlayer(String sessionId, String name) {
