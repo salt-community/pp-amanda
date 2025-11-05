@@ -25,7 +25,7 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { useJoinStatus } from "../composables/useJoinStatus";
+import { useJoinDeadline } from "../composables/useJoinDeadline";
 import { usePlayerJoin } from "../composables/usePlayerJoin";
 import type { GameResponse } from "../types/game";
 
@@ -37,7 +37,7 @@ const emit = defineEmits<{
 
 const playerName = ref("");
 const { mutateAsync: join, isPending } = usePlayerJoin(props.sessionId);
-const { joinClosed } = useJoinStatus(props.sessionId);
+const { joinClosed } = useJoinDeadline(props.sessionId);
 
 async function submitName() {
   if (!playerName.value || joinClosed.value) return;
