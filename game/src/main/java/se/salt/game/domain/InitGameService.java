@@ -18,10 +18,6 @@ public class InitGameService {
 
     private final GameRepository repo;
 
-    public Game gameStatus(String sessionId) {
-        return getGameBySessionId(sessionId);
-    }
-
     public void initGame(String sessionId) {
         String gameId = UUID.randomUUID().toString();
 
@@ -37,7 +33,7 @@ public class InitGameService {
             .ttl(ttl)
             .build();
 
-        repo.saveFromLambda(game);
+        repo.saveNewGame(game);
         log.info("Initialized new game for session {} with gameId: {} (joinDeadline={}, ttl={})",
             sessionId, gameId, joinDeadline, ttl);
     }

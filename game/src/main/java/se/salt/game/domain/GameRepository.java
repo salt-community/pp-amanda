@@ -7,7 +7,9 @@ import se.salt.game.domain.model.Game;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.*;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 @Slf4j
 @Repository
@@ -15,61 +17,29 @@ import java.util.*;
 public class GameRepository {
 
     private static final String TABLE_NAME = "Games";
+
     private final DynamoDbClient dynamoDb;
 
-
     /**
-     * Updates Game Item(object) ONLY the fields that are not null
-     * returning the updated Game Object
-     *
+     * Creates a Game item sent through SQS and consumed by Lambda
+     * Sets all default values it gets from service method.
      */
-    public Game updateGameDetails(Game game) {
-        Map<String, AttributeValue> item = GameMapper.toItem(game);
-        Map<String, String> names = new HashMap<>();
-        Map<String, AttributeValue> values = new HashMap<>();
-        List<String> sets = new ArrayList<>();
+    public void saveNewGame(Game game) {
+        Map<String, AttributeValue> item = new HashMap<>();
+        item.put("gameId", AttributeValue.fromS(game.gameId()));
+        item.put("sessionId", AttributeValue.fromS(game.sessionId()));
+        item.put("type", AttributeValue.fromS(game.type().name()));
+        item.put("joinDeadline", AttributeValue.fromS(game.joinDeadline().toString()));
+        item.put("ttl", AttributeValue.fromN(game.ttl().toString()));
 
-        if (item.get("type") != null) {
-            names.put("#type", "type");
-            values.put(":t", item.get("type"));
-            sets.add("#type = :t");
-        }
-        if (item.get("startTime") != null) {
-            names.put("#startTime", "startTime");
-            values.put(":s", item.get("startTime"));
-            sets.add("#startTime = :s");
-        }
-        if (item.get("joinDeadline") != null) {
-            names.put("#joinDeadline", "joinDeadline");
-            values.put(":j", item.get("joinDeadline"));
-            sets.add("#joinDeadline = :j");
-        }
-        if (item.get("endTime") != null) {
-            names.put("#endTime", "endTime");
-            values.put(":e", item.get("endTime"));
-            sets.add("#endTime = :e");
-        }
-        if (item.get("players") != null) {
-            names.put("#players", "players");
-            values.put(":p", item.get("players"));
-            sets.add("#players = :p");
-        }
-
-        String updateExpression = "SET " + String.join(", ", sets);
-
-        UpdateItemRequest request = UpdateItemRequest.builder()
+        PutItemRequest request = PutItemRequest.builder()
             .tableName(TABLE_NAME)
-            .key(Map.of("gameId", item.get("gameId")))
-            .updateExpression(updateExpression)
-            .expressionAttributeNames(names)
-            .expressionAttributeValues(values)
-            .returnValues(ReturnValue.ALL_NEW)
+            .item(item)
+            .conditionExpression("attribute_not_exists(gameId)")
             .build();
 
-        Map<String, AttributeValue> updated = dynamoDb.updateItem(request).attributes();
-        return GameMapper.fromItem(updated);
+        dynamoDb.putItem(request);
     }
-
 
     /**
      * Adds a player to the players map (idempotent — won't overwrite existing player).
@@ -152,27 +122,5 @@ public class GameRepository {
         if (response.count() == 0) return Optional.empty();
         return Optional.of(GameMapper.fromItem(response.items().get(0)));
     }
-
-    /**
-     * Creates a Game item sent through SQS and consumed by Lambda
-     * Sets all default values it gets from service method.
-     */
-    public void saveFromLambda(Game game) {
-        Map<String, AttributeValue> item = new HashMap<>();
-        item.put("gameId", AttributeValue.fromS(game.gameId()));
-        item.put("sessionId", AttributeValue.fromS(game.sessionId()));
-        item.put("type", AttributeValue.fromS(game.type().name()));
-        item.put("joinDeadline", AttributeValue.fromS(game.joinDeadline().toString()));
-        item.put("ttl", AttributeValue.fromN(game.ttl().toString()));
-
-        PutItemRequest request = PutItemRequest.builder()
-            .tableName(TABLE_NAME)
-            .item(item)
-            .conditionExpression("attribute_not_exists(gameId)")
-            .build();
-
-        dynamoDb.putItem(request);
-    }
-
 
 }

@@ -26,16 +26,6 @@ public class SessionController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/{sessionId}/status")
-    public ResponseEntity<GameResponse> initializeGameStatus(
-        @PathVariable String sessionId
-    ) {
-        log.info("Check status of initialization of game type for sessionId: {}", sessionId);
-        Game game = service.gameStatus(sessionId);
-        GameResponse response = GameResponse.fromGame(game);
-        return ResponseEntity.ok(response);
-    }
-
     @PostMapping("/{sessionId}/join")
     public ResponseEntity<GameResponse> joinGame(
         @PathVariable String sessionId,
