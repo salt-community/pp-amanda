@@ -10,7 +10,7 @@ public record GameResponse(
     String sessionId,
     Type type,
     Instant joinTimeLimit,
-    long ttl
+    Long ttl
 ) {
 
     public static GameResponse fromGame(Game game) {
