@@ -9,9 +9,8 @@ public record GameResponse(
     String gameId,
     String sessionId,
     Type type,
-    Instant startTime,
     Instant joinTimeLimit,
-    Instant endTime
+    long ttl
 ) {
 
     public static GameResponse fromGame(Game game) {
@@ -19,8 +18,7 @@ public record GameResponse(
             game.gameId(),
             game.sessionId(),
             game.type(),
-            game.startTime(),
             game.joinDeadline(),
-            game.endTime());
+            game.ttl());
     }
 }
