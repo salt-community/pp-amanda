@@ -6,7 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import se.salt.game.domain.InitGameService;
 import se.salt.game.domain.model.Game;
-import se.salt.game.http.dto.GameRequest;
 import se.salt.game.http.dto.GameResponse;
 import se.salt.game.http.dto.JoinRequest;
 
@@ -25,17 +24,6 @@ public class SessionController {
         String sessionId = req.get("sessionId");
         service.initGame(sessionId);
         return ResponseEntity.ok().build();
-    }
-
-    @PutMapping("/{sessionId}/type")
-    public ResponseEntity<GameResponse> setGameType(
-        @PathVariable String sessionId,
-        @RequestBody GameRequest req
-    ) {
-        Game updatedGame = service.setGameTypeInSession(sessionId, req.gameType());
-        log.info("Received request to update to this: {}  type of Game in Session with ID: {}", req.gameType(), sessionId);
-        GameResponse response = GameResponse.fromGame(updatedGame);
-        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{sessionId}/status")
