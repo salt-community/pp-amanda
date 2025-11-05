@@ -10,9 +10,8 @@ public record Game(
     String gameId,
     String sessionId,
     Type type,
-    Instant startTime,
     Instant joinDeadline,
-    Instant endTime,
+    Long ttl,
     Map<String, Double> players
 ) {
 }
