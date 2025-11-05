@@ -11,18 +11,23 @@ import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 
 import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 
 @Slf4j
 public class SessionCreatedHandler implements RequestHandler<SQSEvent, Void> {
 
     private final ObjectMapper mapper = new ObjectMapper();
     private final GameRepository repository;
+    private final HttpClient httpClient = HttpClient.newHttpClient();
 
     public SessionCreatedHandler() {
         DynamoDbClient dynamoDb = DynamoDbClient.builder()
-            .endpointOverride(URI.create("http://host.docker.internal:4566"))
             .region(Region.EU_NORTH_1)
+            .endpointOverride(URI.create("http://host.docker.internal:4566"))
             .build();
+
         this.repository = new GameRepository(dynamoDb);
     }
 
@@ -30,15 +35,37 @@ public class SessionCreatedHandler implements RequestHandler<SQSEvent, Void> {
     public Void handleRequest(SQSEvent event, Context context) {
         event.getRecords().forEach(record -> {
             try {
-                // Deserialize message from queue
                 SessionCreatedEvent message =
                     mapper.readValue(record.getBody(), SessionCreatedEvent.class);
+                String sessionId = message.sessionId();
 
-                repository.saveGameWithSessionId(message.sessionId());
+                log.info("Received session-created event for session {}", sessionId);
 
-                context.getLogger().log("Created Game skeleton for session: " + message.sessionId());
+                repository.createNewGameForSession(sessionId);
+                log.info("Created placeholder game with sessionId {}", sessionId);
+
+                // 2️⃣ Trigger Game Service init endpoint
+                String body = String.format("{\"sessionId\":\"%s\"}", sessionId);
+
+                HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create("http://host.docker.internal:8081/game/init"))
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(body))
+                    .build();
+
+                try {
+                    HttpResponse<String> response =
+                        httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+                    log.info("Called GameService /game/init for session {} (status: {})",
+                        sessionId, response.statusCode());
+                } catch (Exception httpEx) {
+                    log.warn("GameService /game/init not reachable for session {}: {}",
+                        sessionId, httpEx.getMessage());
+                }
+
             } catch (Exception e) {
-                context.getLogger().log("Failed to process message: " + e.getMessage());
+                log.error("Failed to process message: {}", e.getMessage(), e);
+                context.getLogger().log("Lambda error: " + e.getMessage());
             }
         });
         return null;
