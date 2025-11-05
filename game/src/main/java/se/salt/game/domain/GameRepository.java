@@ -154,13 +154,16 @@ public class GameRepository {
     }
 
     /**
-     * Creates a Game item with unique GameId and inserts sessionId sent through SQS and consumed by Lambda
+     * Creates a Game item sent through SQS and consumed by Lambda
+     * Sets all default values it gets from service method.
      */
-    public void saveFromLambda(String gameId, String sessionId) {
-        Map<String, AttributeValue> item = Map.of(
-            "gameId", AttributeValue.fromS(gameId),
-            "sessionId", AttributeValue.fromS(sessionId)
-        );
+    public void saveFromLambda(Game game) {
+        Map<String, AttributeValue> item = new HashMap<>();
+        item.put("gameId", AttributeValue.fromS(game.gameId()));
+        item.put("sessionId", AttributeValue.fromS(game.sessionId()));
+        item.put("type", AttributeValue.fromS(game.type().name()));
+        item.put("joinDeadline", AttributeValue.fromS(game.joinDeadline().toString()));
+        item.put("ttl", AttributeValue.fromN(game.ttl().toString()));
 
         PutItemRequest request = PutItemRequest.builder()
             .tableName(TABLE_NAME)
