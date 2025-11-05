@@ -22,8 +22,16 @@ public class SessionController {
     @PostMapping("/init")
     public ResponseEntity<Void> initGame(@RequestBody InitRequest req) {
         String sessionId = req.sessionId();
+        String gameId = req.gameId();
+
+        if (gameId != null && !gameId.isBlank()) {
+            service.initGameByGameId(gameId);
+        } else {
+            service.initGame(sessionId);
+        }
+
         log.info("SQS received sessionId: {} that triggered lambda to call this endpoint", sessionId);
-        service.initGame(sessionId);
+
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 

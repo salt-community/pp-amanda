@@ -62,4 +62,19 @@ public class InitGameService {
                 new NotFoundException("Session with ID: %s not found".formatted(sessionId)));
     }
 
+    public void initGameByGameId(String gameId) {
+        Game game = repo.findByGameId(gameId)
+            .orElseThrow(() -> new NotFoundException("GameId %s not found".formatted(gameId)));
+
+        Instant now = Instant.now();
+        Game updated = game.toBuilder()
+            .type(Type.REACTION)
+            .joinDeadline(now.plusSeconds(40))
+            .ttl(now.plusSeconds(3600).getEpochSecond())
+            .build();
+
+        repo.saveNewGame(updated);
+        log.info("✅ Initialized gameId={} (sessionId={})", gameId, updated.sessionId());
+    }
+
 }
