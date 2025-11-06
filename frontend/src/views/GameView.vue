@@ -3,6 +3,7 @@ import { ref, onMounted, watch } from "vue";
 import { useRoute } from "vue-router";
 import { useStomp } from "../composables/useStomp";
 import CountdownBox from "../components/CountdownBox.vue";
+import GameBoard from "../components/GameBoard.vue";
 
 const route = useRoute();
 const gameId = route.params.gameId as string;
@@ -30,6 +31,7 @@ watch(
     <div class="flex flex-col items-center mt-10">
       <h1 class="text-2xl font-bold mb-4">Reaction Game</h1>
       <CountdownBox :start-time="startTime" />
+      <GameBoard v-if="startTime" :game-id="gameId" player-name="Amanda" />
     </div>
   </div>
 </template>
