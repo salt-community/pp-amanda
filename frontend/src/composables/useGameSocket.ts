@@ -37,11 +37,10 @@ export function useGameSocket(gameId: string, playerName: string) {
   const handleCountdown = (msg: IMessage) => {
     try {
       const data = JSON.parse(msg.body);
-      if (data.startTime) {
-        startTime.value = new Date(data.startTime);
-      }
+      console.log("COUNTDOWN message:", data);
+      if (data.startTime) startTime.value = new Date(data.startTime);
     } catch {
-      /* ignore malformed */
+      console.warn("Malformed countdown:", msg.body);
     }
   };
 
@@ -49,18 +48,14 @@ export function useGameSocket(gameId: string, playerName: string) {
     try {
       const { row, col } = JSON.parse(msg.body);
       activeCell.value = { row, col };
-    } catch {
-      /* ignore malformed events */
-    }
+    } catch {}
   };
 
   const handleResults = (msg: IMessage) => {
     try {
       const game = JSON.parse(msg.body);
       results.value = game.players;
-    } catch {
-      /* ignore malformed events */
-    }
+    } catch {}
   };
 
   const handleGameOver = () => {
