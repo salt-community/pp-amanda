@@ -5,6 +5,7 @@ import { GAME_URL } from "../config/api";
 
 export function useGameSocket(gameId: string, playerName: string) {
   const connected = ref(false);
+  const startTime = ref<Date | null>(null);
   const activeCell = ref<{ row: number; col: number } | null>(null);
   const results = ref<Record<string, number> | null>(null);
   const gameOver = ref(false);
@@ -27,9 +28,21 @@ export function useGameSocket(gameId: string, playerName: string) {
 
   const onConnect = (_frame: IFrame) => {
     connected.value = true;
+    stomp?.subscribe(`/topic/game/${gameId}/countdown`, handleCountdown);
     stomp?.subscribe(`/topic/game/${gameId}`, handleActiveCell);
     stomp?.subscribe(`/topic/game/${gameId}/results`, handleResults);
     stomp?.subscribe(`/topic/game/${gameId}/over`, handleGameOver);
+  };
+
+  const handleCountdown = (msg: IMessage) => {
+    try {
+      const data = JSON.parse(msg.body);
+      if (data.startTime) {
+        startTime.value = new Date(data.startTime);
+      }
+    } catch {
+      /* ignore malformed */
+    }
   };
 
   const handleActiveCell = (msg: IMessage) => {
@@ -69,5 +82,13 @@ export function useGameSocket(gameId: string, playerName: string) {
     stomp = null;
   });
 
-  return { connect, connected, activeCell, sendReaction, results, gameOver };
+  return {
+    connect,
+    connected,
+    startTime,
+    activeCell,
+    sendReaction,
+    results,
+    gameOver,
+  };
 }
