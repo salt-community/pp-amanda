@@ -21,7 +21,7 @@ public class GameRepository {
      * Creates a new minimal Game entry when a session is created.
      * Only sets gameId + sessionId — all domain setup happens in Game Service.
      */
-    public void createNewGameForSession(String sessionId) {
+    public String createNewGameForSession(String sessionId) {
         String gameId = UUID.randomUUID().toString();
 
         Map<String, AttributeValue> item = new HashMap<>();
@@ -35,6 +35,7 @@ public class GameRepository {
             .build();
 
         dynamoDb.putItem(request);
+        return gameId;
     }
 
 }

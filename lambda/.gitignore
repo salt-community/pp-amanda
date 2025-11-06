@@ -5,3 +5,4 @@ target
 /response.json
 /deploy-lambda.sh
 /setup-localstack.sh
+/default-lockalstack.sh

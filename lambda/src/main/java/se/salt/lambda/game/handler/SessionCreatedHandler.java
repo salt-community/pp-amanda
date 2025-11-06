@@ -25,7 +25,8 @@ public class SessionCreatedHandler implements RequestHandler<SQSEvent, Void> {
     public SessionCreatedHandler() {
         DynamoDbClient dynamoDb = DynamoDbClient.builder()
             .region(Region.EU_NORTH_1)
-            .endpointOverride(URI.create("http://host.docker.internal:4566"))
+            //.endpointOverride(URI.create("http://host.docker.internal:4566"))
+            .endpointOverride(URI.create("http://localstack:4566"))
             .build();
 
         this.repository = new GameRepository(dynamoDb);
@@ -33,19 +34,29 @@ public class SessionCreatedHandler implements RequestHandler<SQSEvent, Void> {
 
     @Override
     public Void handleRequest(SQSEvent event, Context context) {
+        System.out.println("🚀 Lambda STARTED!");
         event.getRecords().forEach(record -> {
             try {
+                System.out.println("📦 Parsing record...");
                 SessionCreatedEvent message =
                     mapper.readValue(record.getBody(), SessionCreatedEvent.class);
                 String sessionId = message.sessionId();
 
                 log.info("Received session-created event for session {}", sessionId);
 
-                repository.createNewGameForSession(sessionId);
+                String gameId = repository.createNewGameForSession(sessionId);
                 log.info("Created placeholder game with sessionId {}", sessionId);
 
+                //  let DynamoDB GSI sync)
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException ie) {
+                    Thread.currentThread().interrupt();
+                    log.warn("Thread sleep interrupted: {}", ie.getMessage());
+                }
                 // 2️⃣ Trigger Game Service init endpoint
-                String body = String.format("{\"sessionId\":\"%s\"}", sessionId);
+                String body = String.format("{\"sessionId\":\"%s\", \"gameId\":\"%s\"}", sessionId, gameId);
+
 
                 HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create("http://host.docker.internal:8081/game/init"))
@@ -68,6 +79,7 @@ public class SessionCreatedHandler implements RequestHandler<SQSEvent, Void> {
                 context.getLogger().log("Lambda error: " + e.getMessage());
             }
         });
+        System.out.println("🏁 Lambda DONE");
         return null;
     }
 }
