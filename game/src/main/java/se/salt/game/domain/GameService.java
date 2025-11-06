@@ -28,6 +28,10 @@ public class GameService {
 
 
     public void startGame(String gameId) {
+        if (activeGames.containsKey(gameId)) {
+            log.warn("Game {} already started – skipping duplicate start", gameId);
+            return;
+        }
         Game game = getGameByGameId(gameId);
         activeGames.put(gameId, game);
 
