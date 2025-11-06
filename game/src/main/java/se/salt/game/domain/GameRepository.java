@@ -9,6 +9,7 @@ import software.amazon.awssdk.services.dynamodb.model.*;
 
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Repository
@@ -85,20 +86,24 @@ public class GameRepository {
         return GameMapper.fromItem(updatedItem);
     }
 
+    public void updatePlayers(Game game) {
+        Map<String, AttributeValue> key = Map.of("gameId", AttributeValue.fromS(game.gameId()));
 
-    /**
-     * Updates a specific player's response time and overwrites previous default value
-     */
-    public void updateResponseTime(String gameId, String playerName, double responseTime) {
-        UpdateItemRequest updateRequest = UpdateItemRequest.builder()
+        Map<String, AttributeValue> playersMap = game.players().entrySet().stream()
+            .collect(Collectors.toMap(
+                Map.Entry::getKey,
+                e -> AttributeValue.fromN(e.getValue().toString())
+            ));
+
+        UpdateItemRequest update = UpdateItemRequest.builder()
             .tableName(TABLE_NAME)
-            .key(Map.of("gameId", AttributeValue.fromS(gameId)))
-            .updateExpression("SET #players.#playerName = :time")
-            .expressionAttributeNames(GameMapper.playerAttributeNames(playerName))
-            .expressionAttributeValues(Map.of(":time", AttributeValue.fromN(Double.toString(responseTime))))
+            .key(key)
+            .updateExpression("SET #players = :players")
+            .expressionAttributeNames(Map.of("#players", "players"))
+            .expressionAttributeValues(Map.of(":players", AttributeValue.fromM(playersMap)))
             .build();
 
-        dynamoDb.updateItem(updateRequest);
+        dynamoDb.updateItem(update);
     }
 
     /**
