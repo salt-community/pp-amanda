@@ -7,9 +7,18 @@ const route = useRoute();
 const router = useRouter();
 const sessionId = route.params.sessionId as string;
 
-function handleJoined(gameResponse: GameResponse) {
+function handleJoined({
+  gameResponse,
+  playerName,
+}: {
+  gameResponse: GameResponse;
+  playerName: string;
+}) {
   const { gameId } = gameResponse;
-  router.push(`/game/${gameId}`);
+  router.push({
+    path: `/game/${gameId}`,
+    query: { player: playerName },
+  });
 }
 </script>
 

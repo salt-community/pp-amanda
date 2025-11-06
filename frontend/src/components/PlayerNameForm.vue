@@ -32,7 +32,10 @@ import type { GameResponse } from "../types/game";
 const props = defineProps<{ sessionId: string }>();
 
 const emit = defineEmits<{
-  (e: "joined", gameResponse: GameResponse): void;
+  (
+    e: "joined",
+    payload: { gameResponse: GameResponse; playerName: string }
+  ): void;
 }>();
 
 const playerName = ref("");
@@ -44,7 +47,7 @@ async function submitName() {
 
   try {
     const response = await join(playerName.value);
-    emit("joined", response);
+    emit("joined", { gameResponse: response, playerName: playerName.value });
   } catch (error) {
     console.error("Failed to join game:", error);
   }
