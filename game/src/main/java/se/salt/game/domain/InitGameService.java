@@ -9,6 +9,9 @@ import se.salt.game.http.exception.DeadlinePassedException;
 import se.salt.game.http.exception.NotFoundException;
 
 import java.time.Instant;
+import java.util.HashMap;
+import java.util.Optional;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -18,10 +21,10 @@ public class InitGameService {
     private final GameRepository repo;
 
     public void initGame(String sessionId) {
-        Game game = getGameBySessionId(sessionId);
-
-        if (game.joinDeadline() != null && game.ttl() != null) {
-            log.info("Game for session {} is already initialized", sessionId);
+        Optional<Game> existing = repo.findBySessionId(sessionId);
+        if (existing.isPresent()) {
+            log.warn("⚠️ Game already initialized for sessionId={} (gameId={})",
+                sessionId, existing.get().gameId());
             return;
         }
 
@@ -29,18 +32,20 @@ public class InitGameService {
         Instant joinDeadline = now.plusSeconds(40);
         Long ttl = now.plusSeconds(3600).getEpochSecond();
 
-        Game updated = game.toBuilder()
+        Game game = Game.builder()
+            .gameId(UUID.randomUUID().toString())
+            .sessionId(sessionId)
             .type(Type.REACTION)
             .joinDeadline(joinDeadline)
             .ttl(ttl)
+            .players(new HashMap<>())
             .build();
 
-        repo.saveNewGame(updated);
-
-        log.info("Initialized new game for session {} with gameId={} (joinDeadline={}, ttl={})",
-            sessionId, updated.gameId(), joinDeadline, ttl);
-
+        repo.saveNewGame(game);
+        log.info("✅ Initialized new game for session {} with gameId={} (joinDeadline={}, ttl={})",
+            sessionId, game.gameId(), joinDeadline, ttl);
     }
+
 
     public Game addPlayer(String sessionId, String name) {
         Game game = getGameBySessionId(sessionId);
