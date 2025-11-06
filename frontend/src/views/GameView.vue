@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, watch } from "vue";
+import { onMounted, watch } from "vue";
 import { useRoute } from "vue-router";
 import { useStomp } from "../composables/useStomp";
 import CountdownBox from "../components/CountdownBox.vue";
