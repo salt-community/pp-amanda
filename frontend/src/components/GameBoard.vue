@@ -8,17 +8,16 @@
     <!-- ✅ Single grid -->
     <div
       v-if="!gameOver"
-      class="grid gap-3"
+      class="grid gap-4"
       :style="{ gridTemplateColumns: `repeat(${gridSize}, 6rem)` }"
     >
       <button
-        v-for="(r, index) in gridCells"
-        :key="`${r.row}-${r.col}`"
-        @click="handleClick(r.row, r.col)"
-        class="w-20 h-20 rounded-xl border border-gray-700 shadow-inner transition-all duration-200 ease-in-out select-none"
+        v-for="cell in gridCells"
+        :key="`${cell.row}-${cell.col}`"
+        @click="handleClick(cell.row, cell.col)"
         :class="[
           'w-24 h-24 rounded-xl border border-gray-700 shadow-inner transition-all duration-300 ease-in-out select-none',
-          activeCell?.row === r.row && activeCell?.col === r.col
+          activeCell?.row === cell.row && activeCell?.col === cell.col
             ? 'bg-lime-400 scale-110 shadow-lg ring-4 ring-lime-500 animate-pulse'
             : 'bg-gray-800 hover:bg-gray-700 text-white active:scale-95',
         ]"
@@ -50,12 +49,10 @@ const gridCells = computed(() =>
   }))
 );
 
-function isActive(row: number, col: number) {
-  return activeCell.value?.row === row && activeCell.value?.col === col;
-}
-
 function handleClick(row: number, col: number) {
-  if (isActive(row, col)) sendReaction(row, col);
+  if (activeCell.value?.row === row && activeCell.value?.col === col) {
+    sendReaction(row, col);
+  }
 }
 
 onMounted(() => connect());
