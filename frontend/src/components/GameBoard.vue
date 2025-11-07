@@ -7,11 +7,11 @@
           v-for="c in 3"
           :key="`${r}-${c}`"
           @click="handleClick(r - 1, c - 1)"
-          class="w-16 h-16 rounded-lg transition-all"
+          class="w-40 h-40 rounded-xl border border-gray-700 shadow-inner transition-all duration-300 ease-in-out"
           :class="{
-            'bg-green-500 animate-pulse':
+            'bg-green-400 scale-110 shadow-xl animate-pulse':
               activeCell?.row === r - 1 && activeCell?.col === c - 1,
-            'bg-gray-400': !(
+            'bg-gray-700 hover:bg-gray-600 active:scale-95': !(
               activeCell?.row === r - 1 && activeCell?.col === c - 1
             ),
           }"
