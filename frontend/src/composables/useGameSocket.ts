@@ -5,7 +5,7 @@ import { GAME_URL } from "../config/api";
 
 export function useGameSocket(gameId: string, playerName: string) {
   const connected = ref(false);
-  const startTime = ref<Date | null>(null);
+  const countdownSeconds = ref<number | null>(null);
   const activeCell = ref<{ row: number; col: number } | null>(null);
   const results = ref<Record<string, number> | null>(null);
   const gameOver = ref(false);
@@ -38,18 +38,14 @@ export function useGameSocket(gameId: string, playerName: string) {
     try {
       const data = JSON.parse(msg.body);
       console.log("COUNTDOWN message:", data);
-      if (data.startTime) startTime.value = new Date(data.startTime);
+
+      if (data.eventType === "COUNTDOWN_STARTED") {
+        countdownSeconds.value = data.seconds ?? 5;
+      }
     } catch {
       console.warn("Malformed countdown:", msg.body);
     }
   };
-
-  /*   const handleCountdown = (msg: IMessage) => {
-    const data = JSON.parse(msg.body);
-    if (data.eventType === "COUNTDOWN_STARTED") {
-      startTime.value = new Date(Date.now() + 45000);
-    }
-  }; */
 
   const handleActiveCell = (msg: IMessage) => {
     try {
@@ -87,7 +83,7 @@ export function useGameSocket(gameId: string, playerName: string) {
   return {
     connect,
     connected,
-    startTime,
+    countdownSeconds,
     activeCell,
     sendReaction,
     results,

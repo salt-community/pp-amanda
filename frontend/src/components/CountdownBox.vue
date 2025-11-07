@@ -1,49 +1,46 @@
 <template>
-  <div v-if="!hasStarted">Waiting for game to start...</div>
-  <div v-else>{{ formattedTime }}</div>
+  <div class="text-2xl font-mono">
+    <template v-if="secondsLeft === null">
+      Waiting for game to start...
+    </template>
+    <template v-else-if="secondsLeft > 0">
+      Starting in {{ secondsLeft }}...
+    </template>
+    <template v-else> 🎯 Go! </template>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onUnmounted, computed } from "vue";
+import { ref, watch, onUnmounted } from "vue";
 
-const props = defineProps<{
-  startTime: Date | null;
-}>();
+const props = defineProps<{ countdownSeconds: number | null }>();
 
 const secondsLeft = ref<number | null>(null);
 let timer: number | null = null;
 
-const hasStarted = computed(() => secondsLeft.value !== null);
-
 watch(
-  () => props.startTime,
-  (newTime) => {
-    if (!newTime) return;
+  () => props.countdownSeconds,
+  (newSeconds) => {
+    if (newSeconds === null) return;
     if (timer) clearInterval(timer);
-    startCountdown(newTime);
-  },
-  { immediate: true }
+    secondsLeft.value = newSeconds;
+    startCountdown();
+  }
 );
 
-function startCountdown(target: Date) {
+function startCountdown() {
   timer = window.setInterval(() => {
-    const diff = Math.floor((target.getTime() - Date.now()) / 1000);
-    secondsLeft.value = Math.max(diff, 0);
-    if (diff <= 0 && timer) {
-      clearInterval(timer);
-      timer = null;
+    if (secondsLeft.value !== null) {
+      secondsLeft.value -= 1;
+      if (secondsLeft.value <= 0 && timer) {
+        clearInterval(timer);
+        timer = null;
+      }
     }
   }, 1000);
 }
 
 onUnmounted(() => {
   if (timer) clearInterval(timer);
-});
-
-const formattedTime = computed(() => {
-  if (secondsLeft.value === null) return null;
-  const minutes = Math.floor(secondsLeft.value / 60);
-  const seconds = secondsLeft.value % 60;
-  return `${minutes}:${seconds.toString().padStart(2, "0")}`;
 });
 </script>

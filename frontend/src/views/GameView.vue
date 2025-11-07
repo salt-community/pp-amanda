@@ -9,7 +9,7 @@ const route = useRoute();
 const gameId = route.params.gameId as string;
 const playerName = route.query.player as string;
 
-const { connect, connected, startTime, gameOver } = useGameSocket(
+const { connect, connected, countdownSeconds, gameOver } = useGameSocket(
   gameId,
   playerName
 );
@@ -24,9 +24,9 @@ onMounted(() => {
     <p>Status: {{ connected ? "Connected" : "Disconnected" }}</p>
     <div class="flex flex-col items-center mt-10">
       <h1 class="text-2xl font-bold mb-4">Reaction Game</h1>
-      <CountdownBox :start-time="startTime" />
+      <CountdownBox :countdown-seconds="countdownSeconds" />
       <GameBoard
-        v-if="startTime && !gameOver"
+        v-if="countdownSeconds === 0 && !gameOver"
         :game-id="gameId"
         :player-name="playerName"
       />
