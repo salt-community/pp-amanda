@@ -35,7 +35,7 @@ public class GameService {
         Game game = getGameByGameId(gameId);
         activeGames.put(gameId, game);
 
-        Instant startTime = game.joinDeadline().plusSeconds(45);
+        Instant startTime = game.joinDeadline().plusSeconds(5);
 
         messagingTemplate.convertAndSend(
             "/topic/game/" + gameId + "/countdown",
