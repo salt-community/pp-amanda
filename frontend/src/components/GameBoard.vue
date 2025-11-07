@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col items-center gap-4">
+  <div class="flex flex-col items-center gap-4 relative">
     <!-- 🎯 Game Grid -->
     <div v-if="!gameOver" class="grid grid-cols-3 gap-2">
       <div v-for="r in 3" :key="r" class="flex gap-2">
@@ -28,7 +28,7 @@
     </div>
 
     <!-- 🧮 Scoreboard -->
-    <div v-if="results" class="mt-4 text-white">
+    <div v-if="results" class="mt-4 text-white text-center">
       <h3 class="font-bold mb-2">Scores:</h3>
       <ul>
         <li v-for="(score, player) in results" :key="player">
@@ -52,7 +52,6 @@ const { connect, activeCell, sendReaction, results, gameOver } = useGameSocket(
 onMounted(() => connect());
 
 function handleClick(row: number, col: number) {
-  // Only count click if player hit the active cell
   if (activeCell.value?.row === row && activeCell.value?.col === col) {
     sendReaction(row, col);
   }

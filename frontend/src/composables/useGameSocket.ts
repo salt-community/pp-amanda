@@ -6,15 +6,23 @@ import { GAME_URL } from "../config/api";
 export function useGameSocket(gameId: string, playerName: string) {
   const connected = ref(false);
   const countdownSeconds = ref<number | null>(null);
-  const activeCell = ref<{ row: number; col: number } | null>(null);
+
+  const activeCell = ref<{
+    row: number;
+    col: number;
+    round: number;
+    timestamp: number;
+  } | null>(null);
+  const currentRound = ref<number>(0);
   const results = ref<Record<string, number> | null>(null);
   const gameOver = ref(false);
+
   let stomp: Client | null = null;
 
   const connect = () => {
     if (stomp) return;
-
     const wsUrl = `${GAME_URL.replace("http", "ws")}/ws-game`;
+
     stomp = new Client({
       webSocketFactory: () => new WebSocket(wsUrl),
       reconnectDelay: 3000,
@@ -37,8 +45,6 @@ export function useGameSocket(gameId: string, playerName: string) {
   const handleCountdown = (msg: IMessage) => {
     try {
       const data = JSON.parse(msg.body);
-      console.log("COUNTDOWN message:", data);
-
       if (data.eventType === "COUNTDOWN_STARTED") {
         countdownSeconds.value = data.seconds ?? 5;
       }
@@ -49,9 +55,12 @@ export function useGameSocket(gameId: string, playerName: string) {
 
   const handleActiveCell = (msg: IMessage) => {
     try {
-      const { row, col } = JSON.parse(msg.body);
-      activeCell.value = { row, col };
-    } catch {}
+      const data = JSON.parse(msg.body);
+      activeCell.value = data;
+      currentRound.value = data.round ?? currentRound.value + 1;
+    } catch {
+      console.warn("Malformed activeCell:", msg.body);
+    }
   };
 
   const handleResults = (msg: IMessage) => {
@@ -68,10 +77,11 @@ export function useGameSocket(gameId: string, playerName: string) {
 
   const sendReaction = (row: number, col: number) => {
     if (!connected.value || !stomp) return;
+    const reactionTimestamp = Date.now();
     stomp.publish({
       destination: "/app/reaction",
       headers: { playerName },
-      body: JSON.stringify({ gameId, playerName, row, col }),
+      body: JSON.stringify({ gameId, playerName, row, col, reactionTimestamp }),
     });
   };
 
@@ -85,6 +95,7 @@ export function useGameSocket(gameId: string, playerName: string) {
     connected,
     countdownSeconds,
     activeCell,
+    currentRound,
     sendReaction,
     results,
     gameOver,
