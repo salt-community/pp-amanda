@@ -53,8 +53,8 @@ public class GameService {
 
     protected void runGameLoop(String gameId) {
         int totalRounds = 20;
-        int minDelay = 900;
-        int maxDelay = 1500;
+        int minDelay = 1990;
+        int maxDelay = 2000;
         Random random = new Random();
 
         log.info("🎮 Starting game loop for game {}", gameId);
