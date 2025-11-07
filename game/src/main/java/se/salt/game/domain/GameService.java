@@ -35,19 +35,18 @@ public class GameService {
         Game game = getGameByGameId(gameId);
         activeGames.put(gameId, game);
 
-        Instant startTime = game.joinDeadline().plusSeconds(5);
+        Instant startTime = game.joinDeadline().plusSeconds(45);
 
         messagingTemplate.convertAndSend(
             "/topic/game/" + gameId + "/countdown",
             Map.of(
-                "eventType", "COUNTDOWN_STARTED",
-                "startTime", startTime.toString()
+                "eventType", "COUNTDOWN_STARTED"
             )
         );
 
-        log.info(">>> Broadcasting COUNTDOWN_STARTED for game {} at {}", gameId, startTime);
+        //log.info(">>> Broadcasting COUNTDOWN_STARTED for game {} at {}", gameId, startTime);
 
-        log.info("Countdown started for game {} at {}", gameId, startTime);
+        //log.info("Countdown started for game {} at {}", gameId, startTime);
 
         new Thread(() -> {
             try {

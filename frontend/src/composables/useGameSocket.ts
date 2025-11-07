@@ -34,13 +34,20 @@ export function useGameSocket(gameId: string, playerName: string) {
     stomp?.subscribe(`/topic/game/${gameId}/over`, handleGameOver);
   };
 
-  const handleCountdown = (msg: IMessage) => {
+  /*   const handleCountdown = (msg: IMessage) => {
     try {
       const data = JSON.parse(msg.body);
       console.log("COUNTDOWN message:", data);
       if (data.startTime) startTime.value = new Date(data.startTime);
     } catch {
       console.warn("Malformed countdown:", msg.body);
+    }
+  }; */
+
+  const handleCountdown = (msg: IMessage) => {
+    const data = JSON.parse(msg.body);
+    if (data.eventType === "COUNTDOWN_STARTED") {
+      startTime.value = new Date(Date.now() + 45000);
     }
   };
 
