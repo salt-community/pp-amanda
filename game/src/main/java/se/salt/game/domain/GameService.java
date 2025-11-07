@@ -52,20 +52,41 @@ public class GameService {
 
 
     protected void runGameLoop(String gameId) {
-        int rounds = 20;
-        int delayMs = 1200;
+        int totalRounds = 20;
+        int minDelay = 900;
+        int maxDelay = 1500;
         Random random = new Random();
 
-        for (int i = 0; i < rounds; i++) {
-            int row = random.nextInt(3);
-            int col = random.nextInt(3);
+        log.info("🎮 Starting game loop for game {}", gameId);
+
+        int lastRow = -1, lastCol = -1;
+
+        for (int round = 1; round <= totalRounds; round++) {
+            if (Thread.currentThread().isInterrupted()) break;
+
+            int row, col;
+            do {
+                row = random.nextInt(5);
+                col = random.nextInt(5);
+            } while (row == lastRow && col == lastCol);
+            lastRow = row;
+            lastCol = col;
+
+            long startTime = System.currentTimeMillis();
 
             messagingTemplate.convertAndSend(
                 "/topic/game/" + gameId,
-                Map.of("row", row, "col", col)
+                Map.of(
+                    "row", row,
+                    "col", col,
+                    "timestamp", startTime
+                )
             );
 
+            log.debug("→ Round {} sent: row={}, col={}, startTime={}", round, row, col, startTime);
+
             try {
+                int delayMs = random.nextInt(maxDelay - minDelay) + minDelay;
                 Thread.sleep(delayMs);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
@@ -76,12 +97,17 @@ public class GameService {
         Game finishedGame = activeGames.remove(gameId);
         if (finishedGame != null) {
             repo.updatePlayers(finishedGame);
-            log.info("Persisted final results for game {}", gameId);
+            log.info("✅ Persisted final results for game {}", gameId);
         }
 
+        messagingTemplate.convertAndSend(
+            "/topic/game/" + gameId + "/over",
+            Map.of("event", "GAME_OVER", "gameId", gameId)
+        );
 
-        messagingTemplate.convertAndSend("/topic/game/" + gameId + "/over", "Game over!");
+        log.info("🏁 Game loop finished for {}", gameId);
     }
+
 
     public void handleReaction(Player reaction) {
         Game game = activeGames.get(reaction.gameId());
