@@ -14,6 +14,7 @@
 import { ref, watch, onUnmounted } from "vue";
 
 const props = defineProps<{ countdownSeconds: number | null }>();
+const emit = defineEmits(["finished"]);
 
 const secondsLeft = ref<number | null>(null);
 let timer: number | null = null;
@@ -32,8 +33,9 @@ function startCountdown() {
   timer = window.setInterval(() => {
     if (secondsLeft.value !== null) {
       secondsLeft.value -= 1;
-      if (secondsLeft.value <= 0 && timer) {
-        clearInterval(timer);
+      if (secondsLeft.value <= 0) {
+        emit("finished");
+        clearInterval(timer!);
         timer = null;
       }
     }
