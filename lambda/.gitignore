@@ -1,8 +1,0 @@
-.idea
-target
-/localstack.sh
-/event.json
-/response.json
-/deploy-lambda.sh
-/setup-localstack.sh
-/default-lockalstack.sh
