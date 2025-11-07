@@ -40,13 +40,14 @@ public class GameService {
         messagingTemplate.convertAndSend(
             "/topic/game/" + gameId + "/countdown",
             Map.of(
-                "eventType", "COUNTDOWN_STARTED"
+                "eventType", "COUNTDOWN_STARTED",
+                "startTime", startTime.toString()
             )
         );
 
-        //log.info(">>> Broadcasting COUNTDOWN_STARTED for game {} at {}", gameId, startTime);
+        log.info(">>> Broadcasting COUNTDOWN_STARTED for game {} at {}", gameId, startTime);
 
-        //log.info("Countdown started for game {} at {}", gameId, startTime);
+        log.info("Countdown started for game {} at {}", gameId, startTime);
 
         new Thread(() -> {
             try {

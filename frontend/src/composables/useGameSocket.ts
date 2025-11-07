@@ -34,7 +34,7 @@ export function useGameSocket(gameId: string, playerName: string) {
     stomp?.subscribe(`/topic/game/${gameId}/over`, handleGameOver);
   };
 
-  /*   const handleCountdown = (msg: IMessage) => {
+  const handleCountdown = (msg: IMessage) => {
     try {
       const data = JSON.parse(msg.body);
       console.log("COUNTDOWN message:", data);
@@ -42,14 +42,14 @@ export function useGameSocket(gameId: string, playerName: string) {
     } catch {
       console.warn("Malformed countdown:", msg.body);
     }
-  }; */
+  };
 
-  const handleCountdown = (msg: IMessage) => {
+  /*   const handleCountdown = (msg: IMessage) => {
     const data = JSON.parse(msg.body);
     if (data.eventType === "COUNTDOWN_STARTED") {
       startTime.value = new Date(Date.now() + 45000);
     }
-  };
+  }; */
 
   const handleActiveCell = (msg: IMessage) => {
     try {
