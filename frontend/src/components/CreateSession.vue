@@ -90,10 +90,21 @@ function handleGenerate() {
   mutation.mutate();
 }
 
-function copyCode() {
-  if (!mutation.data.value?.sessionId) return;
-  navigator.clipboard.writeText(mutation.data.value.sessionId);
-  copied.value = true;
+async function copyCode() {
+  const code = mutation.data.value?.sessionId;
+  if (!code) return;
+
+  if (navigator?.clipboard?.writeText) {
+    try {
+      await navigator.clipboard.writeText(code);
+      copied.value = true;
+    } catch (err) {
+      console.error("❌ Failed to copy:", err);
+    }
+  } else {
+    window.prompt("Copy this session code:", code);
+  }
+
   setTimeout(() => (copied.value = false), 2000);
 }
 </script>
