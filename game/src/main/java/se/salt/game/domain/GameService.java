@@ -35,19 +35,18 @@ public class GameService {
         Game game = getGameByGameId(gameId);
         activeGames.put(gameId, game);
 
-        Instant startTime = game.joinDeadline().plusSeconds(5);
+        int countdownSeconds = 5;
+        Instant startTime = Instant.now().plusSeconds(countdownSeconds);
 
         messagingTemplate.convertAndSend(
             "/topic/game/" + gameId + "/countdown",
             Map.of(
                 "eventType", "COUNTDOWN_STARTED",
-                "startTime", startTime.toString()
+                "seconds", countdownSeconds
             )
         );
 
-        log.info(">>> Broadcasting COUNTDOWN_STARTED for game {} at {}", gameId, startTime);
-
-        log.info("Countdown started for game {} at {}", gameId, startTime);
+        log.info(">>> Broadcasting COUNTDOWN_STARTED for game {} ({} seconds)", gameId, countdownSeconds);
 
         new Thread(() -> {
             try {
@@ -59,6 +58,7 @@ public class GameService {
             }
         }).start();
     }
+
 
     /**
      * Helper that pauses until a specific instant in time
