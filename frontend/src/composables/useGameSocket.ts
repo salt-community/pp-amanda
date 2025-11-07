@@ -56,7 +56,7 @@ export function useGameSocket(gameId: string, playerName: string) {
   const handleActiveCell = (msg: IMessage) => {
     try {
       const data = JSON.parse(msg.body);
-      activeCell.value = data;
+      activeCell.value = { ...data };
       currentRound.value = data.round ?? currentRound.value + 1;
     } catch {
       console.warn("Malformed activeCell:", msg.body);
