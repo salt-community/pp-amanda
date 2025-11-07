@@ -8,8 +8,6 @@ import se.salt.game.domain.model.Game;
 import se.salt.game.domain.model.Player;
 import se.salt.game.http.exception.NotFoundException;
 
-import java.time.Duration;
-import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -32,12 +30,13 @@ public class GameService {
             log.warn("Game {} already started – skipping duplicate start", gameId);
             return;
         }
+
         Game game = getGameByGameId(gameId);
         activeGames.put(gameId, game);
 
         int countdownSeconds = 5;
-        Instant startTime = Instant.now().plusSeconds(countdownSeconds);
 
+        // Broadcast countdown event — FE handles timing
         messagingTemplate.convertAndSend(
             "/topic/game/" + gameId + "/countdown",
             Map.of(
@@ -48,28 +47,9 @@ public class GameService {
 
         log.info(">>> Broadcasting COUNTDOWN_STARTED for game {} ({} seconds)", gameId, countdownSeconds);
 
-        new Thread(() -> {
-            try {
-                waitUntil(startTime);
-                runGameLoop(gameId);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                log.warn("Countdown thread interrupted for game {}", gameId);
-            }
-        }).start();
+        new Thread(() -> runGameLoop(gameId)).start();
     }
 
-
-    /**
-     * Helper that pauses until a specific instant in time
-     */
-    protected void waitUntil(Instant startAt) throws InterruptedException {
-        long delay = Duration.between(Instant.now(), startAt).toMillis();
-        if (delay > 0) {
-            log.info("Waiting {} ms until game starts at {}", delay, startAt);
-            Thread.sleep(delay);
-        }
-    }
 
     protected void runGameLoop(String gameId) {
         int rounds = 20;
