@@ -1,9 +1,6 @@
 <template>
-  <div v-if="state === 'waiting'">Waiting for game to start...</div>
-  <div v-else-if="state === 'countdown'">
-    Game starts in {{ formattedTime }}
-  </div>
-  <div v-else>Go!</div>
+  <div v-if="!hasStarted">Waiting for game to start...</div>
+  <div v-else>{{ formattedTime }}</div>
 </template>
 
 <script setup lang="ts">
@@ -16,15 +13,16 @@ const props = defineProps<{
 const secondsLeft = ref<number | null>(null);
 let timer: number | null = null;
 
-const state = ref<"waiting" | "countdown" | "started">("waiting");
+const hasStarted = computed(() => secondsLeft.value !== null);
 
 watch(
   () => props.startTime,
   (newTime) => {
     if (!newTime) return;
-    state.value = "countdown";
+    if (timer) clearInterval(timer);
     startCountdown(newTime);
-  }
+  },
+  { immediate: true }
 );
 
 function startCountdown(target: Date) {
