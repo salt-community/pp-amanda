@@ -8,6 +8,7 @@ import se.salt.game.domain.model.Type;
 import se.salt.game.http.exception.DeadlinePassedException;
 import se.salt.game.http.exception.NotFoundException;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.Optional;
 
@@ -17,6 +18,8 @@ import java.util.Optional;
 public class InitGameService {
 
     private final GameRepository repo;
+
+    private final GameService gameService;
 
     public void initGame(String sessionId) {
         Optional<Game> existing = repo.findBySessionId(sessionId);
@@ -42,6 +45,17 @@ public class InitGameService {
 
         repo.saveNewGame(updated);
         log.info("✅ Initialized gameId={} (sessionId={})", updated.gameId(), sessionId);
+        new Thread(() -> {
+            try {
+                long delayMs = Duration.between(Instant.now(), joinDeadline).toMillis();
+                Thread.sleep(delayMs);
+                log.info("⌛ Join window closed, auto-starting game {}", updated.gameId());
+                gameService.startGame(updated.gameId());
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                log.warn("⛔ Start scheduler interrupted for game {}", updated.gameId());
+            }
+        }).start();
     }
 
 
