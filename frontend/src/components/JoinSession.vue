@@ -3,7 +3,7 @@
     <button
       type="button"
       @click="openPopup"
-      class="bg-zinc-900 border-8 border-double border-amber-600 text-amber-600 font-bold py-3 px-6 rounded-lg text-lg hover:bg-zinc-800 transition"
+      class="border-4 border-dashed border-amber-600 text-amber-600 font-bold py-3 px-6 rounded-lg text-lg hover:bg-zinc-800 transition"
     >
       <h1>🟠 JOIN VIA INVITATION CODE 🟠</h1>
     </button>
@@ -28,14 +28,14 @@
               type="text"
               maxlength="4"
               placeholder="XXXX"
-              class="text-center text-2xl font-extrabold bg-zinc-900 border-8 border-double border-amber-600 text-amber-600 font-mono py-3 px-8 rounded-lg tracking-[0.3em] placeholder-amber-600 placeholder-opacity-70 w-[180px] focus:outline-none"
+              class="text-center text-2xl font-extrabold bg-zinc-900 border-8 border-double border-amber-600 text-amber-600 font-mono tabular-nums py-3 px-8 rounded-lg tracking-[0.3em] placeholder-amber-600 placeholder-opacity-70 w-[180px] focus:outline-none"
             />
 
             <button
               type="submit"
               class="mt-3 text-lg text-amber-600 hover:text-amber-400 font-mono transition"
             >
-              {{ mutation.isPending.value ? "Connecting..." : "Join →" }}
+              {{ mutation.isPending.value ? "Connecting..." : "Proceed →" }}
             </button>
           </form>
           <div

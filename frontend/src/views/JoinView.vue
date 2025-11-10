@@ -26,24 +26,9 @@ function handleJoined({
   <div>
     <Teleport to="body">
       <div
-        style="
-          position: fixed;
-          inset: 0;
-          background: rgba(0, 0, 0, 0.5);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          z-index: 9999;
-        "
+        class="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999]"
       >
-        <div
-          style="
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            min-width: 300px;
-          "
-        >
+        <div class="quickr-panel p-8 w-[320px]">
           <PlayerNameForm :session-id="sessionId" @joined="handleJoined" />
         </div>
       </div>
