@@ -3,9 +3,9 @@
     <button
       type="button"
       @click="openPopup"
-      class="bg-amber-600 text-white py-3 px-6 rounded-lg text-lg"
+      class="bg-amber-600 border-8 border-double border-zinc-900 text-zinc-900 font-bold py-3 px-6 rounded-lg text-lg"
     >
-      <h1>START NEW GAMING SESSION 🚀</h1>
+      <h1>⚫️ START NEW GAMING SESSION ⚫️</h1>
     </button>
 
     <Teleport to="body">
@@ -22,9 +22,10 @@
             type="button"
             @click="handleGenerate"
             :disabled="mutation.isPending.value"
-            class="bg-zinc-800 hover:bg-zinc-600 disabled:bg-amber-500 border-2 border-double border-amber-600 text-amber-600 font-mono py-3 px-6 rounded-lg mb-4 select-all tracking-widest"
+            class="bg-zinc-900 hover:bg-zinc-900 disabled:opacity-70 border-2 border-double border-amber-600 text-amber-600 font-mono text-xl font-bold py-4 px-8 rounded-lg tracking-[0.2em] shadow-[0_0_15px_rgba(255,191,0,0.3)] transition-all duration-200 select-none"
           >
-            {{ mutation.isPending.value ? "Generating..." : "Get Code" }}
+            <span v-if="!mutation.isPending.value">GET CODE</span>
+            <span v-else class="animate-pulse">💥</span>
           </button>
 
           <div v-if="mutation.isSuccess.value && mutation.data.value">
@@ -40,8 +41,6 @@
               To Game Session ->
             </RouterLink>
           </div>
-
-          <!-- Error message -->
           <p v-if="mutation.error" class="text-red-600 mt-3">
             {{ mutation.error }}
           </p>
