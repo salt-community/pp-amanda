@@ -3,39 +3,42 @@
     <button
       type="button"
       @click="openPopup"
-      class="border-4 border-dashed border-amber-600 text-white py-3 px-6 rounded-lg text-lg"
+      class="border-4 border-dashed border-amber-600 text-amber-600 font-bold py-3 px-6 rounded-lg text-lg"
     >
-      <h1>JOIN VIA INVITATION CODE 🔗</h1>
+      <h1>🟠 JOIN VIA INVITATION CODE 🟠</h1>
     </button>
 
     <Teleport to="body">
       <div
         v-if="showPopup"
-        style="
-          position: fixed;
-          inset: 0;
-          background: rgba(0, 0, 0, 0.5);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          z-index: 9999;
-        "
         @click.self="closePopup"
+        class="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999]"
       >
         <div
-          style="
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            min-width: 300px;
-          "
+          class="bg-zinc-900 border-4 border-dashed border-amber-600 p-8 rounded-2xl w-[320px] h-[220px] text-center shadow-2xl relative flex flex-col items-center justify-center"
         >
-          <h2>Enter Code 🔗</h2>
+          <div
+            class="text-xl font-bold bg-zinc-900 text-amber-600 font-mono py-3 px-6 rounded-lg mb-4 select-all tracking-widest"
+          >
+            Enter Code 🔗
+          </div>
 
-          <form @submit.prevent="handleSubmit">
-            <input v-model="sessionId" type="text" placeholder="Enter Code" />
-            <button type="submit">
-              {{ mutation.isPending.value ? "Starting..." : "Join" }}
+          <form
+            @submit.prevent="handleSubmit"
+            class="flex flex-col items-center space-y-3"
+          >
+            <input
+              v-model="sessionId"
+              type="text"
+              placeholder="XXXX"
+              maxlength="4"
+              class="text-center text-2xl font-bold bg-zinc-900 border-2 border-double border-amber-600 text-amber-600 font-mono py-2 px-3 rounded-lg w-[160px] tracking-[0.3em] focus:outline-none"
+            />
+            <button
+              type="submit"
+              class="block text-amber-600 hover:text-amber-800 font-mono"
+            >
+              {{ mutation.isPending.value ? "Starting..." : "Join ->" }}
             </button>
 
             <p v-if="mutation.isSuccess.value && mutation.data.value">
@@ -45,14 +48,6 @@
             <p v-if="mutation.error">
               {{ mutation.error }}
             </p>
-
-            <!--             <button
-              type="button"
-              @click="closePopup"
-              :disabled="mutation.isPending.value"
-            >
-              Close
-            </button> -->
           </form>
         </div>
       </div>

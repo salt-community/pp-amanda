@@ -15,14 +15,14 @@
         class="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999]"
       >
         <div
-          class="bg-zinc-900 border-2 border-dashed border-amber-600 p-8 rounded-2xl w-[320px] h-[200px] text-center shadow-2xl relative flex flex-col items-center justify-center"
+          class="bg-zinc-900 border-4 border-dashed border-amber-600 p-8 rounded-2xl w-[320px] h-[200px] text-center shadow-2xl relative flex flex-col items-center justify-center"
         >
           <button
             v-if="!mutation.isSuccess.value"
             type="button"
             @click="handleGenerate"
             :disabled="mutation.isPending.value"
-            class="bg-zinc-900 hover:bg-zinc-900 disabled:opacity-70 border-2 border-double border-amber-600 text-amber-600 font-mono text-xl font-bold py-4 px-8 rounded-lg tracking-[0.2em] shadow-[0_0_15px_rgba(255,191,0,0.3)] transition-all duration-200 select-none"
+            class="bg-zinc-900 hover:bg-zinc-900 disabled:opacity-70 border-8 border-double border-amber-600 text-amber-600 font-mono text-xl font-bold py-4 px-8 rounded-lg tracking-[0.2em] shadow-[0_0_15px_rgba(255,191,0,0.3)] transition-all duration-200 select-none"
           >
             <span v-if="!mutation.isPending.value">GET CODE</span>
             <span v-else class="animate-pulse">💥</span>
