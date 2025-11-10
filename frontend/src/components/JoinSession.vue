@@ -1,6 +1,10 @@
 <template>
   <div>
-    <button type="button" @click="openPopup">
+    <button
+      type="button"
+      @click="openPopup"
+      class="border-4 border-dashed border-amber-600 text-white py-3 px-6 rounded-lg text-lg"
+    >
       <h1>JOIN VIA INVITATION CODE 🔗</h1>
     </button>
 
@@ -29,33 +33,26 @@
           <h2>Enter Code 🔗</h2>
 
           <form @submit.prevent="handleSubmit">
-            <input
-              v-model="sessionId"
-              type="text"
-              placeholder="Enter Invitation Code"
-            />
+            <input v-model="sessionId" type="text" placeholder="Enter Code" />
             <button type="submit">
-              {{ mutation.isPending.value ? "Starting..." : "Join Session" }}
+              {{ mutation.isPending.value ? "Starting..." : "Join" }}
             </button>
 
             <p v-if="mutation.isSuccess.value && mutation.data.value">
               Successfully Joined! <br />
-              <RouterLink :to="`/join/${sessionId}`"
-                >GO TO GAME SESSION</RouterLink
-              >
             </p>
 
             <p v-if="mutation.error">
               {{ mutation.error }}
             </p>
 
-            <button
+            <!--             <button
               type="button"
               @click="closePopup"
               :disabled="mutation.isPending.value"
             >
               Close
-            </button>
+            </button> -->
           </form>
         </div>
       </div>
@@ -66,7 +63,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useJoinSession } from "../composables/useJoinSession";
-import { RouterLink } from "vue-router";
+import router from "../router";
 
 const sessionId = ref("");
 const mutation = useJoinSession();
@@ -82,5 +79,8 @@ const closePopup = () => {
 function handleSubmit() {
   if (!sessionId.value.trim()) return;
   mutation.mutate(sessionId.value);
+  router.push({
+    path: `/join/${sessionId}`,
+  });
 }
 </script>
