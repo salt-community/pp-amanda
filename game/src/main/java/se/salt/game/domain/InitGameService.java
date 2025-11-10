@@ -34,7 +34,8 @@ public class InitGameService {
             new NotFoundException("No base game found for session " + sessionId));
 
         Instant now = Instant.now();
-        Instant joinDeadline = now.plusSeconds(40);
+        //TODO increase time
+        Instant joinDeadline = now.plusSeconds(10);
         Long ttl = now.plusSeconds(3600).getEpochSecond();
 
         Game updated = base.toBuilder()
