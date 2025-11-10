@@ -3,7 +3,7 @@
     <button
       type="button"
       @click="openPopup"
-      class="bg-blue-600 text-white py-3 px-6 rounded-lg text-lg"
+      class="bg-amber-600 text-white py-3 px-6 rounded-lg text-lg"
     >
       <h1>START NEW GAMING SESSION 🚀</h1>
     </button>
@@ -11,62 +11,38 @@
     <Teleport to="body">
       <div
         v-if="showPopup"
-        style="
-          position: fixed;
-          inset: 0;
-          background: rgba(0, 0, 0, 0.5);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          z-index: 9999;
-        "
         @click.self="closePopup"
+        class="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999]"
       >
         <div
-          style="
-            background: white;
-            padding: 32px;
-            border-radius: 12px;
-            min-width: 320px;
-            text-align: center;
-          "
+          class="bg-zinc-900 border-2 border-dashed border-amber-600 p-8 rounded-2xl w-[320px] h-[200px] text-center shadow-2xl relative flex flex-col items-center justify-center"
         >
-          <button type="button" @click="closePopup">❎</button>
-
           <button
             v-if="!mutation.isSuccess.value"
             type="button"
             @click="handleGenerate"
             :disabled="mutation.isPending.value"
-            class="bg-green-600 text-white py-2 px-4 rounded mb-3"
+            class="bg-zinc-800 hover:bg-zinc-600 disabled:bg-amber-500 border-2 border-double border-amber-600 text-amber-600 font-mono py-3 px-6 rounded-lg mb-4 select-all tracking-widest"
           >
             {{ mutation.isPending.value ? "Generating..." : "Get Code" }}
           </button>
 
           <div v-if="mutation.isSuccess.value && mutation.data.value">
             <div
-              class="text-6xl font-bold bg-gray-100 py-3 px-6 rounded-lg mb-3 select-all"
+              class="text-6xl font-bold bg-zinc-900 border-2 border-double border-amber-600 text-amber-600 font-mono py-3 px-6 rounded-lg mb-4 select-all tracking-widest"
             >
               {{ mutation.data.value.sessionId }}
             </div>
-
-            <button
-              type="button"
-              @click="copyCode"
-              class="bg-gray-800 text-white py-2 px-4 rounded mb-3"
-            >
-              {{ copied ? "Copied!" : "Copy Code" }}
-            </button>
-
             <RouterLink
               :to="`/join/${mutation.data.value.sessionId}`"
-              class="block text-blue-600 underline mt-2"
+              class="block text-amber-600 hover:text-amber-800 font-mono"
             >
-              Go to Game Session
+              To Game Session ->
             </RouterLink>
           </div>
 
-          <p v-if="mutation.error" class="text-red-600 mt-2">
+          <!-- Error message -->
+          <p v-if="mutation.error" class="text-red-600 mt-3">
             {{ mutation.error }}
           </p>
         </div>
@@ -81,30 +57,11 @@ import { useCreateSession } from "../composables/useCreateSession";
 
 const mutation = useCreateSession();
 const showPopup = ref(false);
-const copied = ref(false);
 
 const openPopup = () => (showPopup.value = true);
 const closePopup = () => (showPopup.value = false);
 
 function handleGenerate() {
   mutation.mutate();
-}
-
-async function copyCode() {
-  const code = mutation.data.value?.sessionId;
-  if (!code) return;
-
-  if (navigator?.clipboard?.writeText) {
-    try {
-      await navigator.clipboard.writeText(code);
-      copied.value = true;
-    } catch (err) {
-      console.error("❌ Failed to copy:", err);
-    }
-  } else {
-    window.prompt("Copy this session code:", code);
-  }
-
-  setTimeout(() => (copied.value = false), 2000);
 }
 </script>
