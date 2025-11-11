@@ -21,10 +21,8 @@ public class SessionService {
 
     private final SqsPublisher sqsPublisher;
 
-    private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-
     public Session generateSession() {
-        String id = generateRandomId();
+        String id = generateSessionId();
         log.info("Creating new session with ID: {}", id);
 
         Instant createdAt = Instant.now();
@@ -56,15 +54,9 @@ public class SessionService {
                 new NotFoundException("Session with ID: %s not found".formatted(sessionId)));
     }
 
-    private String generateRandomId() {
-        StringBuilder id = new StringBuilder();
+    private String generateSessionId() {
         Random random = new Random();
-
-        for (int i = 0; i < 4; i++) {
-            int index = random.nextInt(CHARACTERS.length());
-            id.append(CHARACTERS.charAt(index));
-        }
-
-        return id.toString();
+        int number = random.nextInt(10_000);
+        return String.format("%04d", number);
     }
 }
