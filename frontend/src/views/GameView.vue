@@ -11,7 +11,7 @@ const gameId = route.params.gameId as string;
 const playerName = route.query.player as string;
 const showCountdown = ref(true);
 
-const { connect, connected, countdownSeconds, gameOver } = useGameSocket(
+const { connect, countdownSeconds, gameOver } = useGameSocket(
   gameId,
   playerName
 );
