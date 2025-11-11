@@ -36,7 +36,7 @@ public class GameService {
         Game game = getGameByGameId(gameId);
         activeGames.put(gameId, game);
 
-        int countdownSeconds = 5;
+        int countdownSeconds = 10;
 
         // Broadcast countdown event — FE handles timing
         messagingTemplate.convertAndSend(
