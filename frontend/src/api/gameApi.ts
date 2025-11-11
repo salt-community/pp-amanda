@@ -52,7 +52,7 @@ export async function gameResult(gameId: string): Promise<ResultResponse> {
 }
 
 export async function getRandomName(): Promise<string> {
-  const res = await fetch(`${GAME_URL}/random-name`);
+  const res = await fetch(`${GAME_URL}/game/random-name`);
   if (!res.ok) throw new Error("Failed to fetch randomized name");
   return res.json();
 }
