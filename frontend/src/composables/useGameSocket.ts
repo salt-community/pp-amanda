@@ -46,7 +46,7 @@ export function useGameSocket(gameId: string, playerName: string) {
     try {
       const data = JSON.parse(msg.body);
       if (data.eventType === "COUNTDOWN_STARTED") {
-        countdownSeconds.value = data.seconds ?? 5;
+        countdownSeconds.value = data.seconds ?? 10;
       }
     } catch {
       console.warn("Malformed countdown:", msg.body);
