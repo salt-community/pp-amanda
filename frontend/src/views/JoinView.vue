@@ -23,10 +23,12 @@ function handleJoined({
 </script>
 
 <template>
-  <div>
+  <div
+    class="min-h-screen flex flex-col items-center justify-start pt-60 sm:justify-center sm:pt-0 gap-6 sm:gap-10"
+  >
     <Teleport to="body">
       <div
-        class="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999]"
+        class="fixed inset-0 bg-black/30 flex items-center justify-center z-[9999]"
       >
         <div class="quickr-panel p-8 w-[320px]">
           <PlayerNameForm :session-id="sessionId" @joined="handleJoined" />

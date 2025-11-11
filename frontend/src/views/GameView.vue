@@ -22,7 +22,9 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="p-4 text-center">
+  <div
+    class="min-h-screen flex flex-col items-center justify-start pt-60 sm:justify-center sm:pt-0 gap-6 sm:gap-10"
+  >
     <div class="flex flex-col items-center mt-10">
       <h1 class="quickr-title">Reaction Game</h1>
       <CountdownBox
