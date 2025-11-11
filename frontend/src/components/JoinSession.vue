@@ -26,8 +26,11 @@
             <input
               v-model="sessionId"
               type="text"
+              inputmode="numeric"
+              pattern="[0-9]*"
               maxlength="4"
               placeholder="XXXX"
+              @input="sessionId = sessionId.replace(/\D/g, '')"
               class="text-center text-2xl font-extrabold bg-zinc-900 border-8 border-double border-amber-600 text-amber-600 font-mono tabular-nums py-3 px-8 rounded-lg tracking-[0.3em] placeholder-amber-600 placeholder-opacity-70 w-[180px] focus:outline-none"
             />
 
