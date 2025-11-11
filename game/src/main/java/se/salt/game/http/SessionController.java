@@ -28,6 +28,11 @@ public class SessionController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    @GetMapping("/random-name")
+    public ResponseEntity<String> randomName() {
+        String generatedName = service.getRandomName();
+        return ResponseEntity.ok(generatedName);
+    }
 
     @PostMapping("/{sessionId}/join")
     public ResponseEntity<GameResponse> joinGame(
