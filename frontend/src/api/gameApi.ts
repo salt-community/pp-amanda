@@ -1,4 +1,4 @@
-import type { GameResponse, GameRequest } from "../types/game";
+import type { GameResponse, GameRequest, ResultResponse } from "../types/game";
 import { GAME_URL } from "../config/api";
 
 export async function initQuickr(
@@ -43,4 +43,10 @@ export async function startGame(gameId: string) {
     throw new Error(`Failed to start game (status ${response.status})`);
   }
   return true;
+}
+
+export async function gameResult(gameId: string): Promise<ResultResponse> {
+  const res = await fetch(`${GAME_URL}/game/${gameId}/result`);
+  if (!res.ok) throw new Error("Failed to fetch game result");
+  return await res.json();
 }

@@ -10,3 +10,7 @@ export interface GameResponse {
   joinTimeLimit: string | null;
   endTime: string | null;
 }
+
+export interface ResultResponse {
+  players: Record<string, number>;
+}
