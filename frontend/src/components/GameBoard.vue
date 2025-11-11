@@ -1,47 +1,68 @@
 <template>
   <div
-    class="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 text-white flex flex-col items-center justify-center gap-6"
+    class="min-h-screen flex flex-col items-center justify-center gap-8 px-4"
   >
-    <h1 class="text-4xl font-extrabold tracking-wide">⚡ Reaction Game ⚡</h1>
-    <div class="text-sm text-gray-400">Active: {{ activeCell }}</div>
-
-    <!-- ✅ Single grid -->
+    <h1
+      class="text-3xl sm:text-4xl md:text-5xl text-amber-500 font-bold tracking-widest uppercase"
+    >
+      Reaction Game
+    </h1>
+    <div
+      v-if="results"
+      class="text-sm sm:text-base font-mono text-amber-500 tracking-wide"
+    >
+      Your score:
+      <span class="text-amber-400 font-bold">
+        {{ results[props.playerName] || 0 }}
+      </span>
+    </div>
     <div
       v-if="!gameOver"
-      class="grid gap-4"
-      :style="{ gridTemplateColumns: `repeat(${gridSize}, 6rem)` }"
+      class="border-8 border-double border-amber-700 rounded-md p-8 flex flex-col items-center justify-center"
     >
-      <button
-        v-for="cell in gridCells"
-        :key="`${cell.row}-${cell.col}`"
-        @click="handleClick(cell.row, cell.col)"
-        :class="[
-          'w-24 h-24 rounded-xl border border-gray-700 shadow-inner transition-all duration-300 ease-in-out select-none',
-          activeCell?.row === cell.row && activeCell?.col === cell.col
-            ? 'bg-lime-400 scale-110 shadow-lg ring-4 ring-lime-500 animate-pulse'
-            : 'bg-gray-800 hover:bg-gray-700 text-white active:scale-95',
-        ]"
-      ></button>
-    </div>
-
-    <!-- 🏁 Game Over -->
-    <div v-else class="text-5xl font-extrabold text-red-400 animate-bounce">
-      Game Over!
+      <div
+        class="grid gap-4 place-items-center"
+        :style="{
+          gridTemplateColumns: `repeat(${gridSize}, minmax(3rem, 5rem))`,
+        }"
+      >
+        <button
+          v-for="cell in gridCells"
+          :key="`${cell.row}-${cell.col}`"
+          @click="handleClick(cell.row, cell.col)"
+          class="text-5xl sm:text-6xl select-none transition-all duration-50"
+          :class="[
+            activeCell?.row === cell.row && activeCell?.col === cell.col
+              ? 'scale-100 animate-pulse drop-shadow-[0_0_15px_rgba(255,191,0,0.7)]'
+              : 'scale-50 opacity-40 cursor-not-allowed drop-shadow-none',
+          ]"
+        >
+          {{
+            activeCell?.row === cell.row && activeCell?.col === cell.col
+              ? "🟠"
+              : "⚫️"
+          }}
+        </button>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { useGameSocket } from "../composables/useGameSocket";
 
-const props = defineProps<{ gameId: string; playerName: string }>();
+const props = defineProps<{
+  gameId: string;
+  playerName: string;
+}>();
 const { connect, activeCell, sendReaction, gameOver } = useGameSocket(
   props.gameId,
   props.playerName
 );
 
-const gridSize = 5;
+const results = ref<Record<string, number>>({});
+const gridSize = 4;
 const gridCells = computed(() =>
   Array.from({ length: gridSize * gridSize }, (_, i) => ({
     row: Math.floor(i / gridSize),
