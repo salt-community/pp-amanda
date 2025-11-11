@@ -23,9 +23,8 @@ onMounted(() => {
 
 <template>
   <div class="p-4 text-center">
-    <p>Status: {{ connected ? "Connected" : "Disconnected" }}</p>
     <div class="flex flex-col items-center mt-10">
-      <h1 class="text-2xl font-bold mb-4">Reaction Game</h1>
+      <h1 class="quickr-title">Reaction Game</h1>
       <CountdownBox
         v-if="showCountdown"
         :countdown-seconds="countdownSeconds"

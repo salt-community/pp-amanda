@@ -1,12 +1,10 @@
 <template>
   <div class="text-2xl font-mono">
-    <template v-if="secondsLeft === null">
-      Waiting for game to start...
-    </template>
-    <template v-else-if="secondsLeft > 0">
-      Starting in {{ secondsLeft }}...
-    </template>
-    <template v-else> 🎯 Go! </template>
+    <div v-if="secondsLeft === null">Waiting for game to start...</div>
+    <div v-else-if="secondsLeft > 0" class="quickr-title">
+      {{ secondsLeft }}...
+    </div>
+    <div v-else>🎯 Go!</div>
   </div>
 </template>
 
