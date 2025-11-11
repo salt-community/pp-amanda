@@ -1,6 +1,8 @@
 <template>
   <div class="flex flex-col items-center">
-    <div class="quickr-title">ENTER NAME:</div>
+    <div class="text-amber-600 font-bold tracking-widest text-xl mb-4">
+      ENTER NAME:
+    </div>
 
     <form
       @submit.prevent="submitName"
