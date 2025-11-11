@@ -12,5 +12,5 @@ export interface GameResponse {
 }
 
 export interface ResultResponse {
-  players: Record<string, number>;
+  results: Record<string, number>;
 }
