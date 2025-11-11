@@ -4,6 +4,7 @@ import { useRoute } from "vue-router";
 import CountdownBox from "../components/CountdownBox.vue";
 import GameBoard from "../components/GameBoard.vue";
 import { useGameSocket } from "../composables/useGameSocket";
+import ScoreBoard from "../components/ScoreBoard.vue";
 
 const route = useRoute();
 const gameId = route.params.gameId as string;
@@ -36,6 +37,8 @@ onMounted(() => {
         :game-id="gameId"
         :player-name="playerName"
       />
+
+      <ScoreBoard v-if="gameOver" :game-id="gameId" />
     </div>
   </div>
 </template>
