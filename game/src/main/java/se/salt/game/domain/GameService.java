@@ -9,9 +9,11 @@ import se.salt.game.domain.model.Player;
 import se.salt.game.http.exception.NotFoundException;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -139,4 +141,18 @@ public class GameService {
             .orElseThrow(() ->
                 new NotFoundException("Game with ID: %s not found".formatted(gameId)));
     }
+
+    public Map<String, Double> getResult(String gameId) {
+        Game game = getGameByGameId(gameId);
+
+        return game.players().entrySet().stream()
+            .sorted(Map.Entry.comparingByValue())
+            .collect(Collectors.toMap(
+                Map.Entry::getKey,
+                Map.Entry::getValue,
+                (a, b) -> a,
+                LinkedHashMap::new
+            ));
+    }
+
 }
