@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useRoute, useRouter } from "vue-router";
-import PlayerNameForm from "../components/PlayerNameForm.vue";
+import RandomizePlayerName from "../components/RandomizePlayerName.vue";
 import type { GameResponse } from "../types/game";
 
 const route = useRoute();
@@ -23,17 +23,7 @@ function handleJoined({
 </script>
 
 <template>
-  <div
-    class="min-h-screen flex flex-col items-center justify-start pt-60 sm:justify-center sm:pt-0 gap-6 sm:gap-10"
-  >
-    <Teleport to="body">
-      <div
-        class="fixed inset-0 bg-black/30 flex items-center justify-center z-[9999]"
-      >
-        <div class="quickr-panel p-8 w-[320px]">
-          <PlayerNameForm :session-id="sessionId" @joined="handleJoined" />
-        </div>
-      </div>
-    </Teleport>
+  <div class="min-h-screen flex bg-black/30 items-center justify-center">
+    <RandomizePlayerName :session-id="sessionId" @joined="handleJoined" />
   </div>
 </template>
