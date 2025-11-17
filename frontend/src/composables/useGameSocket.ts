@@ -6,6 +6,7 @@ import { GAME_URL } from "../config/api";
 export function useGameSocket(gameId: string, playerName: string) {
   const connected = ref(false);
   const countdownSeconds = ref<number | null>(null);
+  const liveScores = ref<Record<string, number> | null>(null);
 
   const activeCell = ref<{
     row: number;
@@ -57,6 +58,11 @@ export function useGameSocket(gameId: string, playerName: string) {
     try {
       const data = JSON.parse(msg.body);
       activeCell.value = { ...data };
+
+      if (data.scores) {
+        liveScores.value = data.scores;
+      }
+
       currentRound.value = data.round ?? currentRound.value + 1;
     } catch {
       console.warn("Malformed activeCell:", msg.body);
@@ -96,6 +102,7 @@ export function useGameSocket(gameId: string, playerName: string) {
     countdownSeconds,
     activeCell,
     currentRound,
+    liveScores,
     sendReaction,
     results,
     gameOver,

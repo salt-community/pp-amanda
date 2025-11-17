@@ -7,15 +7,14 @@
     >
       Reaction Game
     </h1>
-    <div
-      v-if="results"
-      class="text-sm sm:text-base font-mono text-amber-500 tracking-wide"
-    >
-      Your score:
-      <span class="text-amber-400 font-bold">
-        {{ results[props.playerName] || 0 }}
-      </span>
+    <div v-if="liveScores" class="mt-6">
+      <ul>
+        <li v-for="(score, player) in liveScores" :key="player">
+          {{ player }}: {{ score }}
+        </li>
+      </ul>
     </div>
+
     <div
       v-if="!gameOver"
       class="border-8 border-double border-amber-700 rounded-md p-8 flex flex-col items-center justify-center"
@@ -49,19 +48,17 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted } from "vue";
 import { useGameSocket } from "../composables/useGameSocket";
 
 const props = defineProps<{
   gameId: string;
   playerName: string;
 }>();
-const { connect, activeCell, sendReaction, gameOver } = useGameSocket(
-  props.gameId,
-  props.playerName
-);
 
-const results = ref<Record<string, number>>({});
+const { connect, activeCell, sendReaction, gameOver, liveScores } =
+  useGameSocket(props.gameId, props.playerName);
+
 const gridSize = 4;
 const gridCells = computed(() =>
   Array.from({ length: gridSize * gridSize }, (_, i) => ({
