@@ -1,18 +1,20 @@
 package se.salt.game.domain;
 
+import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import se.salt.game.domain.model.Game;
 import se.salt.game.domain.model.Player;
 import se.salt.game.http.exception.NotFoundException;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -22,10 +24,23 @@ public class GameService {
 
     private final GameRepository repo;
 
-    private final SimpMessagingTemplate messagingTemplate;
+    private final GameLoopRunner loopRunner;
+
+    private final ReactionHandler reactionHandler;
+
+    private final GameBroadcaster broadcaster;
 
     private final Map<String, Game> activeGames = new ConcurrentHashMap<>();
 
+    private final ExecutorService gameExecutor = Executors.newCachedThreadPool();
+
+    @PostConstruct
+    public void init() {
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            log.info("Shutting down game executor...");
+            gameExecutor.shutdownNow();
+        }));
+    }
 
     public void startGame(String gameId) {
         if (activeGames.containsKey(gameId)) {
@@ -36,104 +51,38 @@ public class GameService {
         Game game = getGameByGameId(gameId);
         activeGames.put(gameId, game);
 
-        int countdownSeconds = 10;
+        // broadcast countdown
+        broadcaster.sendCountdown(gameId, 10);
 
-        // Broadcast countdown event — FE handles timing
-        messagingTemplate.convertAndSend(
-            "/topic/game/" + gameId + "/countdown",
-            Map.of(
-                "eventType", "COUNTDOWN_STARTED",
-                "seconds", countdownSeconds
-            )
-        );
+        // --- Extracted callbacks (clean!) ---
+        Supplier<Game> fetchGame = () -> activeGames.get(gameId);
 
-        log.info(">>> Broadcasting COUNTDOWN_STARTED for game {} ({} seconds)", gameId, countdownSeconds);
+        Consumer<Game> saveGame = updated -> activeGames.put(gameId, updated);
 
-        new Thread(() -> runGameLoop(gameId)).start();
-    }
-
-
-    protected void runGameLoop(String gameId) {
-        int totalRounds = 20;
-        int minDelay = 900;
-        int maxDelay = 1500;
-        Random random = new Random();
-
-        log.info("🎮 Starting game loop for game {}", gameId);
-
-        int lastRow = -1, lastCol = -1;
-
-        for (int round = 1; round <= totalRounds; round++) {
-            if (Thread.currentThread().isInterrupted()) break;
-
-            int row, col;
-            do {
-                row = random.nextInt(5);
-                col = random.nextInt(5);
-            } while (row == lastRow && col == lastCol);
-            lastRow = row;
-            lastCol = col;
-
-            long startTime = System.currentTimeMillis();
-
-            messagingTemplate.convertAndSend(
-                "/topic/game/" + gameId,
-                Map.of(
-                    "row", row,
-                    "col", col,
-                    "timestamp", startTime
-                )
-            );
-
-            log.debug("→ Round {} sent: row={}, col={}, startTime={}", round, row, col, startTime);
-
-            try {
-                int delayMs = random.nextInt(maxDelay - minDelay) + minDelay;
-                Thread.sleep(delayMs);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                break;
+        Runnable onFinish = () -> {
+            Game finished = activeGames.remove(gameId);
+            if (finished != null) {
+                repo.updatePlayers(finished);
             }
-        }
+        };
 
-        Game finishedGame = activeGames.remove(gameId);
-        if (finishedGame != null) {
-            repo.updatePlayers(finishedGame);
-            log.info("✅ Persisted final results for game {}", gameId);
-        }
-
-        messagingTemplate.convertAndSend(
-            "/topic/game/" + gameId + "/over",
-            Map.of("event", "GAME_OVER", "gameId", gameId)
+        // --- Submit to executor instead of new Thread ---
+        gameExecutor.submit(() ->
+            loopRunner.run(gameId, fetchGame, saveGame, onFinish)
         );
-
-        log.info("🏁 Game loop finished for {}", gameId);
     }
 
 
     public void handleReaction(Player reaction) {
         Game game = activeGames.get(reaction.gameId());
-        if (game == null) {
-            log.warn("Reaction for unknown or expired game {}", reaction.gameId());
+        if (game == null) return;
 
-        }
-        String player = reaction.playerName();
+        String playerName = reaction.playerName();
+        Game updated = reactionHandler.applyReaction(game, playerName);
 
-        // If new player somehow sneaks in, initialize them
-        assert game != null;
-        Map<String, Double> updatedPlayers = new HashMap<>(game.players());
-        double newScore = updatedPlayers.getOrDefault(player, 0.0) + 1;
-        updatedPlayers.put(player, newScore);
-
-        log.info("Player {} reacted (score now {}) in game {}", player, newScore, reaction.gameId());
-
-        Game updated = game.toBuilder().players(updatedPlayers).build();
         activeGames.put(reaction.gameId(), updated);
 
-        messagingTemplate.convertAndSend(
-            "/topic/game/" + reaction.gameId() + "/results",
-            updated
-        );
+        broadcaster.sendResults(reaction.gameId(), updated); // live scoreboard
     }
 
     private Game getGameByGameId(String gameId) {
