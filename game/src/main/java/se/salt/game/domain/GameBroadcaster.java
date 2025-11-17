@@ -3,8 +3,10 @@ package se.salt.game.domain;
 import lombok.AllArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
+import se.salt.game.domain.model.Cell;
 import se.salt.game.domain.model.Game;
 
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -18,11 +20,10 @@ public class GameBroadcaster {
             Map.of("eventType", "COUNTDOWN_STARTED", "seconds", seconds));
     }
 
-    public void sendRound(String gameId, Map<String, Double> scores, int row, int col) {
+    public void sendRound(String gameId, Map<String, Double> scores, List<Cell> cells) {
         template.convertAndSend("/topic/game/" + gameId,
             Map.of(
-                "row", row,
-                "col", col,
+                "cells", cells,
                 "scores", scores
             )
         );
