@@ -46,7 +46,7 @@
             class="mt-4 text-green-500 font-mono text-sm animate-pulse"
           ></div>
           <p v-if="mutation.error" class="text-red-600 text-sm mt-3">
-            {{ mutation.error.message || mutation.error }}
+            {{ mutation.error }}
           </p>
         </div>
       </div>
@@ -68,7 +68,14 @@ const closePopup = () => (showPopup.value = false);
 
 function handleSubmit() {
   if (!sessionId.value.trim()) return;
-  mutation.mutate(sessionId.value);
-  router.push({ path: `/join/${sessionId.value}` });
+
+  mutation.mutate(sessionId.value, {
+    onSuccess: () => {
+      router.push({ path: `/join/${sessionId.value}` });
+    },
+    onError: (err) => {
+      console.warn("Join failed:", err);
+    },
+  });
 }
 </script>
