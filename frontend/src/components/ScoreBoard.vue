@@ -23,7 +23,7 @@ function getMedal(index: number) {
         v-for="([name, time], index) in Object.entries(result.results)"
         :key="name"
       >
-        {{ getMedal(index + 1) }}. {{ name }} – {{ time.toFixed(2) }}
+        {{ getMedal(index) }} {{ name }} – {{ time.toFixed(2) }}
       </li>
     </ul>
   </div>
