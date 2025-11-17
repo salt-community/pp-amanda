@@ -18,10 +18,16 @@ public class GameBroadcaster {
             Map.of("eventType", "COUNTDOWN_STARTED", "seconds", seconds));
     }
 
-    public void sendRound(String gameId, int row, int col) {
+    public void sendRound(String gameId, Map<String, Double> scores, int row, int col) {
         template.convertAndSend("/topic/game/" + gameId,
-            Map.of("row", row, "col", col, "timestamp", System.currentTimeMillis()));
+            Map.of(
+                "row", row,
+                "col", col,
+                "scores", scores
+            )
+        );
     }
+
 
     public void sendResults(String gameId, Game game) {
         template.convertAndSend("/topic/game/" + gameId + "/results", game);
