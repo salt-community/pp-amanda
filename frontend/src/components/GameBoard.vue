@@ -31,16 +31,12 @@
           @click="handleClick(cell.row, cell.col)"
           class="text-5xl sm:text-6xl select-none transition-all duration-50"
           :class="[
-            activeCell?.row === cell.row && activeCell?.col === cell.col
+            isActive(cell)
               ? 'scale-100 animate-pulse drop-shadow-[0_0_15px_rgba(255,191,0,0.7)]'
               : 'scale-50 opacity-40 cursor-not-allowed drop-shadow-none',
           ]"
         >
-          {{
-            activeCell?.row === cell.row && activeCell?.col === cell.col
-              ? "🟠"
-              : "⚫️"
-          }}
+          {{ isActive(cell) ? "🟠" : "⚫️" }}
         </button>
       </div>
     </div>
@@ -56,7 +52,7 @@ const props = defineProps<{
   playerName: string;
 }>();
 
-const { connect, activeCell, sendReaction, gameOver, liveScores } =
+const { connect, activeCells, sendReaction, gameOver, liveScores } =
   useGameSocket(props.gameId, props.playerName);
 
 const gridSize = 4;
@@ -67,9 +63,17 @@ const gridCells = computed(() =>
   }))
 );
 
+function isActive(cell: { row: number; col: number }) {
+  return activeCells.value.some(
+    (c) => c.row === cell.row && c.col === cell.col
+  );
+}
+
 function handleClick(row: number, col: number) {
-  if (activeCell.value?.row === row && activeCell.value?.col === col) {
-    sendReaction(row, col);
+  const match = activeCells.value.find((c) => c.row === row && c.col === col);
+
+  if (match) {
+    sendReaction(row, col, match.activatedAt);
   }
 }
 
