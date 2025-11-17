@@ -4,10 +4,12 @@
   >
     <CreateSession />
     <JoinSession />
+    <Footer></Footer>
   </div>
 </template>
 
 <script setup>
 import JoinSession from "../components/JoinSession.vue";
 import CreateSession from "../components/CreateSession.vue";
+import Footer from "../components/Footer.vue";
 </script>
