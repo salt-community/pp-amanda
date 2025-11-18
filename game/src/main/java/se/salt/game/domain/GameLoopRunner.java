@@ -27,17 +27,29 @@ public class GameLoopRunner {
     ) {
         Random r = new Random();
 
-        for (int i = 0; i < 20; i++) {
+        List<Cell> cells = new ArrayList<>();
+
+        long startTime = System.currentTimeMillis();
+        long runtime = 35_000;
+
+        while (System.currentTimeMillis() - startTime < runtime) {
             Game game = gameSupplier.get();
             if (game == null) break;
 
             long now = System.currentTimeMillis();
 
-            List<Cell> cells = new ArrayList<>();
-            for (int k = 0; k < 2; k++) {
+            // 1) Remove expired cells
+            cells.removeIf(c -> now > c.expiresAt());
+
+            // 2) Maybe spawn a new cell (max 2)
+            if (cells.size() < 4 && r.nextDouble() < 0.09) {
                 int row = r.nextInt(4);
                 int col = r.nextInt(4);
-                cells.add(new Cell(row, col, now));
+
+                long lifetime = 400 + r.nextInt(1000);
+                long expiresAt = now + lifetime;
+
+                cells.add(new Cell(row, col, now, expiresAt));
             }
 
             broadcaster.sendRound(
@@ -49,7 +61,7 @@ public class GameLoopRunner {
             gameUpdater.accept(game);
 
             try {
-                Thread.sleep(r.nextInt(600) + 900);
+                Thread.sleep(50);
             } catch (InterruptedException e) {
                 break;
             }
