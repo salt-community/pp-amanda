@@ -20,10 +20,10 @@ function getMedal(index: number) {
 
     <ul v-else-if="result">
       <li
-        v-for="([name, time], index) in Object.entries(result.results)"
+        v-for="([name, score], index) in Object.entries(result.results)"
         :key="name"
       >
-        {{ getMedal(index) }} {{ name }} – {{ time.toFixed(2) }}
+        {{ getMedal(index) }} {{ name }} – {{ score.toFixed(0) }}
       </li>
     </ul>
   </div>

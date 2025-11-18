@@ -36,7 +36,7 @@ export function useGameSocket(gameId: string, playerName: string) {
     connected.value = true;
     stomp?.subscribe(`/topic/game/${gameId}/countdown`, handleCountdown);
     stomp?.subscribe(`/topic/game/${gameId}`, handleActiveCell);
-    stomp?.subscribe(`/topic/game/${gameId}/results`, handleResults);
+    stomp?.subscribe(`/topic/game/${gameId}/scores`, handleResults);
     stomp?.subscribe(`/topic/game/${gameId}/over`, handleGameOver);
   };
 
