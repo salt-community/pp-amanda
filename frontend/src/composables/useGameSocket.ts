@@ -9,7 +9,7 @@ export function useGameSocket(gameId: string, playerName: string) {
   const liveScores = ref<Record<string, number> | null>(null);
 
   const activeCells = ref<
-    Array<{ row: number; col: number; activatedAt: number }>
+    Array<{ row: number; col: number; activatedAt: number; expiresAt: number }>
   >([]);
   const currentRound = ref<number>(0);
   const results = ref<Record<string, number> | null>(null);
