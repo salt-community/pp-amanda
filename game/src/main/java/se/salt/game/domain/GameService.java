@@ -77,8 +77,7 @@ public class GameService {
         Game game = activeGames.get(reaction.gameId());
         if (game == null) return;
 
-        String playerName = reaction.playerName();
-        Game updated = reactionHandler.applyReaction(game, playerName);
+        Game updated = reactionHandler.applyReaction(game, reaction);
 
         activeGames.put(reaction.gameId(), updated);
 

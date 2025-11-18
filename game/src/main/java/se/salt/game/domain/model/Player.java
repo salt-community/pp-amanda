@@ -6,6 +6,9 @@ import lombok.Builder;
 public record Player(
     String gameId,
     String playerName,
-    long reactionTimeMs
+    int row,
+    int col,
+    long activatedAt,
+    long reactionTimestamp
 ) {
 }

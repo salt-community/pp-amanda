@@ -31,7 +31,7 @@ public class GameBroadcaster {
 
 
     public void sendResults(String gameId, Game game) {
-        template.convertAndSend("/topic/game/" + gameId + "/results", game);
+        template.convertAndSend("/topic/game/" + gameId + "/scores", game);
     }
 
     public void sendGameOver(String gameId) {
