@@ -76,8 +76,19 @@ public class InitGameService {
             try {
                 long delayMs = Duration.between(Instant.now(), joinDeadline).toMillis();
                 Thread.sleep(delayMs);
-                log.info("⌛ Join window closed, auto-starting game {}", updated.gameId());
-                gameService.startGame(updated.gameId());
+
+                log.info("⌛ Join window closed for game {}", updated.gameId());
+
+                Game readyGame = repo.findByGameId(updated.gameId()).orElse(null);
+                if (readyGame == null) return;
+
+                if (readyGame.players().isEmpty()) {
+                    log.info("⛔ No players joined – canceling game {}", updated.gameId());
+                } else {
+                    log.info("▶️ Starting game {} with {} players",
+                        updated.gameId(), readyGame.players().size());
+                    gameService.startGame(updated.gameId());
+                }
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
                 log.warn("⛔ Start scheduler interrupted for game {}", updated.gameId());
