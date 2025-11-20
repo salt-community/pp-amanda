@@ -6,9 +6,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import se.salt.game.domain.model.Game;
 import se.salt.game.domain.model.Player;
+import se.salt.game.domain.model.TopScore;
 import se.salt.game.http.exception.NotFoundException;
 
+import java.util.Comparator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
@@ -22,7 +25,9 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class GameService {
 
-    private final GameRepository repo;
+    private final GameRepository gameRepo;
+
+    private final TopScoreRepository topScoreRepo;
 
     private final GameLoopRunner loopRunner;
 
@@ -62,7 +67,12 @@ public class GameService {
         Runnable onFinish = () -> {
             Game finished = activeGames.remove(gameId);
             if (finished != null) {
-                repo.updatePlayers(finished);
+                gameRepo.updatePlayers(finished);
+
+                finished.players().forEach((playerName, score) -> {
+                    topScoreRepo.save(new TopScore(playerName, score.intValue()));
+                    log.info("Saved toplist entry: {} -> {}", playerName, score);
+                });
             }
         };
 
@@ -85,7 +95,7 @@ public class GameService {
     }
 
     private Game getGameByGameId(String gameId) {
-        return repo.findByGameId(gameId)
+        return gameRepo.findByGameId(gameId)
             .orElseThrow(() ->
                 new NotFoundException("Game with ID: %s not found".formatted(gameId)));
     }
@@ -103,4 +113,11 @@ public class GameService {
             ));
     }
 
+    public List<TopScore> getTop10() {
+        List<TopScore> all = topScoreRepo.findAll();
+        return all.stream()
+            .sorted(Comparator.comparingInt(TopScore::score).reversed())
+            .limit(10)
+            .toList();
+    }
 }

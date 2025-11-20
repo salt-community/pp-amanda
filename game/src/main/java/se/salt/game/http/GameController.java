@@ -11,8 +11,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import se.salt.game.domain.GameService;
 import se.salt.game.domain.model.Player;
+import se.salt.game.domain.model.TopScore;
 import se.salt.game.http.dto.ResultResponse;
 
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -40,5 +42,10 @@ public class GameController {
         return ResponseEntity.ok(ResultResponse.from(scoreBoard));
     }
 
+    @GetMapping("/top-list")
+    public ResponseEntity<Map<String, Object>> topList() {
+        List<TopScore> topScoreList = service.getTop10();
+        return ResponseEntity.ok(Map.of("data", topScoreList));
+    }
 
 }
