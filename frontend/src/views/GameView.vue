@@ -5,6 +5,7 @@ import CountdownBox from "../components/CountdownBox.vue";
 import GameBoard from "../components/GameBoard.vue";
 import { useGameSocket } from "../composables/useGameSocket";
 import ScoreBoard from "../components/ScoreBoard.vue";
+import BackButton from "../components/BackButton.vue";
 
 const route = useRoute();
 const gameId = route.params.gameId as string;
@@ -25,6 +26,7 @@ onMounted(() => {
   <div
     class="min-h-screen flex flex-col items-center justify-start pt-60 sm:justify-center sm:pt-0 gap-6 sm:gap-10"
   >
+    <BackButton />
     <div class="flex flex-col items-center mt-10">
       <h1 class="quickr-title">Reaction Game</h1>
       <CountdownBox

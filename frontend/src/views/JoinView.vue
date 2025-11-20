@@ -2,6 +2,7 @@
 import { useRoute, useRouter } from "vue-router";
 import RandomizePlayerName from "../components/RandomizePlayerName.vue";
 import type { GameResponse } from "../types/game";
+import BackButton from "../components/BackButton.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -23,6 +24,7 @@ function handleJoined({
 </script>
 
 <template>
+  <BackButton />
   <div class="min-h-screen flex bg-black/30 items-center justify-center">
     <RandomizePlayerName :session-id="sessionId" @joined="handleJoined" />
   </div>
