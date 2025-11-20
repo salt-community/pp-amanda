@@ -51,8 +51,8 @@
 </template>
 
 <script setup lang="ts">
+import { useCreateSession } from "@/composables";
 import { ref } from "vue";
-import { useCreateSession } from "../composables/useCreateSession";
 
 const mutation = useCreateSession();
 const showPopup = ref(false);

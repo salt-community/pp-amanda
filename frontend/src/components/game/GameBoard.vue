@@ -44,8 +44,8 @@
 </template>
 
 <script setup lang="ts">
+import { useGameSocket } from "@/composables";
 import { computed, onMounted } from "vue";
-import { useGameSocket } from "../composables/useGameSocket";
 
 const props = defineProps<{
   gameId: string;

@@ -1,11 +1,8 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
-import CountdownBox from "../components/CountdownBox.vue";
-import GameBoard from "../components/GameBoard.vue";
-import { useGameSocket } from "../composables/useGameSocket";
-import ScoreBoard from "../components/ScoreBoard.vue";
-import BackButton from "../components/BackButton.vue";
+import { useGameSocket } from "@/composables";
+import { BackButton, ScoreBoard, GameBoard, CountdownBox } from "@/components";
 
 const route = useRoute();
 const gameId = route.params.gameId as string;

@@ -47,10 +47,12 @@
 
 <script setup lang="ts">
 import { ref, watch, onMounted } from "vue";
-import { useJoinDeadline } from "../composables/useJoinDeadline";
-import { usePlayerJoin } from "../composables/usePlayerJoin";
-import { useRandomizedName } from "../composables/useRandomizedName";
-import type { GameResponse } from "../types/game";
+import type { GameResponse } from "../../types/game";
+import {
+  useJoinDeadline,
+  usePlayerJoin,
+  useRandomizedName,
+} from "@/composables";
 
 const props = defineProps<{ sessionId: string }>();
 

@@ -1,9 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
-import LobbyView from "../views/LobbyView.vue";
-import JoinView from "../views/JoinView.vue";
-import GameView from "../views/GameView.vue";
-import TopListView from "../views/TopListView.vue";
-import AboutView from "../views/AboutView.vue";
+import { AboutView, GameView, JoinView, LobbyView, TopListView } from "@/views";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),

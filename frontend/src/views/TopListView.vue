@@ -7,5 +7,5 @@
 </template>
 
 <script setup>
-import TopList from "../components/TopList.vue";
+import { TopList } from "@/components";
 </script>

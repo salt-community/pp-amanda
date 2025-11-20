@@ -1,18 +1,3 @@
-<script setup lang="ts">
-import { useScoreBoard } from "../composables/useScoreBoard";
-
-const props = defineProps<{ gameId: string }>();
-
-const { data: result, isLoading, isError } = useScoreBoard(props.gameId);
-
-function getMedal(index: number) {
-  if (index === 0) return "🥇";
-  if (index === 1) return "🥈";
-  if (index === 2) return "🥉";
-  return "🐌";
-}
-</script>
-
 <template>
   <div class="text-center">
     <p v-if="isLoading">Loading...</p>
@@ -28,3 +13,18 @@ function getMedal(index: number) {
     </ul>
   </div>
 </template>
+
+<script setup lang="ts">
+import { useScoreBoard } from "@/composables";
+
+const props = defineProps<{ gameId: string }>();
+
+const { data: result, isLoading, isError } = useScoreBoard(props.gameId);
+
+function getMedal(index: number) {
+  if (index === 0) return "🥇";
+  if (index === 1) return "🥈";
+  if (index === 2) return "🥉";
+  return "🐌";
+}
+</script>

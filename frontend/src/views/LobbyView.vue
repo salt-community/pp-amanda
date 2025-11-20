@@ -8,6 +8,5 @@
 </template>
 
 <script setup>
-import JoinSession from "../components/JoinSession.vue";
-import CreateSession from "../components/CreateSession.vue";
+import { JoinSession, CreateSession } from "@/components";
 </script>

@@ -1,5 +1,5 @@
+import { getRandomName } from "@/api";
 import { useQuery, useQueryClient } from "@tanstack/vue-query";
-import { getRandomName } from "../api/gameApi";
 
 export function useRandomizedName() {
   const queryClient = useQueryClient();

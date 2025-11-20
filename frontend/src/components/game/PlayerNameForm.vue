@@ -26,9 +26,9 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { useJoinDeadline } from "../composables/useJoinDeadline";
-import { usePlayerJoin } from "../composables/usePlayerJoin";
-import type { GameResponse } from "../types/game";
+
+import type { GameResponse } from "@/types/game";
+import { useJoinDeadline, usePlayerJoin } from "@/composables";
 
 const props = defineProps<{ sessionId: string }>();
 

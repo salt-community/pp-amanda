@@ -37,7 +37,7 @@
 </template>
 
 <script setup lang="ts">
-import { useTopList } from "../composables/useTopList";
+import { useTopList } from "@/composables";
 
 const { data, isLoading, isError } = useTopList();
 </script>

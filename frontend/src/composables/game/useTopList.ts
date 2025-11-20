@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/vue-query";
-import { getTopList } from "../api/gameApi";
+import { getTopList } from "@/api";
 
 export function useTopList() {
   return useQuery({

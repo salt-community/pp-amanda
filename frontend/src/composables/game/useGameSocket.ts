@@ -1,7 +1,7 @@
 import { ref, onUnmounted } from "vue";
 import { Client } from "@stomp/stompjs";
 import type { IMessage, IFrame } from "@stomp/stompjs";
-import { GAME_URL } from "../config/api";
+import { GAME_URL } from "@/config/api";
 
 export function useGameSocket(gameId: string, playerName: string) {
   const connected = ref(false);

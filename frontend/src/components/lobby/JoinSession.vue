@@ -59,8 +59,8 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { useJoinSession } from "../composables/useJoinSession";
-import router from "../router";
+import router from "../../router";
+import { useJoinSession } from "@/composables";
 
 const sessionId = ref("");
 const mutation = useJoinSession();
