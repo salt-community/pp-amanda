@@ -5,11 +5,17 @@
     <div
       class="min-h-screen bg-black/40 flex flex-col items-center gap-6 justify-center"
     >
+      <QuickrHeader />
+
       <RouterView />
+      <QuickrFooter />
     </div>
   </div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import QuickrFooter from "./components/QuickrFooter.vue";
+import QuickrHeader from "./components/QuickrHeader.vue";
+</script>
 
 <style></style>
