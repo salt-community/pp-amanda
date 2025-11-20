@@ -35,8 +35,23 @@ export async function joinGame(sessionId: string, playerName: string) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ playerName }),
   });
-  if (!res.ok) throw new Error("Failed to join game");
-  return await res.json();
+
+  const text = await res.text();
+
+  if (!res.ok) {
+    let message = "Failed to join game";
+
+    try {
+      const json = JSON.parse(text);
+      message = json.error || json.message || message;
+    } catch {
+      message = text || message;
+    }
+
+    throw new Error(message);
+  }
+
+  return JSON.parse(text);
 }
 
 export async function startGame(gameId: string) {

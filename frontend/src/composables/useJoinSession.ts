@@ -4,8 +4,6 @@ import { joinSession } from "../api/lobbyApi";
 export function useJoinSession() {
   return useMutation({
     mutationFn: (sessionId: string) => joinSession(sessionId),
-    onSuccess: (data) => {
-      data;
-    },
+    onError: (error: any) => error.message,
   });
 }

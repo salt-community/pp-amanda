@@ -59,6 +59,8 @@ const emit = defineEmits<{
     e: "joined",
     payload: { gameResponse: GameResponse; playerName: string }
   ): void;
+
+  (e: "error", message: string): void;
 }>();
 
 const { data, refetch, isPending: isRandomPending } = useRandomizedName();
@@ -83,8 +85,9 @@ async function submitName() {
   try {
     const response = await join(randomName.value);
     emit("joined", { gameResponse: response, playerName: randomName.value });
-  } catch (error) {
-    console.error("Failed to join game:", error);
+  } catch (error: any) {
+    const message = error?.message ?? "Failed to join session";
+    emit("error", message);
   }
 }
 </script>

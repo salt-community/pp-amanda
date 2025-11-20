@@ -45,8 +45,11 @@
             v-if="mutation.isSuccess.value && mutation.data.value"
             class="mt-4 text-green-500 font-mono text-sm animate-pulse"
           ></div>
-          <p v-if="mutation.error" class="text-red-600 text-sm mt-3">
-            {{ mutation.error }}
+          <p
+            v-if="mutation.error.value.message"
+            class="text-red-600 text-sm mt-3"
+          >
+            {{ mutation.error.value.message }}
           </p>
         </div>
       </div>

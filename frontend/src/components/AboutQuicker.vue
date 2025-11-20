@@ -1,2 +1,2 @@
-<template>Here you can read about Quick-R</template>
-<script lang="en"></script>
+<template><div>Here you can read about Quick-R</div></template>
+<script setup lang="ts"></script>
