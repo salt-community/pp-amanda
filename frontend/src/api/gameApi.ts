@@ -1,4 +1,9 @@
-import type { GameResponse, GameRequest, ResultResponse } from "../types/game";
+import type {
+  GameResponse,
+  GameRequest,
+  ResultResponse,
+  TopScore,
+} from "../types/game";
 import { GAME_URL } from "../config/api";
 
 export async function initQuickr(
@@ -57,4 +62,12 @@ export async function getRandomName(): Promise<string> {
 
   const json = await res.json();
   return json.randomName;
+}
+
+export async function getTopList(): Promise<TopScore[]> {
+  const res = await fetch(`${GAME_URL}/game/top-list`);
+  if (!res.ok) throw new Error("Failed to fetch toplist");
+
+  const json = await res.json();
+  return json.data;
 }
