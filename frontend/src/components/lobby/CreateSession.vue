@@ -3,7 +3,7 @@
     <button
       type="button"
       @click="openPopup"
-      class="bg-amber-600 border-8 border-double border-zinc-900 text-zinc-900 font-bold py-3 px-6 rounded-lg text-lg"
+      class="bg-amber-600 border-8 border-double border-zinc-900 text-zinc-900 hover:bg-amber-600/80 font-bold py-3 px-6 rounded-lg text-lg"
     >
       <h1>⚫️ START NEW GAMING SESSION ⚫️</h1>
     </button>
@@ -29,8 +29,11 @@
           </button>
 
           <div v-if="mutation.isSuccess.value && mutation.data.value">
+            <div class="text-xl text-amber-600 font-mono mb-4 tracking-widest">
+              SESSION CODE:
+            </div>
             <div
-              class="text-6xl font-bold bg-zinc-900 border-2 border-double border-amber-600 text-amber-600 font-mono py-3 px-6 rounded-lg mb-4 select-all tracking-widest"
+              class="text-6xl font-bold bg-black/100 border-2 border-double border-amber-600 text-amber-600 font-mono py-3 px-6 rounded-lg mb-4 select-all tracking-widest"
             >
               {{ mutation.data.value.sessionId }}
             </div>

@@ -61,9 +61,10 @@ const emit = defineEmits<{
     e: "joined",
     payload: { gameResponse: GameResponse; playerName: string }
   ): void;
-
   (e: "error", message: string): void;
 }>();
+
+const localError = ref("");
 
 const { data, refetch, isPending: isRandomPending } = useRandomizedName();
 const randomName = ref("");
@@ -82,13 +83,21 @@ const { mutateAsync: join, isPending } = usePlayerJoin(props.sessionId);
 const { joinClosed } = useJoinDeadline(props.sessionId);
 
 async function submitName() {
-  if (!randomName.value || joinClosed.value) return;
+  localError.value = "";
+
+  if (!randomName.value) return;
+
+  if (joinClosed.value) {
+    localError.value = "Deadline passed for this session...";
+    return;
+  }
 
   try {
     const response = await join(randomName.value);
     emit("joined", { gameResponse: response, playerName: randomName.value });
   } catch (error: any) {
     const message = error?.message ?? "Failed to join session";
+    localError.value = message;
     emit("error", message);
   }
 }
