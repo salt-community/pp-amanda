@@ -25,7 +25,7 @@ onMounted(() => {
   >
     <BackButton />
     <div class="flex flex-col items-center mt-10">
-      <h1 class="quickr-title">Reaction Game</h1>
+      <!-- <h1 class="quickr-title">Reaction Game</h1> -->
       <CountdownBox
         v-if="showCountdown"
         :countdown-seconds="countdownSeconds"

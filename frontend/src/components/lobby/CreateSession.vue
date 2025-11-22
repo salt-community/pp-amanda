@@ -5,7 +5,9 @@
       @click="openPopup"
       class="bg-amber-600 border-8 border-double border-zinc-900 text-zinc-900 hover:bg-amber-600/80 font-bold py-3 px-6 rounded-lg text-lg"
     >
-      <h1>⚫️ START NEW GAMING SESSION ⚫️</h1>
+      <h1 class="text-base sm:text-lg font-bold">
+        ⚫️ START NEW GAMING SESSION ⚫️
+      </h1>
     </button>
 
     <Teleport to="body">

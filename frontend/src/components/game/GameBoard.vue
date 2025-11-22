@@ -2,12 +2,12 @@
   <h1
     class="text-3xl sm:text-4xl md:text-5xl text-amber-500 font-bold tracking-widest uppercase"
   >
-    Reaction Game
+    Quickr
   </h1>
-  <div v-if="liveScores" class="mt-6">
+  <div v-if="topScores" class="mt-6 min-h-[5rem]">
     <ul>
-      <li v-for="(score, player) in liveScores" :key="player">
-        {{ player }}: {{ score }}
+      <li v-for="[name, score] in topScores" :key="name">
+        {{ name }}: {{ score }}
       </li>
     </ul>
   </div>
@@ -72,6 +72,14 @@ function handleClick(row: number, col: number) {
     sendReaction(row, col, match.activatedAt);
   }
 }
+
+const topScores = computed(() => {
+  if (!liveScores.value) return [];
+
+  return Object.entries(liveScores.value)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 3);
+});
 
 onMounted(() => connect());
 </script>

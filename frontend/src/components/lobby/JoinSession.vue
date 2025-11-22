@@ -5,7 +5,9 @@
       @click="openPopup"
       class="border-4 border-dashed border-amber-600 text-amber-600 font-bold py-3 px-6 rounded-lg text-lg hover:bg-black/90 transition"
     >
-      <h1>🟠 JOIN VIA INVITATION CODE 🟠</h1>
+      <h1 class="text-base sm:text-lg font-bold">
+        🟠 JOIN VIA INVITATION CODE 🟠
+      </h1>
     </button>
 
     <Teleport to="body">

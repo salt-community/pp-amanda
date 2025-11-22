@@ -1,7 +1,10 @@
 <template>
   <div class="text-2xl font-mono flex items-center justify-center">
-    <div v-if="secondsLeft === null" class="text-amber-600 italic">
-      Waiting for game to start...
+    <div
+      v-if="secondsLeft === null"
+      class="text-amber-600 italic text-center w-full flex justify-center"
+    >
+      Waiting for more people to join...
     </div>
     <div
       v-else-if="secondsLeft > 0"
