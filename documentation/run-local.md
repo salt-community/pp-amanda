@@ -2,14 +2,13 @@
 
 This project includes a complete local setup so you can run all microservices, the database layer and the Lambda with full AWS-like behavior — but **without using AWS credits**.
 
-Local development requires you to have:
+###  Prerequisites
 
-- Spring Boot (Lobby + Game)
-- Vue 3 (Frontend)
-- LocalStack (DynamoDB, SQS, Lambda)
-- Docker Desktop
-- Node.js 20+
-- AWS CLI (for local DynamoDB/SQS debugging)
+- Docker Desktop (required for LocalStack)
+- Node.js 20+ 
+- AWS CLI (used by LocalStack scripts)
+- Java 21 
+- Maven Wrapper (included)
 
 ---
 ## Setup
