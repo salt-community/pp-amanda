@@ -54,11 +54,11 @@ mvn spring-boot:run
 
 ```
 
-FOr the frontend
+For the frontend
 ```bash
 cd ./frontend
 npm install
-npm run dev
+npm run dev -- --host
 ```
 
 Start your Docker Desktop and anywhere in your terminal
