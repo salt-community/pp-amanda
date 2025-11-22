@@ -42,7 +42,7 @@ public class GameLoopRunner {
             cells.removeIf(c -> now > c.expiresAt());
 
             // 2) Maybe spawn a new cell (max 2)
-            if (cells.size() < 4 && r.nextDouble() < 0.09) {
+            if (cells.size() < 2 && r.nextDouble() < 0.09) {
                 int row = r.nextInt(4);
                 int col = r.nextInt(4);
 

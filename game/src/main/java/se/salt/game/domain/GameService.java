@@ -57,7 +57,7 @@ public class GameService {
         activeGames.put(gameId, game);
 
         // broadcast countdown
-        broadcaster.sendCountdown(gameId, 10);
+        broadcaster.sendCountdown(gameId, 5);
 
         // --- Extracted callbacks (clean!) ---
         Supplier<Game> fetchGame = () -> activeGames.get(gameId);
@@ -104,7 +104,7 @@ public class GameService {
         Game game = getGameByGameId(gameId);
 
         return game.players().entrySet().stream()
-            .sorted(Map.Entry.comparingByValue())
+            .sorted(Map.Entry.<String, Double>comparingByValue().reversed())
             .collect(Collectors.toMap(
                 Map.Entry::getKey,
                 Map.Entry::getValue,
