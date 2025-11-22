@@ -3,6 +3,9 @@ logging:
     root: INFO
     se.salt.lobby: DEBUG
 
+cors:
+  allowAll: true
+
 aws:
   region: eu-north-1
   dynamodb:
