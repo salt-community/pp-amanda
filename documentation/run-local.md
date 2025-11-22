@@ -1,8 +1,8 @@
-# Run Quick-R Locally (with LocalStack)
+# Run Quickr Locally (with LocalStack)
 
 This project includes a complete local setup so you can run all microservices, the database layer and the Lambda with full AWS-like behavior — but **without using AWS credits**.
 
-Local development uses:
+Local development requires you to have:
 
 - Spring Boot (Lobby + Game)
 - Vue 3 (Frontend)
@@ -12,32 +12,90 @@ Local development uses:
 - AWS CLI (for local DynamoDB/SQS debugging)
 
 ---
+## Setup
 
-# 1. Start Backend Services (Lobby + Game)
+#### Clone repository!
 
-Open **two terminals**:
-
-### Terminal 1 — Lobby
 ```bash
-cd ./lobby
-mvn clean install
-mvn spring-boot:run
+git clone https://github.com/salt-community/pp-amanda.git
+cd ./pp-amanda
 ```
 
+You need to add a `.env` file in each service.
 
-# Try out Quick-R locally using LocalStack
+#### LOBBY
+```bash
+cd ./lobby
 
-Eventually I will no longer be able to host this on AWS and therefore I early on
-decided to have a local set-up as well as I have been using it during development
-phase (Once I got it to work...)
+touch .env
 
-And so can you... clone this repo...
+cat << 'EOF' > .env
+SPRING_PROFILES_ACTIVE=dev
+AWS_REGION=eu-north-1
+LOBBY_PORT=8080
+FRONTEND_PORT=5173
+EOF
+```
 
-And make sure you have docker desktop installed, node version 20 and AWS CLI??? :)
+#### GAME
+```bash
+cd ./game
 
-Open a terminal and just split it in 4 squares..
+touch .env
 
-Step into `pp-amanda/lobby` respective `pp-amanda/game`
+cat << 'EOF' > .env
+SPRING_PROFILES_ACTIVE=dev
+AWS_REGION=eu-north-1
+GAME_PORT=8081
+FRONTEND_PORT=5173
+EOF
+```
+
+#### FRONTEND
+```bash
+cd ./frontend
+
+touch .env
+
+cat << 'EOF' > .env
+VITE_LOBBY_URL=http://localhost:8080
+VITE_GAME_URL=http://localhost:8081
+EOF
+```
+
+>>NOTE:
+>>To test on a mobile device, replace localhost with your computer's
+>>LAN IP (e.g. 192.168.x.x).
+
+#### LAMBDA
+```bash
+cd ./lambda
+touch .env
+
+cat << EOF > .env
+AWS_REGION=eu-north-1
+AWS_ACCESS_KEY_ID=test
+AWS_SECRET_ACCESS_KEY=test
+
+LOCALSTACK_HOST=localstack
+LOCALSTACK_URL=http://localstack:4566
+
+GAME_TABLE=Games
+SESSION_TABLE=Sessions
+
+QUEUE_NAME=session-created-queue
+
+GAME_SERVICE_URL=http://host.docker.internal:8081
+
+ROLE_ARN=arn:aws:iam::000000000000:role/dummy-role
+
+LAMBDA_NAME=session-created-handler
+EOF
+```
+
+# Get the services running
+
+Open a terminal and make new tabs when needed to run everything!
 
 In each tab
 ```bash
@@ -85,14 +143,11 @@ Then deploy your Lambda and connect it to the SQS
 ```
 
 
-NOW ether just run a post from Postman or similar
+NOW let's play! 
 
-Download and import this collection: JSON
-
-Or do it in the real frontend
-
-Init a session and ask someone to join (hard on local network but if you know how, do it - check your you computer IP
-and share it for someone else to replace localhost with the serial-nr)
+Init a session and ask someone to join. 
+>NOTE that you must replace localhost in Frontend `.env` to
+correct(your computers) LAN IP (e.g. 192.168.x.x).
 
 Check the logs in each terminal tab to see how the services are communicating/integrating
 
@@ -101,16 +156,22 @@ You can extend with multiple terminal windows to watch how the tables are filled
 
 ```bash
 watch -n 10 'aws dynamodb scan \
-  --table-name Sessions \
-  --endpoint-url http://localhost:8000 \
-  --query "Items[*].{ID: id.S, Name: name.S}" \
-  --output table'
+--table-name Sessions \
+--endpoint-url http://localhost:8000 \
+--query "Items[*].{ID: id.S, Name: name.S}" \
+--output table'
 ```
 ```bash
 watch -n 10 'aws dynamodb scan \
-  --table-name Games\
-  --endpoint-url http://localhost:8000 \
-  --query "Items[*].{ID: id.S, Name: name.S}" \
-  --output table'
+--table-name Games\
+--endpoint-url http://localhost:8000 \
+--query "Items[*].{ID: id.S, Name: name.S}" \
+--output table'
 ```
-
+```bash
+watch -n 10 'aws dynamodb scan \
+--table-name TopScores \
+--endpoint-url http://localhost:8000 \
+--query "Items[*].{Player: playerName.S, Score: score.N}" \
+--output table'
+```
