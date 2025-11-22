@@ -246,6 +246,32 @@ The Loop:
 and broadcast current cells and live scores to FE.
 
 `GameLoopRunner.java` 
+
+```
+GameLoopRunner
+    ├─ loop every 50ms (Thread.sleep(50)):
+    │    ├─ load game state via gameSupplier.get()
+    │    │
+    │    ├─ remove expired cells
+    │    │      (cell.expiresAt < now)
+    │    │
+    │    ├─ maybe spawn new cell (max 2 total)
+    │    │      - 9% chance each tick
+    │    │      - random row/col in 4x4 grid
+    │    │      - lifetime 400–1400ms
+    │    │
+    │    ├─ broadcaster.sendRound(gameId, players, cells)
+    │    │      (broadcast scoreboard + active cells)
+    │    │
+    │    └─ gameUpdater.accept(game)
+    │          (update in-memory game state)
+    │
+    └─ after 35 seconds:
+         ├─ onFinish.run()
+         └─ broadcaster.sendGameOver(gameId)
+
+```
+
 uses
 * Supplier<Game> to fetch current state 
 * Consumer<Game> to update in-memory state 
