@@ -1,5 +1,5 @@
+import { initQuickr } from "@/api";
 import { useMutation } from "@tanstack/vue-query";
-import { initQuickr } from "../api/gameApi";
 
 export function useInitQuickr() {
   return useMutation({

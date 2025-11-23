@@ -1,0 +1,14 @@
+{
+  "name": "lambda-node",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "handler.mjs",
+  "scripts": {
+    "test": "node handler.mjs"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.598.0",
+    "dotenv": "^17.2.3",
+    "node-fetch": "^3.3.2"
+  }
+}

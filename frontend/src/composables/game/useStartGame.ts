@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/vue-query";
-import { startGame } from "../api/gameApi";
+import { startGame } from "@/api";
 
 export function useStartGame() {
   return useMutation({

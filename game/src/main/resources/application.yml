@@ -9,3 +9,7 @@ logging:
   level:
     root: INFO
     se.salt.lobby: DEBUG
+
+cors:
+  allowAll: false
+  allowedOrigins: [ ]

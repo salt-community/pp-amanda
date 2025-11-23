@@ -1,16 +1,15 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
-import CountdownBox from "../components/CountdownBox.vue";
-import GameBoard from "../components/GameBoard.vue";
-import { useGameSocket } from "../composables/useGameSocket";
+import { useGameSocket } from "@/composables";
+import { BackButton, ScoreBoard, GameBoard, CountdownBox } from "@/components";
 
 const route = useRoute();
 const gameId = route.params.gameId as string;
 const playerName = route.query.player as string;
 const showCountdown = ref(true);
 
-const { connect, connected, countdownSeconds, gameOver } = useGameSocket(
+const { connect, countdownSeconds, gameOver } = useGameSocket(
   gameId,
   playerName
 );
@@ -21,10 +20,12 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="p-4 text-center">
-    <p>Status: {{ connected ? "Connected" : "Disconnected" }}</p>
+  <div
+    class="min-h-screen flex flex-col items-center justify-start pt-20 sm:justify-center sm:pt-0 gap-6 sm:gap-10"
+  >
+    <BackButton />
     <div class="flex flex-col items-center mt-10">
-      <h1 class="text-2xl font-bold mb-4">Reaction Game</h1>
+      <!-- <h1 class="quickr-title">Reaction Game</h1> -->
       <CountdownBox
         v-if="showCountdown"
         :countdown-seconds="countdownSeconds"
@@ -36,6 +37,8 @@ onMounted(() => {
         :game-id="gameId"
         :player-name="playerName"
       />
+
+      <ScoreBoard v-if="gameOver" :game-id="gameId" />
     </div>
   </div>
 </template>

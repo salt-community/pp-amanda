@@ -20,7 +20,7 @@
 </template>
 
 <script setup lang="ts">
-import { useInitQuickr } from "../composables/useInitQuickr";
+import { useInitQuickr } from "@/composables";
 
 const props = defineProps<{ sessionId: string }>();
 const emit = defineEmits<{ (e: "initialized", gameType: "REACTION"): void }>();

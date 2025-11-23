@@ -113,4 +113,13 @@ Lambda now consumes and initiates the Game item
 - Continued with impl. WebSockets using STOMP (simple text-orientated messaging protocol)
 - Almost have the structure for everything now except the game logic itself
 
-### Wednesday 5 November
+### Wednesday-Friday 5-7 November
+
+- Struggling with get LocalStack to work (mocking AWS)
+- Impl. game logic and make sure it reflects in FE - still in progress
+- Re-write lambda
+- Creating scripts and "how to" for running locally
+
+### Monday 10 November
+
+- Working with UX and styling

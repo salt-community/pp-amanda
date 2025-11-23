@@ -1,18 +1,16 @@
 import { ref, onUnmounted } from "vue";
 import { Client } from "@stomp/stompjs";
 import type { IMessage, IFrame } from "@stomp/stompjs";
-import { GAME_URL } from "../config/api";
+import { GAME_URL } from "@/config/api";
 
 export function useGameSocket(gameId: string, playerName: string) {
   const connected = ref(false);
   const countdownSeconds = ref<number | null>(null);
+  const liveScores = ref<Record<string, number> | null>(null);
 
-  const activeCell = ref<{
-    row: number;
-    col: number;
-    round: number;
-    timestamp: number;
-  } | null>(null);
+  const activeCells = ref<
+    Array<{ row: number; col: number; activatedAt: number; expiresAt: number }>
+  >([]);
   const currentRound = ref<number>(0);
   const results = ref<Record<string, number> | null>(null);
   const gameOver = ref(false);
@@ -38,7 +36,7 @@ export function useGameSocket(gameId: string, playerName: string) {
     connected.value = true;
     stomp?.subscribe(`/topic/game/${gameId}/countdown`, handleCountdown);
     stomp?.subscribe(`/topic/game/${gameId}`, handleActiveCell);
-    stomp?.subscribe(`/topic/game/${gameId}/results`, handleResults);
+    stomp?.subscribe(`/topic/game/${gameId}/scores`, handleResults);
     stomp?.subscribe(`/topic/game/${gameId}/over`, handleGameOver);
   };
 
@@ -56,8 +54,13 @@ export function useGameSocket(gameId: string, playerName: string) {
   const handleActiveCell = (msg: IMessage) => {
     try {
       const data = JSON.parse(msg.body);
-      activeCell.value = { ...data };
-      currentRound.value = data.round ?? currentRound.value + 1;
+      activeCells.value = data.cells || [];
+
+      if (data.scores) {
+        liveScores.value = data.scores;
+      }
+
+      currentRound.value++;
     } catch {
       console.warn("Malformed activeCell:", msg.body);
     }
@@ -72,16 +75,23 @@ export function useGameSocket(gameId: string, playerName: string) {
 
   const handleGameOver = () => {
     gameOver.value = true;
-    activeCell.value = null;
+    activeCells.value = [];
   };
 
-  const sendReaction = (row: number, col: number) => {
+  const sendReaction = (row: number, col: number, activatedAt: number) => {
     if (!connected.value || !stomp) return;
     const reactionTimestamp = Date.now();
     stomp.publish({
       destination: "/app/reaction",
       headers: { playerName },
-      body: JSON.stringify({ gameId, playerName, row, col, reactionTimestamp }),
+      body: JSON.stringify({
+        gameId,
+        playerName,
+        row,
+        col,
+        activatedAt,
+        reactionTimestamp,
+      }),
     });
   };
 
@@ -94,8 +104,9 @@ export function useGameSocket(gameId: string, playerName: string) {
     connect,
     connected,
     countdownSeconds,
-    activeCell,
+    activeCells,
     currentRound,
+    liveScores,
     sendReaction,
     results,
     gameOver,

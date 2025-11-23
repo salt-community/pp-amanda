@@ -20,14 +20,22 @@ export async function joinSession(sessionId: string): Promise<SessionResponse> {
     body: JSON.stringify({ sessionId }),
   });
 
+  const text = await response.text();
+
   if (!response.ok) {
-    if (response.status === 404) {
-      throw new Error("Session not found");
+    let message = "Failed to join session";
+
+    try {
+      const json = JSON.parse(text);
+      message = json.error || json.message || message;
+    } catch {
+      message = text || message;
     }
-    throw new Error("Failed to join session");
+
+    throw new Error(message);
   }
 
-  return await response.json();
+  return JSON.parse(text);
 }
 
 export async function getSession(sessionId: string): Promise<SessionResponse> {

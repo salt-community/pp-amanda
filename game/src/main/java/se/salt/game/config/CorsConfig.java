@@ -1,29 +1,43 @@
 package se.salt.game.config;
 
 import lombok.NonNull;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.util.List;
+
 @Configuration
 public class CorsConfig {
+
+    @Value("${cors.allowAll:false}")
+    private boolean allowAll;
+
+    @Value("${cors.allowedOrigins:}")
+    private List<String> allowedOrigins;
 
     @Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(@NonNull CorsRegistry registry) {
-                registry.addMapping("/**")
-                    .allowedOrigins(
-                        "http://localhost:5173",
-                        "https://frontend-alb-1896419215.eu-north-1.elb.amazonaws.com",
-                        "http://frontend-alb-1896419215.eu-north-1.elb.amazonaws.com"
-                    )
-                    .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                    .allowedHeaders("*")
-                    .allowCredentials(true);
+                if (allowAll) {
+                    registry.addMapping("/**")
+                        .allowedOriginPatterns("*")
+                        .allowedMethods("*")
+                        .allowedHeaders("*")
+                        .allowCredentials(true);
+                } else {
+                    registry.addMapping("/**")
+                        .allowedOrigins(allowedOrigins.toArray(new String[0]))
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                        .allowedHeaders("*")
+                        .allowCredentials(true);
+                }
             }
         };
     }
 }
+

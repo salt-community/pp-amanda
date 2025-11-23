@@ -11,6 +11,8 @@ import se.salt.game.http.dto.GameResponse;
 import se.salt.game.http.dto.InitRequest;
 import se.salt.game.http.dto.JoinRequest;
 
+import java.util.Map;
+
 @Slf4j
 @RestController
 @RequestMapping("/game")
@@ -28,6 +30,11 @@ public class SessionController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    @GetMapping("/random-name")
+    public ResponseEntity<Map<String, String>> randomName() {
+        String generatedName = service.getRandomName();
+        return ResponseEntity.ok(Map.of("randomName", generatedName));
+    }
 
     @PostMapping("/{sessionId}/join")
     public ResponseEntity<GameResponse> joinGame(

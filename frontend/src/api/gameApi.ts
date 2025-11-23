@@ -1,4 +1,9 @@
-import type { GameResponse, GameRequest } from "../types/game";
+import type {
+  GameResponse,
+  GameRequest,
+  ResultResponse,
+  TopScore,
+} from "../types/game";
 import { GAME_URL } from "../config/api";
 
 export async function initQuickr(
@@ -30,8 +35,23 @@ export async function joinGame(sessionId: string, playerName: string) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ playerName }),
   });
-  if (!res.ok) throw new Error("Failed to join game");
-  return await res.json();
+
+  const text = await res.text();
+
+  if (!res.ok) {
+    let message = "Failed to join game";
+
+    try {
+      const json = JSON.parse(text);
+      message = json.error || json.message || message;
+    } catch {
+      message = text || message;
+    }
+
+    throw new Error(message);
+  }
+
+  return JSON.parse(text);
 }
 
 export async function startGame(gameId: string) {
@@ -43,4 +63,26 @@ export async function startGame(gameId: string) {
     throw new Error(`Failed to start game (status ${response.status})`);
   }
   return true;
+}
+
+export async function gameResult(gameId: string): Promise<ResultResponse> {
+  const res = await fetch(`${GAME_URL}/game/${gameId}/result`);
+  if (!res.ok) throw new Error("Failed to fetch game result");
+  return await res.json();
+}
+
+export async function getRandomName(): Promise<string> {
+  const res = await fetch(`${GAME_URL}/game/random-name`);
+  if (!res.ok) throw new Error("Failed to fetch randomized name");
+
+  const json = await res.json();
+  return json.randomName;
+}
+
+export async function getTopList(): Promise<TopScore[]> {
+  const res = await fetch(`${GAME_URL}/game/top-list`);
+  if (!res.ok) throw new Error("Failed to fetch toplist");
+
+  const json = await res.json();
+  return json.data;
 }

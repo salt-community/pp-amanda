@@ -1,21 +1,22 @@
 <template>
   <div class="flex flex-col items-center">
-    <h2 class="text-xl font-semibold mb-4">Enter your name to join</h2>
+    <div class="text-amber-600 font-bold tracking-widest text-xl mb-4">
+      ENTER NAME:
+    </div>
 
-    <form @submit.prevent="submitName" class="flex gap-2">
+    <form
+      @submit.prevent="submitName"
+      class="flex flex-col items-center space-y-3"
+    >
       <input
         v-model="playerName"
-        placeholder="Your name"
-        class="border rounded px-3 py-2"
-        :disabled="isPending || joinClosed"
+        maxlength="8"
+        placeholder="?"
+        class="quickr-input w-[220px]"
       />
-      <button
-        type="submit"
-        class="bg-blue-500 text-white px-4 py-2 rounded"
-        :disabled="isPending || joinClosed"
-      >
+      <button type="submit" class="quickr-button">
         <span v-if="isPending">Joining...</span>
-        <span v-else>Join</span>
+        <span v-else>Join →</span>
       </button>
     </form>
 
@@ -25,9 +26,9 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { useJoinDeadline } from "../composables/useJoinDeadline";
-import { usePlayerJoin } from "../composables/usePlayerJoin";
-import type { GameResponse } from "../types/game";
+
+import type { GameResponse } from "@/types/game";
+import { useJoinDeadline, usePlayerJoin } from "@/composables";
 
 const props = defineProps<{ sessionId: string }>();
 
