@@ -49,6 +49,8 @@ jobs:
           container-name: lobby
           image: ${{ steps.build-and-push.outputs.image }}
           environment-variables: |
+            SPRING_PROFILES_ACTIVE=prod
+            AWS_REGION=eu-north-1
             SQS_QUEUE_URL=${{ secrets.SQS_QUEUE_URL }}
 
       - name: Deploy to ECS
