@@ -33,6 +33,7 @@ SPRING_PROFILES_ACTIVE=dev
 AWS_REGION=eu-north-1
 LOBBY_PORT=8080
 FRONTEND_PORT=5173
+LOCAL_DEV_IP=192.168.X.XX
 EOF
 ```
 
@@ -47,6 +48,7 @@ SPRING_PROFILES_ACTIVE=dev
 AWS_REGION=eu-north-1
 GAME_PORT=8081
 FRONTEND_PORT=5173
+LOCAL_DEV_IP=192.168.X.XX
 EOF
 ```
 
@@ -63,7 +65,7 @@ EOF
 ```
 
 >>NOTE:
->>To test on a mobile device, replace localhost with your computer's
+>>To test on a mobile device, replace LOCAL_DEV_IP=192.168.X.XX with correct
 >>LAN IP (e.g. 192.168.x.x).
 
 #### LAMBDA

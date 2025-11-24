@@ -2,42 +2,44 @@ package se.salt.game.config;
 
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import java.util.List;
-
 @Configuration
-public class CorsConfig {
+public class CorsConfig implements WebMvcConfigurer {
 
-    @Value("${cors.allowAll:false}")
-    private boolean allowAll;
+    @Value("${local.dev.ip:}")
+    private String localDevIp;  // tom i PROD
 
-    @Value("${cors.allowedOrigins:}")
-    private List<String> allowedOrigins;
+    @Override
+    public void addCorsMappings(@NonNull CorsRegistry registry) {
 
-    @Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(@NonNull CorsRegistry registry) {
-                if (allowAll) {
-                    registry.addMapping("/**")
-                        .allowedOriginPatterns("*")
-                        .allowedMethods("*")
-                        .allowedHeaders("*")
-                        .allowCredentials(true);
-                } else {
-                    registry.addMapping("/**")
-                        .allowedOrigins(allowedOrigins.toArray(new String[0]))
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                        .allowedHeaders("*")
-                        .allowCredentials(true);
-                }
-            }
+        String[] prodOrigins = new String[]{
+            "https://frontend-alb-1896419215.eu-north-1.elb.amazonaws.com",
+            "http://frontend-alb-1896419215.eu-north-1.elb.amazonaws.com",
+            "http://localhost:5173"
         };
+
+        // Om du kör lokalt och vill tillåta LAN-IP:
+        // ex: sätt i .env LOCAL_DEV_IP=192.168.X.XX
+        String[] finalOrigins;
+        if (localDevIp != null && !localDevIp.isBlank()) {
+            finalOrigins = new String[]{
+                prodOrigins[0],
+                prodOrigins[1],
+                prodOrigins[2],
+                "http://" + localDevIp + ":5173"
+            };
+        } else {
+            finalOrigins = prodOrigins;
+        }
+
+        registry.addMapping("/**")
+            .allowedOrigins(finalOrigins)
+            .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+            .allowedHeaders("*")
+            .allowCredentials(true);
     }
 }
 

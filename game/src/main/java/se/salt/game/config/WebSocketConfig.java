@@ -7,28 +7,40 @@ import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBr
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
-import java.util.List;
-
 @Configuration
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
-    @Value("${cors.allowAll:false}")
-    private boolean allowAll;
-
-    @Value("${cors.allowedOrigins:}")
-    private List<String> allowedOrigins;
+    @Value("${local.dev.ip:}")
+    private String localDevIp;  // tom i PROD
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
 
-        if (allowAll) {
-            registry.addEndpoint("/ws-game")
-                .setAllowedOriginPatterns("*");
+        // PROD origins – statiska = stabilt
+        String[] prodOrigins = new String[]{
+            "https://frontend-alb-1896419215.eu-north-1.elb.amazonaws.com",
+            "http://frontend-alb-1896419215.eu-north-1.elb.amazonaws.com",
+            "http://localhost:5173"
+        };
+
+        // Om du kör lokalt och vill tillåta LAN-IP:
+        // ex: sätt i .env LOCAL_DEV_IP=192.168.X.XX
+        String[] finalOrigins;
+        if (localDevIp != null && !localDevIp.isBlank()) {
+            finalOrigins = new String[]{
+                prodOrigins[0],
+                prodOrigins[1],
+                prodOrigins[2],
+                "http://" + localDevIp + ":5173"
+            };
         } else {
-            registry.addEndpoint("/ws-game")
-                .setAllowedOriginPatterns(allowedOrigins.toArray(new String[0]));
+            finalOrigins = prodOrigins;
         }
+
+        registry.addEndpoint("/ws-game")
+            .setAllowedOrigins(finalOrigins);
+        // .withSockJS();  // (om du vill aktivera senare)
     }
 
     @Override
