@@ -1,12 +1,13 @@
 name: Deploy Lobby to AWS ECS
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - "lobby/**"
-      - ".github/workflows/deploy-lobby.yml"
+  workflow_dispatch:
+#  push:
+#    branches:
+#      - main
+#    paths:
+#      - "lobby/**"
+#      - ".github/workflows/deploy-lobby.yml"
 
 jobs:
   build-and-deploy:

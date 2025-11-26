@@ -1,12 +1,13 @@
 name: Deploy Game to AWS ECS
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - "game/**"
-      - ".github/workflows/deploy-game.yml"
+  workflow_dispatch:
+#  push:
+#    branches:
+#      - main
+#    paths:
+#      - "game/**"
+#      - ".github/workflows/deploy-game.yml"
 
 jobs:
   build-and-deploy:
