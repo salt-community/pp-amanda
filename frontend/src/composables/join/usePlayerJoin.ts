@@ -1,8 +1,8 @@
 import { useMutation } from "@tanstack/vue-query";
 import { joinGame } from "@/api";
 
-export function usePlayerJoin(sessionId: string) {
+export function usePlayerJoin(getSessionId: () => string) {
   return useMutation({
-    mutationFn: (playerName: string) => joinGame(sessionId, playerName),
+    mutationFn: (playerName: string) => joinGame(getSessionId(), playerName),
   });
 }
