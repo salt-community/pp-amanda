@@ -25,7 +25,7 @@ sleep 10
 echo "⏳ Creating SQS queue..."
 aws --endpoint-url=$ENDPOINT sqs create-queue --queue-name $QUEUE_NAME >/dev/null 2>&1 || true
 
-echo "✓ Creating DynamoDB tables..."
+echo "✓ Creating DynamoDB table Sessions..."
 aws --endpoint-url=$ENDPOINT dynamodb create-table \
   --table-name Sessions \
   --attribute-definitions AttributeName=sessionId,AttributeType=S \
