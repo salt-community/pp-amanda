@@ -3,12 +3,6 @@ logging:
     root: WARN
     se.salt.game: INFO
 
-cors:
-  allowAll: false
-  allowedOrigins:
-    - https://frontend-alb-1896419215.eu-north-1.elb.amazonaws.com
-    - http://frontend-alb-1896419215.eu-north-1.elb.amazonaws.com
 aws:
-  region: eu-north-1
   dynamodb:
     endpoint: ""

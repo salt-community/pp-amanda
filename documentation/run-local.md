@@ -156,23 +156,23 @@ Check the logs in each terminal tab to see how the services are communicating/in
 You can extend with multiple terminal windows to watch how the tables are filled in like::
 
 ```bash
-watch -n 10 'aws dynamodb scan \
+watch -n 5 'aws dynamodb scan \
 --table-name Sessions \
---endpoint-url http://localhost:8000 \
---query "Items[*].{ID: id.S, Name: name.S}" \
+--endpoint-url=http://localhost:4566 \
+--query "Items[*].{sessionId: sessionId.S, createdAt: createdAt.S, expiredAt: expiredAt.N}" \
 --output table'
 ```
 ```bash
-watch -n 10 'aws dynamodb scan \
---table-name Games\
---endpoint-url http://localhost:8000 \
---query "Items[*].{ID: id.S, Name: name.S}" \
+watch -n 5 'aws dynamodb scan \
+--table-name Games \
+--endpoint-url http://localhost:4566 \
+--query "Items[*].{SessionID: sessionId.S, Players: players.M, JoinDeadline: joinDeadline.S}" \
 --output table'
 ```
 ```bash
-watch -n 10 'aws dynamodb scan \
+watch -n 5 'aws dynamodb scan \
 --table-name TopScores \
---endpoint-url http://localhost:8000 \
+--endpoint-url http://localhost:4566 \
 --query "Items[*].{Player: playerName.S, Score: score.N}" \
 --output table'
 ```

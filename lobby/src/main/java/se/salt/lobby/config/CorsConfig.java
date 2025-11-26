@@ -16,9 +16,8 @@ public class CorsConfig implements WebMvcConfigurer {
     public void addCorsMappings(@NonNull CorsRegistry registry) {
 
         String[] prodOrigins = new String[]{
-            "https://frontend-alb-1896419215.eu-north-1.elb.amazonaws.com",
-            "http://frontend-alb-1896419215.eu-north-1.elb.amazonaws.com",
-            "http://localhost:5173"
+            "http://localhost:5173",
+            "http://192.168.XXXX.XX:5173" // TODO ADD CORRECT LAN IP
         };
 
         // Om du kör lokalt och vill tillåta LAN-IP:
