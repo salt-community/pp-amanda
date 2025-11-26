@@ -47,7 +47,7 @@
 
 <script setup lang="ts">
 import { ref, watch, onMounted } from "vue";
-import type { GameResponse } from "../../types/game";
+import type { GameResponse } from "@/types/game";
 import {
   useJoinDeadline,
   usePlayerJoin,
@@ -79,7 +79,7 @@ function refreshName() {
   refetch();
 }
 
-const { mutateAsync: join, isPending } = usePlayerJoin(props.sessionId);
+const { mutateAsync: join, isPending } = usePlayerJoin(() => props.sessionId);
 const { joinClosed } = useJoinDeadline(props.sessionId);
 
 async function submitName() {
