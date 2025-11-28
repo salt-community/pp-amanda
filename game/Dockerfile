@@ -14,7 +14,7 @@ WORKDIR /app
 
 COPY --from=build /app/target/*.jar app.jar
 
-ENV SPRING_PROFILES_ACTIVE=prod
+ENV SPRING_PROFILES_ACTIVE=dev
 ENV SERVER_PORT=8081
 
 EXPOSE ${SERVER_PORT}
