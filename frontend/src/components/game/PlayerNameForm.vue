@@ -40,7 +40,7 @@ const emit = defineEmits<{
 }>();
 
 const playerName = ref("");
-const { mutateAsync: join, isPending } = usePlayerJoin(props.sessionId);
+const { mutateAsync: join, isPending } = usePlayerJoin(() => props.sessionId);
 const { joinClosed } = useJoinDeadline(props.sessionId);
 
 async function submitName() {
