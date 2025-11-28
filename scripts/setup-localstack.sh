@@ -5,23 +5,6 @@ ENDPOINT="http://localhost:4566"
 REGION="eu-north-1"
 QUEUE_NAME="session-created-queue"
 
-echo "🐳 Starting LocalStack network and container..."
-docker network inspect quickr-net >/dev/null 2>&1 || docker network create quickr-net
-docker stop localstack >/dev/null 2>&1 || true
-docker rm localstack >/dev/null 2>&1 || true
-
-docker run -d \
-  --name localstack \
-  --hostname localstack \
-  --network quickr-net \
-  -p 4566:4566 \
-  -v /var/run/docker.sock:/var/run/docker.sock \
-  -e SERVICES=lambda,sqs,dynamodb \
-  localstack/localstack:latest
-
-echo "⏳ Waiting for LocalStack..."
-sleep 10
-
 echo "⏳ Creating SQS queue..."
 aws --endpoint-url=$ENDPOINT sqs create-queue --queue-name $QUEUE_NAME >/dev/null 2>&1 || true
 
