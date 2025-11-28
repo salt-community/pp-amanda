@@ -4,8 +4,13 @@ logging:
     se.salt.lobby: DEBUG
 
 aws:
+  credentials:
+    access-key: test
+    secret-key: test
+
   dynamodb:
-    endpoint: http://localhost:4566
+    endpoint: http://localstack:4566
+
   sqs:
-    endpoint: http://localhost:4566
-    queue-url: http://localhost:4566/000000000000/session-created-queue
+    endpoint: http://localstack:4566
+    queue-url: http://localstack:4566/000000000000/session-created-queue

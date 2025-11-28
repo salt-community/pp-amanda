@@ -3,7 +3,10 @@ logging:
     root: INFO
     se.salt.game: DEBUG
 
-
 aws:
+  credentials:
+    access-key: test
+    secret-key: test
+
   dynamodb:
-    endpoint: http://localhost:4566
+    endpoint: http://localstack:4566

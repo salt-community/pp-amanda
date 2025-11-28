@@ -26,8 +26,6 @@ public class CorsConfig implements WebMvcConfigurer {
         if (localDevIp != null && !localDevIp.isBlank()) {
             finalOrigins = new String[]{
                 prodOrigins[0],
-                prodOrigins[1],
-                prodOrigins[2],
                 "http://" + localDevIp + ":5173"
             };
         } else {

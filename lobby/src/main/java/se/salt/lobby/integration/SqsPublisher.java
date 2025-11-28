@@ -17,6 +17,7 @@ import java.time.Instant;
 public class SqsPublisher {
 
     private final SqsClient sqsClient;
+
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Value("${aws.sqs.queue-url}")

@@ -10,4 +10,4 @@ logging:
 aws:
   region: eu-north-1
   dynamodb:
-    endpoint: http://localhost:4566
+    endpoint: http://localstack:4566

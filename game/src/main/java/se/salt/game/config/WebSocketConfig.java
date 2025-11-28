@@ -20,6 +20,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         // PROD origins – statiska = stabilt
         String[] prodOrigins = new String[]{
             "http://localhost:5173",
+            "http://frontend:80",
             "http://192.168.XXXX.XX:5173" // TODO ADD CORRECT LAN IP
         };
 
@@ -30,7 +31,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
             finalOrigins = new String[]{
                 prodOrigins[0],
                 prodOrigins[1],
-                prodOrigins[2],
                 "http://" + localDevIp + ":5173"
             };
         } else {
